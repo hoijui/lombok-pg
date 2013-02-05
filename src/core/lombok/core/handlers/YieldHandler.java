@@ -99,7 +99,7 @@ public class YieldHandler<METHOD_TYPE extends IMethod<?, ?, ?, ?>, AST_BASE_TYPE
 			final Switch errorHandlerSwitch = getErrorHandlerSwitch();
 			final Statement<?> closeStatement = getCloseStatement();
 
-			ClassDecl yielder = ClassDecl(yielderName).posHint(method.get()).makeLocal().implementing(Type(Iterator.class).withTypeArgument(Type(elementType))) //
+			ClassDecl yielder = ClassDecl(yielderName).posHint(method.get()).makeLocal().makeFinal().implementing(Type(Iterator.class).withTypeArgument(Type(elementType))) //
 					.withFields(variables) //
 					.withField(FieldDecl(Type("int"), stateName).makePrivate()) //
 					.withField(FieldDecl(Type("boolean"), "$hasNext").makePrivate()) //
@@ -108,26 +108,27 @@ public class YieldHandler<METHOD_TYPE extends IMethod<?, ?, ?, ?>, AST_BASE_TYPE
 					.withMethod(ConstructorDecl(yielderName).withImplicitSuper().makePrivate()); //
 			if (returnsIterable) {
 				yielder.implementing(Type(Iterable.class).withTypeArgument(Type(elementType))) //
-						.withMethod(MethodDecl(Type(Iterator.class).withTypeArgument(Type(elementType)), "iterator").makePublic() //
+						.withMethod(MethodDecl(Type(Iterator.class).withTypeArgument(Type(elementType)), "iterator")
+								.withAnnotation(Annotation(Type(Override.class))).makePublic() //
 								.withStatement(If(Equal(Name(stateName), Number(0))).Then(Block() //
 										.withStatement(Assign(Name(stateName), Number(1))) //
-										.withStatement(Return(This()))) //
-										.Else(Return(New(Type(yielderName))))));
+										.withStatement(Return(This()))))
+								.withStatement(Return(New(Type(yielderName)))));
 			}
 			yielder.implementing(Type(Closeable.class)) //
-					.withMethod(MethodDecl(Type("boolean"), "hasNext").makePublic() //
+					.withMethod(MethodDecl(Type("boolean"), "hasNext").withAnnotation(Annotation(Type(Override.class))).makePublic() //
 							.withStatement(If(Not(Name("$nextDefined"))).Then(Block() //
 									.withStatement(Assign(Name("$hasNext"), Call("getNext"))) //
 									.withStatement(Assign(Name("$nextDefined"), True())))) //
 							.withStatement(Return(Name("$hasNext")))) //
-					.withMethod(MethodDecl(Type(elementType), "next").makePublic() //
+					.withMethod(MethodDecl(Type(elementType), "next").withAnnotation(Annotation(Type(Override.class))).makePublic() //
 							.withStatement(If(Not(Call("hasNext"))).Then(Block() //
 									.withStatement(Throw(New(Type(NoSuchElementException.class)))))) //
 							.withStatement(Assign(Name("$nextDefined"), False())) //
 							.withStatement(Return(Name(nextName)))) //
-					.withMethod(MethodDecl(Type("void"), "remove").makePublic() //
+					.withMethod(MethodDecl(Type("void"), "remove").withAnnotation(Annotation(Type(Override.class))).makePublic() //
 							.withStatement(Throw(New(Type(UnsupportedOperationException.class))))) //
-					.withMethod(MethodDecl(Type("void"), "close").makePublic() //
+					.withMethod(MethodDecl(Type("void"), "close").withAnnotation(Annotation(Type(Override.class))).makePublic() //
 							.withStatement(closeStatement));
 			if (errorHandlerSwitch != null) {
 				String caughtErrorName = errorName + "Caught";
@@ -155,52 +156,52 @@ public class YieldHandler<METHOD_TYPE extends IMethod<?, ?, ?, ?>, AST_BASE_TYPE
 		public Switch getErrorHandlerSwitch() {
 			if (errorHandlers.isEmpty()) {
 				return null;
-			} else {
-				final List<Case> switchCases = new ArrayList<Case>();
-				final Set<Case> labels = new HashSet<Case>();
-				for (ErrorHandler handler : errorHandlers) {
-					Case lastCase = null;
-					for (int i = handler.begin; i < handler.end; i++) {
-						Case label = cases.get(i);
-						if ((label != null) && labels.add(label)) {
-							lastCase = Case(label.getPattern());
-							switchCases.add(lastCase);
-						}
-					}
-					if (lastCase != null) {
-						lastCase.withStatements(handler.statements);
+			}
+			
+			final List<Case> switchCases = new ArrayList<Case>();
+			final Set<Case> labels = new HashSet<Case>();
+			for (ErrorHandler handler : errorHandlers) {
+				Case lastCase = null;
+				for (int i = handler.begin; i < handler.end; i++) {
+					Case label = cases.get(i);
+					if ((label != null) && labels.add(label)) {
+						lastCase = Case(label.getPattern());
+						switchCases.add(lastCase);
 					}
 				}
-
-				final String unhandledErrorName = errorName + "Unhandled";
-				switchCases.add(Case() //
-						.withStatement(setState(literal(getBreakLabel(root)))) //
-						.withStatement(LocalDecl(Type(ConcurrentModificationException.class), unhandledErrorName).withInitialization(New(Type(ConcurrentModificationException.class)))) //
-						.withStatement(Call(Name(unhandledErrorName), "initCause").withArgument(Name(errorName))) //
-						.withStatement(Throw(Name(unhandledErrorName))));
-				return Switch(Name(stateName)).withCases(switchCases);
+				if (lastCase != null) {
+					lastCase.withStatements(handler.statements);
+				}
 			}
+
+			final String unhandledErrorName = errorName + "Unhandled";
+			switchCases.add(Case() //
+					.withStatement(setState(literal(getBreakLabel(root)))) //
+					.withStatement(LocalDecl(Type(ConcurrentModificationException.class), unhandledErrorName).withInitialization(New(Type(ConcurrentModificationException.class)))) //
+					.withStatement(Call(Name(unhandledErrorName), "initCause").withArgument(Name(errorName))) //
+					.withStatement(Throw(Name(unhandledErrorName))));
+			return Switch(Name(stateName)).withCases(switchCases);
 		}
 
 		public Statement<?> getCloseStatement() {
 			final Statement<?> statement = setState(literal(getBreakLabel(root)));
 			if (breakCases.isEmpty()) {
 				return statement;
-			} else {
-				Number prev = null;
-				final List<Case> switchCases = new ArrayList<Case>();
-				for (final Case breakCase : breakCases) {
-					NumberLiteral literal = (NumberLiteral) breakCase.getPattern();
-					Number value = literal.getNumber();
-					if ((prev != null) && prev.equals(value)) continue;
-					switchCases.add(breakCase);
-					prev = value;
-				}
-				switchCases.add(Case() //
-						.withStatement(statement) //
-						.withStatement(Return()));
-				return Do(Switch(Name(stateName)).withCases(switchCases)).While(Call("getNext"));
 			}
+
+			Number prev = null;
+			final List<Case> switchCases = new ArrayList<Case>();
+			for (final Case breakCase : breakCases) {
+				NumberLiteral literal = (NumberLiteral) breakCase.getPattern();
+				Number value = literal.getNumber();
+				if ((prev != null) && prev.equals(value)) continue;
+				switchCases.add(breakCase);
+				prev = value;
+			}
+			switchCases.add(Case() //
+					.withStatement(statement) //
+					.withStatement(Return()));
+			return Do(Switch(Name(stateName)).withCases(switchCases)).While(Call("getNext"));
 		}
 
 		public boolean hasYields() {

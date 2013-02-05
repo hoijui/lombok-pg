@@ -8,4 +8,5 @@ class BuilderPlain {
 	private String optionalVal1 = DEFAULT;
 	private java.util.List<java.lang.Long> optionalVal2 = new java.util.ArrayList<java.lang.Long>();
 	private Map<java.lang.String, java.lang.Long> optionalVal3 = new HashMap<java.lang.String, java.lang.Long>();
+	private byte[] data;
 }

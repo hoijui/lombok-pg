@@ -64,6 +64,7 @@ import org.eclipse.jdt.internal.compiler.ast.CaseStatement;
 import org.eclipse.jdt.internal.compiler.ast.CastExpression;
 import org.eclipse.jdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.ConditionalExpression;
 import org.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.ContinueStatement;
 import org.eclipse.jdt.internal.compiler.ast.DoStatement;
@@ -752,6 +753,17 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 		final SynchronizedStatement synchronizedStatemenet = new SynchronizedStatement(build(node.getLock(), Expression.class), block, 0, 0);
 		setGeneratedByAndCopyPos(synchronizedStatemenet, source, posHintOf(node));
 		return synchronizedStatemenet;
+	}
+	
+	@Override
+	public ASTNode visitTernary(final lombok.ast.Ternary node, final Void p) {
+		ConditionalExpression expression = new ConditionalExpression(
+				build(node.getTest(), Expression.class),
+				build(node.getIfTrue(), Expression.class),
+				build(node.getIfFalse(), Expression.class));
+		
+		setGeneratedByAndCopyPos(expression, source, posHintOf(node));
+		return expression;
 	}
 
 	@Override

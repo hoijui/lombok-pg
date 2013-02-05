@@ -1,19 +1,19 @@
 @lombok.Builder(exclude = {"optionalVal3"},convenientMethods = false) class BuilderExtensions {
-  public static @java.lang.SuppressWarnings("all") interface TextDef {
+  public @java.lang.SuppressWarnings("all") interface TextDef {
     public IdDef text(final String text);
     public @java.lang.SuppressWarnings("all") OptionalDef idAndText(final int id, final String text);
     public @java.lang.SuppressWarnings("all") OptionalDef idAsStringAndText(final String id, final String text);
   }
-  public static @java.lang.SuppressWarnings("all") interface IdDef {
+  public @java.lang.SuppressWarnings("all") interface IdDef {
     public OptionalDef id(final int id);
   }
-  public static @java.lang.SuppressWarnings("all") interface OptionalDef {
+  public @java.lang.SuppressWarnings("all") interface OptionalDef {
     public OptionalDef optionalVal1(final String optionalVal1);
     public OptionalDef optionalVal2(final java.util.List<java.lang.Long> optionalVal2);
     public BuilderExtensions build();
     public @java.lang.SuppressWarnings("all") OptionalDef optionalVal1(final Class<?> clazz);
   }
-  private static @java.lang.SuppressWarnings("all") class $Builder implements TextDef, IdDef, OptionalDef {
+  private static final @java.lang.SuppressWarnings("all") class $Builder implements TextDef, IdDef, OptionalDef {
     private String text;
     private int id;
     private String optionalVal1;

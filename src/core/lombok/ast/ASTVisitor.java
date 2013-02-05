@@ -96,6 +96,8 @@ public interface ASTVisitor<RETURN_TYPE, PARAMETER_TYPE> {
 	RETURN_TYPE visitSwitch(Switch node, PARAMETER_TYPE p);
 
 	RETURN_TYPE visitSynchronized(Synchronized node, PARAMETER_TYPE p);
+	
+	RETURN_TYPE visitTernary(Ternary node, PARAMETER_TYPE p);
 
 	RETURN_TYPE visitThis(This node, PARAMETER_TYPE p);
 

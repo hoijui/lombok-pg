@@ -67,7 +67,12 @@ public class HandleBuilderAndExtension {
 				// continue with creating the builder
 			}
 
-			new BuilderAndExtensionHandler<EclipseType, EclipseMethod, EclipseField>().handleBuilder(type, annotation.getInstance());
+			new BuilderAndExtensionHandler<EclipseType, EclipseMethod, EclipseField>() {
+				@Override
+				protected boolean isArray(EclipseField field) {
+					return field.type().toString().endsWith("[]");
+				}
+			}.handleBuilder(type, annotation.getInstance());
 		}
 	}
 
@@ -104,7 +109,12 @@ public class HandleBuilderAndExtension {
 				new HandleBuilder().handle(builderAnnotation, (Annotation) builderNode.get(), builderNode);
 			}
 
-			new BuilderAndExtensionHandler<EclipseType, EclipseMethod, EclipseField>().handleExtension(type, method, new EclipseParameterValidator(), new EclipseParameterSanitizer(), builderAnnotation.getInstance(), annotation.getInstance());
+			new BuilderAndExtensionHandler<EclipseType, EclipseMethod, EclipseField>() {
+				@Override
+				protected boolean isArray(EclipseField field) {
+					return field.type().toString().endsWith("[]");
+				}
+			}.handleExtension(type, method, new EclipseParameterValidator(), new EclipseParameterSanitizer(), builderAnnotation.getInstance(), annotation.getInstance());
 		}
 	}
 }

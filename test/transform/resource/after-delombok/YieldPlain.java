@@ -6,7 +6,7 @@ class YieldPlain {
 	@java.lang.SuppressWarnings("all")
 	public Iterator<String> simple() {
 		
-		class $YielderSimple implements java.util.Iterator<java.lang.String>, java.io.Closeable {
+		final class $YielderSimple implements java.util.Iterator<java.lang.String>, java.io.Closeable {
 			private int $state;
 			private boolean $hasNext;
 			private boolean $nextDefined;
@@ -14,7 +14,8 @@ class YieldPlain {
 			
 			private $YielderSimple() {
 			}
-			
+
+			@java.lang.Override
 			public boolean hasNext() {
 				if (!$nextDefined) {
 					$hasNext = getNext();
@@ -22,7 +23,8 @@ class YieldPlain {
 				}
 				return $hasNext;
 			}
-			
+
+			@java.lang.Override
 			public java.lang.String next() {
 				if (!hasNext()) {
 					throw new java.util.NoSuchElementException();
@@ -30,11 +32,13 @@ class YieldPlain {
 				$nextDefined = false;
 				return $next;
 			}
-			
+
+			@java.lang.Override
 			public void remove() {
 				throw new java.lang.UnsupportedOperationException();
 			}
-			
+
+			@java.lang.Override
 			public void close() {
 				$state = 2;
 			}
@@ -59,7 +63,7 @@ class YieldPlain {
 	@java.lang.SuppressWarnings("all")
 	public Iterator<Long> fib_while() {
 		
-		class $YielderFibWhile implements java.util.Iterator<java.lang.Long>, java.io.Closeable {
+		final class $YielderFibWhile implements java.util.Iterator<java.lang.Long>, java.io.Closeable {
 			private long a;
 			private long b;
 			private long c;
@@ -70,7 +74,8 @@ class YieldPlain {
 			
 			private $YielderFibWhile() {
 			}
-			
+
+			@java.lang.Override
 			public boolean hasNext() {
 				if (!$nextDefined) {
 					$hasNext = getNext();
@@ -78,7 +83,8 @@ class YieldPlain {
 				}
 				return $hasNext;
 			}
-			
+
+			@java.lang.Override
 			public java.lang.Long next() {
 				if (!hasNext()) {
 					throw new java.util.NoSuchElementException();
@@ -86,11 +92,13 @@ class YieldPlain {
 				$nextDefined = false;
 				return $next;
 			}
-			
+
+			@java.lang.Override
 			public void remove() {
 				throw new java.lang.UnsupportedOperationException();
 			}
-			
+
+			@java.lang.Override
 			public void close() {
 				$state = 5;
 			}
@@ -131,7 +139,7 @@ class YieldPlain {
 	@java.lang.SuppressWarnings("all")
 	public Iterator<Long> fib_while_2() {
 		
-		class $YielderFibWhile2 implements java.util.Iterator<java.lang.Long>, java.io.Closeable {
+		final class $YielderFibWhile2 implements java.util.Iterator<java.lang.Long>, java.io.Closeable {
 			private long a;
 			private long b;
 			private long c;
@@ -142,7 +150,8 @@ class YieldPlain {
 			
 			private $YielderFibWhile2() {
 			}
-			
+
+			@java.lang.Override
 			public boolean hasNext() {
 				if (!$nextDefined) {
 					$hasNext = getNext();
@@ -150,7 +159,8 @@ class YieldPlain {
 				}
 				return $hasNext;
 			}
-			
+
+			@java.lang.Override
 			public java.lang.Long next() {
 				if (!hasNext()) {
 					throw new java.util.NoSuchElementException();
@@ -158,11 +168,13 @@ class YieldPlain {
 				$nextDefined = false;
 				return $next;
 			}
-			
+
+			@java.lang.Override
 			public void remove() {
 				throw new java.lang.UnsupportedOperationException();
 			}
-			
+
+			@java.lang.Override
 			public void close() {
 				$state = 4;
 			}
@@ -200,7 +212,7 @@ class YieldPlain {
 	@java.lang.SuppressWarnings("all")
 	public Iterable<Long> fib_for() {
 		
-		class $YielderFibFor implements java.util.Iterator<java.lang.Long>, java.lang.Iterable<java.lang.Long>, java.io.Closeable {
+		final class $YielderFibFor implements java.util.Iterator<java.lang.Long>, java.lang.Iterable<java.lang.Long>, java.io.Closeable {
 			private long a;
 			private long b;
 			private long c;
@@ -211,14 +223,17 @@ class YieldPlain {
 			
 			private $YielderFibFor() {
 			}
-			
+
+			@java.lang.Override
 			public java.util.Iterator<java.lang.Long> iterator() {
 				if ($state == 0) {
 					$state = 1;
 					return this;
-				} else return new $YielderFibFor();
+				}
+				return new $YielderFibFor();
 			}
-			
+
+			@java.lang.Override
 			public boolean hasNext() {
 				if (!$nextDefined) {
 					$hasNext = getNext();
@@ -226,7 +241,8 @@ class YieldPlain {
 				}
 				return $hasNext;
 			}
-			
+
+			@java.lang.Override
 			public java.lang.Long next() {
 				if (!hasNext()) {
 					throw new java.util.NoSuchElementException();
@@ -234,11 +250,13 @@ class YieldPlain {
 				$nextDefined = false;
 				return $next;
 			}
-			
+
+			@java.lang.Override
 			public void remove() {
 				throw new java.lang.UnsupportedOperationException();
 			}
-			
+
+			@java.lang.Override
 			public void close() {
 				$state = 4;
 			}
@@ -276,7 +294,7 @@ class YieldPlain {
 	@java.lang.SuppressWarnings("all")
 	public Iterable<String> complex_foreach(final Iterable<Object> objects) {
 		
-		class $YielderComplexForeach implements java.util.Iterator<java.lang.String>, java.lang.Iterable<java.lang.String>, java.io.Closeable {
+		final class $YielderComplexForeach implements java.util.Iterator<java.lang.String>, java.lang.Iterable<java.lang.String>, java.io.Closeable {
 			private Object object;
 			private Class<?> c;
 			@java.lang.SuppressWarnings("all")
@@ -288,14 +306,17 @@ class YieldPlain {
 			
 			private $YielderComplexForeach() {
 			}
-			
+
+			@java.lang.Override
 			public java.util.Iterator<java.lang.String> iterator() {
 				if ($state == 0) {
 					$state = 1;
 					return this;
-				} else return new $YielderComplexForeach();
+				}
+				return new $YielderComplexForeach();
 			}
-			
+
+			@java.lang.Override
 			public boolean hasNext() {
 				if (!$nextDefined) {
 					$hasNext = getNext();
@@ -303,7 +324,8 @@ class YieldPlain {
 				}
 				return $hasNext;
 			}
-			
+
+			@java.lang.Override
 			public java.lang.String next() {
 				if (!hasNext()) {
 					throw new java.util.NoSuchElementException();
@@ -311,11 +333,13 @@ class YieldPlain {
 				$nextDefined = false;
 				return $next;
 			}
-			
+
+			@java.lang.Override
 			public void remove() {
 				throw new java.lang.UnsupportedOperationException();
 			}
-			
+
+			@java.lang.Override
 			public void close() {
 				$state = 6;
 			}
@@ -364,7 +388,7 @@ class YieldPlain {
 	@java.lang.SuppressWarnings("all")
 	public Iterator<String> complex(final Iterator<Object> objects) {
 		
-		class $YielderComplex implements java.util.Iterator<java.lang.String>, java.io.Closeable {
+		final class $YielderComplex implements java.util.Iterator<java.lang.String>, java.io.Closeable {
 			private Object object;
 			private Class<?> c;
 			private int $state;
@@ -374,7 +398,8 @@ class YieldPlain {
 			
 			private $YielderComplex() {
 			}
-			
+
+			@java.lang.Override
 			public boolean hasNext() {
 				if (!$nextDefined) {
 					$hasNext = getNext();
@@ -382,7 +407,8 @@ class YieldPlain {
 				}
 				return $hasNext;
 			}
-			
+
+			@java.lang.Override
 			public java.lang.String next() {
 				if (!hasNext()) {
 					throw new java.util.NoSuchElementException();
@@ -390,11 +416,13 @@ class YieldPlain {
 				$nextDefined = false;
 				return $next;
 			}
-			
+
+			@java.lang.Override
 			public void remove() {
 				throw new java.lang.UnsupportedOperationException();
 			}
-			
+
+			@java.lang.Override
 			public void close() {
 				$state = 6;
 			}

@@ -5,18 +5,18 @@
       super();
     }
   }
-  public static @java.lang.SuppressWarnings("all") interface TextDef {
+  public @java.lang.SuppressWarnings("all") interface TextDef {
     public IdDef text(final String text);
   }
-  public static @java.lang.SuppressWarnings("all") interface IdDef {
+  public @java.lang.SuppressWarnings("all") interface IdDef {
     public OptionalDef id(final int id);
   }
-  public static @java.lang.SuppressWarnings("all") interface OptionalDef {
+  public @java.lang.SuppressWarnings("all") interface OptionalDef {
     public BuilderCallMethods build();
     public java.lang.String toString();
     public void bar() throws Exception;
   }
-  private static @java.lang.SuppressWarnings("all") class $Builder implements TextDef, IdDef, OptionalDef {
+  private static final @java.lang.SuppressWarnings("all") class $Builder implements TextDef, IdDef, OptionalDef {
     private String text;
     private int id;
     public IdDef text(final String text) {

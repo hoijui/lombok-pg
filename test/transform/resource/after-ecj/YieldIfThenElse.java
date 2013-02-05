@@ -5,7 +5,7 @@ class YieldIfThenElse {
     super();
   }
   public @java.lang.SuppressWarnings("all") Iterable<String> test() {
-    class $YielderTest implements java.util.Iterator<String>, java.lang.Iterable<String>, java.io.Closeable {
+    final class $YielderTest implements java.util.Iterator<String>, java.lang.Iterable<String>, java.io.Closeable {
       private boolean b;
       private int $state;
       private boolean $hasNext;
@@ -14,16 +14,15 @@ class YieldIfThenElse {
       private $YielderTest() {
         super();
       }
-      public java.util.Iterator<String> iterator() {
+      public @java.lang.Override java.util.Iterator<String> iterator() {
         if (($state == 0))
             {
               $state = 1;
               return this;
             }
-        else
-            return new $YielderTest();
+        return new $YielderTest();
       }
-      public boolean hasNext() {
+      public @java.lang.Override boolean hasNext() {
         if ((! $nextDefined))
             {
               $hasNext = getNext();
@@ -31,7 +30,7 @@ class YieldIfThenElse {
             }
         return $hasNext;
       }
-      public String next() {
+      public @java.lang.Override String next() {
         if ((! hasNext()))
             {
               throw new java.util.NoSuchElementException();
@@ -39,10 +38,10 @@ class YieldIfThenElse {
         $nextDefined = false;
         return $next;
       }
-      public void remove() {
+      public @java.lang.Override void remove() {
         throw new java.lang.UnsupportedOperationException();
       }
-      public void close() {
+      public @java.lang.Override void close() {
         $state = 5;
       }
       private boolean getNext() {

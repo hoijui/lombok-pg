@@ -17,13 +17,13 @@ class BuilderNonNull {
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface NonNullValueDef {
+	public interface NonNullValueDef {
 		
 		OptionalDef nonNullValue(final String nonNullValue);
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface OptionalDef {
+	public interface OptionalDef {
 		
 		OptionalDef anotherValue(final String anotherValue);
 		
@@ -31,7 +31,7 @@ class BuilderNonNull {
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	private static class $Builder implements NonNullValueDef, OptionalDef {
+	private static final class $Builder implements NonNullValueDef, OptionalDef {
 		private String nonNullValue;
 		private String anotherValue;
 		

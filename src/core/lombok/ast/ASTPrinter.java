@@ -489,6 +489,11 @@ public final class ASTPrinter implements ASTVisitor<ASTPrinter.State, ASTPrinter
 		}
 		return state.printIndent().print("}\n");
 	}
+	
+	@Override
+	public State visitTernary(final Ternary node, final State state) {
+		return state.print(node.getTest(), this).print(" ? ").print(node.getIfTrue(), this).print(" : ").print(node.getIfFalse(), this);
+	}
 
 	@Override
 	public State visitThis(final This node, final State state) {

@@ -43,6 +43,8 @@ public interface ITypeEditor<METHOD_TYPE extends IMethod<?, ?, ?, ?>, AST_BASE_T
 	public AST_METHOD_DECL_TYPE injectConstructor(ConstructorDecl constructorDecl);
 
 	public void injectType(ClassDecl typeDecl);
+	
+	public void implementing(TypeRef type);
 
 	public void removeMethod(METHOD_TYPE method);
 

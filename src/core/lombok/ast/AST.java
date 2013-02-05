@@ -21,7 +21,8 @@
  */
 package lombok.ast;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AST {
@@ -267,6 +268,10 @@ public final class AST {
 
 	public static Synchronized Synchronized(final Expression<?> lock) {
 		return new Synchronized(lock);
+	}
+	
+	public static Ternary Ternary(final Expression<?> test, final Expression<?> ifTrue, final Expression<?> ifFalse) {
+		return new Ternary(test, ifTrue, ifFalse);
 	}
 
 	public static Try Try(final Block tryBlock) {

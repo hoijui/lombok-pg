@@ -34,6 +34,7 @@ import lombok.javac.handlers.ast.JavacField;
 import lombok.javac.handlers.ast.JavacMethod;
 import lombok.javac.handlers.ast.JavacType;
 
+import com.sun.tools.javac.code.Type.ArrayType;
 import com.sun.tools.javac.tree.JCTree.JCAnnotation;
 import org.mangosdk.spi.ProviderFor;
 
@@ -67,7 +68,12 @@ public class HandleBuilderAndExtension {
 				// continue with creating the builder
 			}
 
-			new BuilderAndExtensionHandler<JavacType, JavacMethod, JavacField>().handleBuilder(type, annotation.getInstance());
+			new BuilderAndExtensionHandler<JavacType, JavacMethod, JavacField>() {
+				@Override
+				protected boolean isArray(JavacField field) {
+					return (field.get().vartype.type instanceof ArrayType);
+				}
+			}.handleBuilder(type, annotation.getInstance());
 		}
 	}
 
@@ -106,7 +112,12 @@ public class HandleBuilderAndExtension {
 				new HandleBuilder().handle(builderAnnotation, (JCAnnotation) builderNode.get(), builderNode);
 			}
 
-			new BuilderAndExtensionHandler<JavacType, JavacMethod, JavacField>().handleExtension(type, method, new JavacParameterValidator(), new JavacParameterSanitizer(), builderAnnotation.getInstance(), annotation.getInstance());
+			new BuilderAndExtensionHandler<JavacType, JavacMethod, JavacField>() {
+				@Override
+				protected boolean isArray(JavacField field) {
+					return (field.get().vartype.type instanceof ArrayType);
+				}				
+			}.handleExtension(type, method, new JavacParameterValidator(), new JavacParameterSanitizer(), builderAnnotation.getInstance(), annotation.getInstance());
 		}
 	}
 }

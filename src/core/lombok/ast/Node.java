@@ -27,7 +27,7 @@ import java.io.PrintStream;
 import lombok.core.util.Cast;
 
 public abstract class Node<SELF_TYPE extends Node<SELF_TYPE>> {
-	private Node<?> parent;
+	protected Node<?> parent;
 	private Object posHint;
 
 	public final <T extends Node<?>> T child(final T node) {

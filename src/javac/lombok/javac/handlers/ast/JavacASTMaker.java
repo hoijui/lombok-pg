@@ -574,6 +574,14 @@ public final class JavacASTMaker implements lombok.ast.ASTVisitor<JCTree, Void> 
 		final JCSynchronized synchronizedStatemenet = setGeneratedBy(M(node).Synchronized(build(node.getLock(), JCExpression.class), block), source);
 		return synchronizedStatemenet;
 	}
+	
+	@Override
+	public JCTree visitTernary(final lombok.ast.Ternary node, final Void p) {
+		return setGeneratedBy(M(node).Conditional(
+				build(node.getTest(), JCExpression.class),
+				build(node.getIfTrue(), JCExpression.class),
+				build(node.getIfFalse(), JCExpression.class)), source);
+	}
 
 	@Override
 	public JCTree visitThis(final lombok.ast.This node, final Void p) {

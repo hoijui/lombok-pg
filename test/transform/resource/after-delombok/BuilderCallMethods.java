@@ -21,17 +21,17 @@ class BuilderCallMethods {
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface TextDef {
+	public interface TextDef {
 		IdDef text(final String text);
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface IdDef {
+	public interface IdDef {
 		OptionalDef id(final int id);
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface OptionalDef {
+	public interface OptionalDef {
 		BuilderCallMethods build();
 		
 		java.lang.String toString();
@@ -40,7 +40,7 @@ class BuilderCallMethods {
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	private static class $Builder implements TextDef, IdDef, OptionalDef {
+	private static final class $Builder implements TextDef, IdDef, OptionalDef {
 		private String text;
 		private int id;
 		
