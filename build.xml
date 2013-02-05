@@ -244,11 +244,6 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 			<fileset dir="${basedir}" includes="AUTHORS" />
 		</jar>
 	</target>
-	
-	<target name="deploy-to-repo" depends="version">
-		<copy file="${basedir}/dist/lombok-pg-${lombok.version}.jar" todir="${basedir}/../web/external/repo/lombok-pg/lombok-pg/${lombok.version}" />
-		<copy file="${basedir}/dist/lombok-pg-${lombok.version}.jar" todir="${user.home}/.m2/repository/lombok-pg/lombok-pg/${lombok.version}/" />
-	</target>
 
 	<!-- deploy -->
 	<target name="maven-deploy" depends="ensure-maven-ant-tasks, dist, dist-additional, test, version.snapshot" description="Deploy snapshot version to Maven snapshot repository">
