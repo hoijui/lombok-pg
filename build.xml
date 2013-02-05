@@ -38,6 +38,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 	<target name="ensureBuildDeps" depends="config-ivy">
 		<ivy:resolve file="${basedir}/buildScripts/ivy.xml" refresh="true" conf="build" />
 		<ivy:retrieve />
+		<copy file="${basedir}/external/lombok.jar" todir="${basedir}/lib/build" />
 	</target>
 
 	<target name="ensureRuntimeDeps" depends="config-ivy">
