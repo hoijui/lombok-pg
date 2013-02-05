@@ -12,9 +12,11 @@ lombok-pg is a collection of extensions to [lombok](http://projectlombok.org/ind
 - `@AutoGenMethodStub` [info](https://github.com/peichhorn/lombok-pg/wiki/%40AutoGenMethodStub)
 - `@BoundPropertySupport` and `@BoundSetter` [info](https://github.com/peichhorn/lombok-pg/wiki/%40BoundPropertySupport-%40BoundSetter)
 - `@Builder` and `@Builder.Extension` [info](https://github.com/peichhorn/lombok-pg/wiki/%40Builder-%40Builder.Extension)
+- `@Cloneable` [info](https://github.com/redundent/lombok-pg-wiki/@Cloneable)
 - `@DoPrivileged` [info](https://github.com/peichhorn/lombok-pg/wiki/%40DoPrivileged)
 - `@EnumId` [info](https://github.com/peichhorn/lombok-pg/wiki/%40EnumId)
 - `@ExtensionMethod` [info](https://github.com/peichhorn/lombok-pg/wiki/%40ExtensionMethod)
+- `@Filterable` [info](https://github.com/redundent/lombok-pg/wiki/%40Filterable)
 - `@FluentSetter` [info](https://github.com/peichhorn/lombok-pg/wiki/%40FluentSetter)
 - `@Function` [info](https://github.com/peichhorn/lombok-pg/wiki/%40Function)
 - `@LazyGetter` [info](https://github.com/peichhorn/lombok-pg/wiki/%40LazyGetter)
@@ -29,6 +31,7 @@ lombok-pg is a collection of extensions to [lombok](http://projectlombok.org/ind
 - `@Validate.NotEmpty`, `@Validate.NotNull` and `@Validate.With` [info](https://github.com/peichhorn/lombok-pg/wiki/%40Validate)
 - `@VisibleForTesting` [info](https://github.com/peichhorn/lombok-pg/wiki/%40VisibleForTesting)
 - `@Warning` [info](https://github.com/peichhorn/lombok-pg/wiki/%40Warning)
+- `@XmlSerializable` [info](https://github.com/redundent/lombok-pg/wiki/%40XmlSerializable)
 
 #### Interfaces:
 
