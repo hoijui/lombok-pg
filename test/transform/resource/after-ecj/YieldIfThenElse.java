@@ -44,7 +44,7 @@ class YieldIfThenElse {
       public @java.lang.Override void close() {
         $state = 5;
       }
-      private boolean getNext() {
+      private @java.lang.SuppressWarnings("all") boolean getNext() {
         while (true)          switch ($state) {
           case 0 : ;
               $state = 1;

@@ -37,7 +37,7 @@ class YieldPlain {
       public @java.lang.Override void close() {
         $state = 2;
       }
-      private boolean getNext() {
+      private @java.lang.SuppressWarnings("all") boolean getNext() {
         while (true)          switch ($state) {
           case 0 : ;
               $state = 1;
@@ -87,7 +87,7 @@ class YieldPlain {
       public @java.lang.Override void close() {
         $state = 5;
       }
-      private boolean getNext() {
+      private @java.lang.SuppressWarnings("all") boolean getNext() {
         while (true)          switch ($state) {
           case 0 : ;
               $state = 1;
@@ -154,7 +154,7 @@ class YieldPlain {
       public @java.lang.Override void close() {
         $state = 4;
       }
-      private boolean getNext() {
+      private @java.lang.SuppressWarnings("all") boolean getNext() {
         while (true)          switch ($state) {
           case 0 : ;
               $state = 1;
@@ -226,7 +226,7 @@ class YieldPlain {
       public @java.lang.Override void close() {
         $state = 4;
       }
-      private boolean getNext() {
+      private @java.lang.SuppressWarnings("all") boolean getNext() {
         while (true)          switch ($state) {
           case 0 : ;
               $state = 1;
@@ -298,7 +298,7 @@ class YieldPlain {
       public @java.lang.Override void close() {
         $state = 6;
       }
-      private boolean getNext() {
+      private @java.lang.SuppressWarnings("all") boolean getNext() {
         while (true)          switch ($state) {
           case 0 : ;
               $state = 1;
@@ -373,7 +373,7 @@ class YieldPlain {
       public @java.lang.Override void close() {
         $state = 6;
       }
-      private boolean getNext() {
+      private @java.lang.SuppressWarnings("all") boolean getNext() {
         while (true)          switch ($state) {
           case 0 : ;
               $state = 1;

@@ -59,7 +59,8 @@ class YieldNestedLoop<T, K, V> {
 			public void close() {
 				$state = 4;
 			}
-			
+
+			@java.lang.SuppressWarnings("all")
 			private boolean getNext() {
 				while (true) switch ($state) {
 				case 0: 

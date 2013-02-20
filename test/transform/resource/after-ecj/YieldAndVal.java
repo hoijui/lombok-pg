@@ -51,7 +51,7 @@ class YieldAndVal {
       public @java.lang.Override void close() {
         $state = 4;
       }
-      private boolean getNext() {
+      private @java.lang.SuppressWarnings("all") boolean getNext() {
         while (true)          switch ($state) {
           case 0 : ;
               $state = 1;

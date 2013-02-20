@@ -57,7 +57,7 @@ class YieldTryBlock {
           }
 while (getNext());
       }
-      private boolean getNext() {
+      private @java.lang.SuppressWarnings("all") boolean getNext() {
         java.lang.Throwable $yieldException;
         while (true)          {
             try 

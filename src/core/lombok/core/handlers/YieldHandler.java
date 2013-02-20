@@ -133,6 +133,7 @@ public class YieldHandler<METHOD_TYPE extends IMethod<?, ?, ?, ?>, AST_BASE_TYPE
 			if (errorHandlerSwitch != null) {
 				String caughtErrorName = errorName + "Caught";
 				yielder.withMethod(MethodDecl(Type("boolean"), "getNext").makePrivate() //
+						.withAnnotation(Annotation(Type(SuppressWarnings.class)).withValue(String("all")))
 						.withStatement(LocalDecl(Type(Throwable.class), errorName)) //
 						.withStatement(While(True()).Do(Block() //
 								.withStatement(Try(Block() //
@@ -142,6 +143,7 @@ public class YieldHandler<METHOD_TYPE extends IMethod<?, ?, ?, ?>, AST_BASE_TYPE
 								.withStatement(errorHandlerSwitch))));
 			} else {
 				yielder.withMethod(MethodDecl(Type("boolean"), "getNext").makePrivate() //
+						.withAnnotation(Annotation(Type(SuppressWarnings.class)).withValue(String("all")))
 						.withStatement(While(True()).Do(stateSwitch)));
 			}
 			return yielder;

@@ -42,7 +42,8 @@ class YieldPlain {
 			public void close() {
 				$state = 2;
 			}
-			
+
+			@java.lang.SuppressWarnings("all")
 			private boolean getNext() {
 				while (true) switch ($state) {
 				case 0: 
@@ -102,7 +103,8 @@ class YieldPlain {
 			public void close() {
 				$state = 5;
 			}
-			
+
+			@java.lang.SuppressWarnings("all")
 			private boolean getNext() {
 				while (true) switch ($state) {
 				case 0: 
@@ -178,7 +180,8 @@ class YieldPlain {
 			public void close() {
 				$state = 4;
 			}
-			
+
+			@java.lang.SuppressWarnings("all")
 			private boolean getNext() {
 				while (true) switch ($state) {
 				case 0: 
@@ -260,7 +263,8 @@ class YieldPlain {
 			public void close() {
 				$state = 4;
 			}
-			
+
+			@java.lang.SuppressWarnings("all")
 			private boolean getNext() {
 				while (true) switch ($state) {
 				case 0: 
@@ -343,7 +347,8 @@ class YieldPlain {
 			public void close() {
 				$state = 6;
 			}
-			
+
+			@java.lang.SuppressWarnings("all")
 			private boolean getNext() {
 				while (true) switch ($state) {
 				case 0: 
@@ -426,7 +431,8 @@ class YieldPlain {
 			public void close() {
 				$state = 6;
 			}
-			
+
+			@java.lang.SuppressWarnings("all")
 			private boolean getNext() {
 				while (true) switch ($state) {
 				case 0: 
