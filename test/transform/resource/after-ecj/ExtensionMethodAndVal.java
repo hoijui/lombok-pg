@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import lombok.Extension;
 import lombok.ExtensionMethod;
 import lombok.val;
 @ExtensionMethod(ExtensionMethodAndVar.Objects.class) class ExtensionMethodAndVar {
@@ -7,7 +6,7 @@ import lombok.val;
     Objects() {
       super();
     }
-    public static @Extension <T>T orElse(T value, T orElse) {
+    public static <T>T orElse(T value, T orElse) {
       return ((value == null) ? orElse : value);
     }
   }

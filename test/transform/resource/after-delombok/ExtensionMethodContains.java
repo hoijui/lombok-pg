@@ -1,6 +1,4 @@
 import java.util.List;
-
-import lombok.Extension;
 class MatchGroup extends BaseObject {
 	private List<Long> orders;
 
@@ -12,7 +10,6 @@ class MatchGroup extends BaseObject {
 }
 
 class BaseObject {
-	@Extension
 	public static <T> boolean contains(final Iterable<T> col, final T item) {
 		return false;
 	}

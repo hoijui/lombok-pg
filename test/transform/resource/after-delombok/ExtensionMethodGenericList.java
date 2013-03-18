@@ -1,4 +1,3 @@
-import lombok.Extension;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,7 +9,7 @@ class ExtensionMethodGenericList {
 	}
 	
 	static class Objects {
-		@Extension
+		
 		public static <T> List<T> orElse(List<T> value, List<T> orElse) {
 			return value == null ? orElse : value;
 		}

@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import lombok.Extension;
 
 class ExtensionMethodAndVar {
 
@@ -16,7 +15,6 @@ class ExtensionMethodAndVar {
 	}
 
 	static class Objects {
-		@Extension
 		public static <T> T orElse(T value, T orElse) {
 			return value == null ? orElse : value;
 		}

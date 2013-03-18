@@ -1,11 +1,10 @@
-import lombok.Extension;
 import lombok.ExtensionMethod;
 @ExtensionMethod(ExtensionMethodPrimitives.Primitives.class) class ExtensionMethodPrimitives {
   static class Primitives {
     Primitives() {
       super();
     }
-    public static @Extension int toInt(final byte in) {
+    public static int toInt(final byte in) {
       return (in & 0xff);
     }
   }

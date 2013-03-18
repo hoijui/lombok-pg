@@ -1,7 +1,7 @@
-import lombok.Extension;
 import lombok.ExtensionMethod;
+import java.util.Arrays;
 
-@ExtensionMethod({ExtensionMethodPlain.Objects.class, ExtensionMethodPlain.Strings.class})
+@ExtensionMethod({Arrays.class, ExtensionMethodPlain.Objects.class, ExtensionMethodPlain.Strings.class})
 class ExtensionMethodPlain {
 	private static final String s = "f?ob*r".escapeToJavaRegex();
 
@@ -11,6 +11,16 @@ class ExtensionMethodPlain {
 
 	{
 		final String initializerVar = "f?ob*r".escapeToJavaRegex();
+	}
+
+	private void test1() {
+		new Runnable() {
+			@Override
+			public void run() {
+				long[] values = new long[] { 2, 5, 7, 9 };
+				values.copyOf(3).sort();
+			}
+		};
 	}
 
 	private boolean test2(String s) {
@@ -46,7 +56,6 @@ class ExtensionMethodPlain {
 	}
 
 	static class Objects {
-		@Extension
 		public static boolean isOneOf(Object object, Object... possibleValues) {
 			if (possibleValues != null) for (Object possibleValue : possibleValues) {
 				if (object.equals(possibleValue)) return true;
@@ -56,12 +65,10 @@ class ExtensionMethodPlain {
 	}
 
 	static class Strings {
-		@Extension
 		public static boolean matchesIgnoreCase(String s, String p) {
 			return false;
 		}
 		
-		@Extension
 		public static String escapeToJavaRegex(String s) {
 			return s;
 		}

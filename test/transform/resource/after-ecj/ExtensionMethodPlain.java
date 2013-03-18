@@ -1,6 +1,6 @@
-import lombok.Extension;
 import lombok.ExtensionMethod;
-@ExtensionMethod({ExtensionMethodPlain.Objects.class, ExtensionMethodPlain.Strings.class}) class ExtensionMethodPlain {
+import java.util.Arrays;
+@ExtensionMethod({Arrays.class, ExtensionMethodPlain.Objects.class, ExtensionMethodPlain.Strings.class}) class ExtensionMethodPlain {
   private static class ExtensionMethodInExplicitSuperCall extends Exception {
     public ExtensionMethodInExplicitSuperCall() {
       super(ExtensionMethodPlain.Strings.escapeToJavaRegex("f?ob*r"));
@@ -11,7 +11,7 @@ import lombok.ExtensionMethod;
     Objects() {
       super();
     }
-    public static @Extension boolean isOneOf(Object object, Object... possibleValues) {
+    public static boolean isOneOf(Object object, Object... possibleValues) {
       if ((possibleValues != null))
           for (Object possibleValue : possibleValues) 
             {
@@ -25,10 +25,10 @@ import lombok.ExtensionMethod;
     Strings() {
       super();
     }
-    public static @Extension boolean matchesIgnoreCase(String s, String p) {
+    public static boolean matchesIgnoreCase(String s, String p) {
       return false;
     }
-    public static @Extension String escapeToJavaRegex(String s) {
+    public static String escapeToJavaRegex(String s) {
       return s;
     }
   }
@@ -43,6 +43,17 @@ import lombok.ExtensionMethod;
   }
   ExtensionMethodPlain() {
     super();
+  }
+  private void test1() {
+    new Runnable() {
+      x() {
+        super();
+      }
+      public @Override void run() {
+        long[] values = new long[]{2, 5, 7, 9};
+        java.util.Arrays.sort(java.util.Arrays.copyOf(values, 3));
+      }
+    };
   }
   private boolean test2(String s) {
     return ExtensionMethodPlain.Objects.isOneOf(s, "for", "bar");
