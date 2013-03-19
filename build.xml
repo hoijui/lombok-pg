@@ -107,7 +107,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 
 	<target name="unpackLibs" depends="ensureBuildDeps">
 		<ivy:cachedunjar dest="${basedir}/build/lombok-pg" marker="${basedir}/build/unpackDeps.marker">
-			<fileset file="${basedir}/lib/build/lombok.jar" />
+			<fileset file="${basedir}/external/lombok.jar" />
 		</ivy:cachedunjar>
 	</target>
 
