@@ -1,4 +1,7 @@
 import java.sql.Timestamp;
+
+import lombok.XmlSerializable;
+@XmlSerializable
 class DataObject implements lombok.core.xml.XmlSerializable {
 	
 	private long dataObjectId;

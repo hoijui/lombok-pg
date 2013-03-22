@@ -5,6 +5,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import lombok.XmlSerializable;
+@XmlSerializable
 @XmlRootElement(name = DataObject.ROOT_NAME)
 class DataObject implements lombok.core.xml.XmlSerializable {
 	

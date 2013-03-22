@@ -1,3 +1,6 @@
+import lombok.Cloneable;
+
+@Cloneable
 class DataObject implements java.lang.Cloneable {
 	
 	private String name;

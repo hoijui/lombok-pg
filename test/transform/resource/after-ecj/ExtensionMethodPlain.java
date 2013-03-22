@@ -68,7 +68,7 @@ import java.util.Arrays;
       }
   }
   private boolean test4(String s) {
-    return ExtensionMethodPlain.Objects.isOneOf(Objects, s, "for", "bar");
+    return Objects.isOneOf(s, "for", "bar");
   }
   private boolean test5(final Iterable<String> paths, final String path) {
     for (final String p : paths) 

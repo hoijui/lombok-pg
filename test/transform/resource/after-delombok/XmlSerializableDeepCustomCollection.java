@@ -5,6 +5,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import lombok.XmlSerializable;
+@XmlSerializable
 class DataObject implements lombok.core.xml.XmlSerializable {
 		
 	private long dataObjectId;
@@ -30,6 +33,7 @@ class DataObject implements lombok.core.xml.XmlSerializable {
 	}
 }
 
+@XmlSerializable
 class RelatedObject implements lombok.core.xml.XmlSerializable {
 	
 	private long relatedObjectId;

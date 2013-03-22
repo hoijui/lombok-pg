@@ -2,15 +2,6 @@
   private int x;
   private int y;
   private final String z;
-  public @java.lang.SuppressWarnings("all") int getX() {
-    return this.x;
-  }
-  public @java.lang.SuppressWarnings("all") int getY() {
-    return this.y;
-  }
-  public @java.lang.SuppressWarnings("all") String getZ() {
-    return this.z;
-  }
   public @java.lang.SuppressWarnings("all") void setX(final int x) {
     this.x = x;
   }
@@ -53,5 +44,14 @@
   public @java.beans.ConstructorProperties({"z"}) @java.lang.SuppressWarnings("all") DataWithGetter(final String z) {
     super();
     this.z = z;
+  }
+  public @java.lang.SuppressWarnings("all") int getX() {
+    return this.x;
+  }
+  public @java.lang.SuppressWarnings("all") int getY() {
+    return this.y;
+  }
+  public @java.lang.SuppressWarnings("all") String getZ() {
+    return this.z;
   }
 }

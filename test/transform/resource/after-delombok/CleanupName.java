@@ -9,6 +9,7 @@ class CleanupName {
 			}
 		}
 	}
+	
 	void test2() {
 		Object o = "Hello World too!";
 		try {

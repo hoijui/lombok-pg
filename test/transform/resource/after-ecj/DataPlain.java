@@ -140,6 +140,15 @@ final @Data @lombok.EqualsAndHashCode(callSuper = true) class Data4 extends java
   Data4() {
     super();
   }
+  public @java.lang.SuppressWarnings("all") int getX() {
+    return this.x;
+  }
+  public @java.lang.SuppressWarnings("all") void setX(final int x) {
+    this.x = x;
+  }
+  public @java.lang.Override @java.lang.SuppressWarnings("all") java.lang.String toString() {
+    return (("Data4(x=" + this.getX()) + ")");
+  }
   public @java.lang.Override @java.lang.SuppressWarnings("all") boolean equals(final java.lang.Object o) {
     if ((o == this))
         return true;
@@ -163,15 +172,6 @@ final @Data @lombok.EqualsAndHashCode(callSuper = true) class Data4 extends java
     result = ((result * PRIME) + super.hashCode());
     result = ((result * PRIME) + this.getX());
     return result;
-  }
-  public @java.lang.SuppressWarnings("all") int getX() {
-    return this.x;
-  }
-  public @java.lang.SuppressWarnings("all") void setX(final int x) {
-    this.x = x;
-  }
-  public @java.lang.Override @java.lang.SuppressWarnings("all") java.lang.String toString() {
-    return (("Data4(x=" + this.getX()) + ")");
   }
 }
 @Data class Data5 {
