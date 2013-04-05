@@ -21,7 +21,7 @@
  */
 package lombok.core.handlers;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.core.util.ErrorMessages.*;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.*;
-import lombok.ast.*;
+import lombok.ast.pg.*;
 import lombok.core.DiagnosticsReceiver;
 import lombok.core.util.As;
 import lombok.core.util.Is;

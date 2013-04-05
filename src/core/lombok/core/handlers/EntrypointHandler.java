@@ -21,13 +21,13 @@
  */
 package lombok.core.handlers;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 
 import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.ast.*;
+import lombok.ast.pg.*;
 
 public final class EntrypointHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?, ?, ?>, METHOD_TYPE extends IMethod<TYPE_TYPE, ?, ?, ?>> {
 

@@ -21,16 +21,55 @@
  */
 package lombok.core.handlers;
 
-import static lombok.ast.AST.*;
-import static lombok.ast.IMethod.ArgumentStyle.INCLUDE_ANNOTATIONS;
-import static lombok.ast.Wildcard.Bound.EXTENDS;
+import static lombok.ast.pg.AST.Arg;
+import static lombok.ast.pg.AST.Assign;
+import static lombok.ast.pg.AST.Binary;
+import static lombok.ast.pg.AST.Call;
+import static lombok.ast.pg.AST.ClassDecl;
+import static lombok.ast.pg.AST.ConstructorDecl;
+import static lombok.ast.pg.AST.DefaultValue;
+import static lombok.ast.pg.AST.Field;
+import static lombok.ast.pg.AST.FieldDecl;
+import static lombok.ast.pg.AST.InterfaceDecl;
+import static lombok.ast.pg.AST.MethodDecl;
+import static lombok.ast.pg.AST.Name;
+import static lombok.ast.pg.AST.New;
+import static lombok.ast.pg.AST.Null;
+import static lombok.ast.pg.AST.Return;
+import static lombok.ast.pg.AST.Ternary;
+import static lombok.ast.pg.AST.This;
+import static lombok.ast.pg.AST.Type;
+import static lombok.ast.pg.AST.Wildcard;
+import static lombok.ast.pg.IMethod.ArgumentStyle.INCLUDE_ANNOTATIONS;
+import static lombok.ast.pg.Wildcard.Bound.EXTENDS;
 import static lombok.core.TransformationsUtil.NON_NULL_PATTERN;
-import static lombok.core.util.Names.*;
+import static lombok.core.util.Names.camelCase;
+import static lombok.core.util.Names.capitalize;
+import static lombok.core.util.Names.decapitalize;
+import static lombok.core.util.Names.singular;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import lombok.*;
-import lombok.ast.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ast.pg.AbstractMethodDecl;
+import lombok.ast.pg.Argument;
+import lombok.ast.pg.Call;
+import lombok.ast.pg.ConstructorDecl;
+import lombok.ast.pg.Expression;
+import lombok.ast.pg.FieldDecl;
+import lombok.ast.pg.IField;
+import lombok.ast.pg.IMethod;
+import lombok.ast.pg.IType;
+import lombok.ast.pg.MethodDecl;
+import lombok.ast.pg.TypeRef;
 import lombok.core.util.Is;
 import lombok.core.util.Names;
 

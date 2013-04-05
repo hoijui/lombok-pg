@@ -29,7 +29,7 @@ import static com.sun.tools.javac.code.Flags.STATIC;
 
 import java.util.List;
 
-import lombok.ast.TypeRef;
+import lombok.ast.pg.TypeRef;
 import lombok.javac.JavacNode;
 import lombok.javac.handlers.Javac;
 import lombok.javac.handlers.JavacHandlerUtil;
@@ -44,7 +44,7 @@ import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import com.sun.tools.javac.util.ListBuffer;
 
-public final class JavacTypeEditor implements lombok.ast.ITypeEditor<JavacMethod, JCTree, JCClassDecl, JCMethodDecl> {
+public final class JavacTypeEditor implements lombok.ast.pg.ITypeEditor<JavacMethod, JCTree, JCClassDecl, JCMethodDecl> {
 	private final JavacType type;
 	private final JavacASTMaker builder;
 
@@ -62,58 +62,58 @@ public final class JavacTypeEditor implements lombok.ast.ITypeEditor<JavacMethod
 	}
 
 	@Override
-	public <T extends JCTree> T build(final lombok.ast.Node<?> node) {
+	public <T extends JCTree> T build(final lombok.ast.pg.Node<?> node) {
 		return builder.<T> build(node);
 	}
 
 	@Override
-	public <T extends JCTree> T build(final lombok.ast.Node<?> node, final Class<T> extectedType) {
+	public <T extends JCTree> T build(final lombok.ast.pg.Node<?> node, final Class<T> extectedType) {
 		return builder.build(node, extectedType);
 	}
 
 	@Override
-	public <T extends JCTree> List<T> build(final List<? extends lombok.ast.Node<?>> nodes) {
+	public <T extends JCTree> List<T> build(final List<? extends lombok.ast.pg.Node<?>> nodes) {
 		return builder.build(nodes);
 	}
 
 	@Override
-	public <T extends JCTree> List<T> build(final List<? extends lombok.ast.Node<?>> nodes, final Class<T> extectedType) {
+	public <T extends JCTree> List<T> build(final List<? extends lombok.ast.pg.Node<?>> nodes, final Class<T> extectedType) {
 		return builder.build(nodes, extectedType);
 	}
 
 	@Override
-	public void injectInitializer(final lombok.ast.Initializer initializer) {
+	public void injectInitializer(final lombok.ast.pg.Initializer initializer) {
 		final JCBlock initializerBlock = builder.build(initializer);
 		Javac.injectInitializer(node(), initializerBlock);
 	}
 
 	@Override
-	public void injectField(final lombok.ast.FieldDecl fieldDecl) {
+	public void injectField(final lombok.ast.pg.FieldDecl fieldDecl) {
 		final JCVariableDecl field = builder.build(fieldDecl);
 		JavacHandlerUtil.injectField(node(), field);
 	}
 
 	@Override
-	public void injectField(final lombok.ast.EnumConstant enumConstant) {
+	public void injectField(final lombok.ast.pg.EnumConstant enumConstant) {
 		final JCVariableDecl field = builder.build(enumConstant);
 		JavacHandlerUtil.injectField(node(), field);
 	}
 
 	@Override
-	public JCMethodDecl injectMethod(final lombok.ast.MethodDecl methodDecl) {
+	public JCMethodDecl injectMethod(final lombok.ast.pg.MethodDecl methodDecl) {
 		return injectMethodImpl(methodDecl);
 	}
 
 	@Override
-	public JCMethodDecl injectConstructor(final lombok.ast.ConstructorDecl constructorDecl) {
+	public JCMethodDecl injectConstructor(final lombok.ast.pg.ConstructorDecl constructorDecl) {
 		return injectMethodImpl(constructorDecl);
 	}
 
-	private JCMethodDecl injectMethodImpl(final lombok.ast.AbstractMethodDecl<?> methodDecl) {
+	private JCMethodDecl injectMethodImpl(final lombok.ast.pg.AbstractMethodDecl<?> methodDecl) {
 		final JCMethodDecl method = builder.build(methodDecl, JCMethodDecl.class);
 		JavacHandlerUtil.injectMethod(node(), method);
-		if (methodDecl instanceof lombok.ast.WrappedMethodDecl) {
-			lombok.ast.WrappedMethodDecl node = (lombok.ast.WrappedMethodDecl) methodDecl;
+		if (methodDecl instanceof lombok.ast.pg.WrappedMethodDecl) {
+			lombok.ast.pg.WrappedMethodDecl node = (lombok.ast.pg.WrappedMethodDecl) methodDecl;
 			MethodSymbol methodSymbol = (MethodSymbol) node.getWrappedObject();
 			JCClassDecl tree = get();
 			ClassSymbol c = tree.sym;
@@ -124,7 +124,7 @@ public final class JavacTypeEditor implements lombok.ast.ITypeEditor<JavacMethod
 	}
 
 	@Override
-	public void injectType(final lombok.ast.ClassDecl typeDecl) {
+	public void injectType(final lombok.ast.pg.ClassDecl typeDecl) {
 		final JCClassDecl type = builder.build(typeDecl);
 		Javac.injectType(node(), type);
 	}

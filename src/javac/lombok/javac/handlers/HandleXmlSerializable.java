@@ -2,7 +2,7 @@ package lombok.javac.handlers;
 
 import lombok.Singleton;
 import lombok.XmlSerializable;
-import lombok.ast.Expression;
+import lombok.ast.pg.Expression;
 import lombok.core.AnnotationValues;
 import lombok.core.handlers.XmlSerializableHandler;
 import lombok.javac.JavacAnnotationHandler;

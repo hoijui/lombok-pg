@@ -21,14 +21,14 @@
  */
 package lombok.core.handlers;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.core.util.ErrorMessages.*;
 
 import java.security.*;
 import java.util.*;
 
 import lombok.*;
-import lombok.ast.*;
+import lombok.ast.pg.*;
 import lombok.core.DiagnosticsReceiver;
 
 @RequiredArgsConstructor
@@ -84,7 +84,7 @@ public class DoPrivilegedHandler<METHOD_TYPE extends IMethod<?, ?, ?, ?>> {
 
 	private List<Statement<?>> rethrowStatements(final METHOD_TYPE method) {
 		final List<Statement<?>> rethrowStatements = new ArrayList<Statement<?>>();
-		for (lombok.ast.TypeRef thrownException : method.thrownExceptions()) {
+		for (lombok.ast.pg.TypeRef thrownException : method.thrownExceptions()) {
 			rethrowStatements.add(If(InstanceOf(Name("$cause"), thrownException)) //
 					.Then(Throw(Cast(thrownException, Name("$cause")))));
 		}

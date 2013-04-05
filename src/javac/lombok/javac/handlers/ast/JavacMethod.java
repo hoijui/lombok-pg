@@ -22,9 +22,9 @@
 package lombok.javac.handlers.ast;
 
 import static com.sun.tools.javac.code.Flags.*;
-import static lombok.ast.AST.*;
-import static lombok.ast.IMethod.ArgumentStyle.BOXED_TYPES;
-import static lombok.ast.IMethod.ArgumentStyle.INCLUDE_ANNOTATIONS;
+import static lombok.ast.pg.AST.*;
+import static lombok.ast.pg.IMethod.ArgumentStyle.BOXED_TYPES;
+import static lombok.ast.pg.IMethod.ArgumentStyle.INCLUDE_ANNOTATIONS;
 import static lombok.javac.handlers.JavacHandlerUtil.createAnnotation;
 import static lombok.javac.handlers.ast.JavacASTUtil.boxedType;
 import static lombok.javac.handlers.ast.JavacResolver.METHOD;
@@ -54,7 +54,7 @@ import com.sun.tools.javac.tree.JCTree.JCTypeApply;
 import com.sun.tools.javac.tree.JCTree.JCTypeParameter;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 
-public final class JavacMethod implements lombok.ast.IMethod<JavacType, JavacNode, JCTree, JCMethodDecl> {
+public final class JavacMethod implements lombok.ast.pg.IMethod<JavacType, JavacNode, JCTree, JCMethodDecl> {
 	private final JavacNode methodNode;
 	private final JCTree source;
 	private final JavacMethodEditor editor;
@@ -72,11 +72,11 @@ public final class JavacMethod implements lombok.ast.IMethod<JavacType, JavacNod
 		return editor;
 	}
 
-	public lombok.ast.TypeRef returns() {
+	public lombok.ast.pg.TypeRef returns() {
 		return isConstructor() ? null : Type(returnType());
 	}
 
-	public lombok.ast.TypeRef boxedReturns() {
+	public lombok.ast.pg.TypeRef boxedReturns() {
 		return boxedType(returnType());
 	}
 
@@ -176,8 +176,8 @@ public final class JavacMethod implements lombok.ast.IMethod<JavacType, JavacNod
 		return JavacType.typeOf(node(), source);
 	}
 
-	public List<lombok.ast.Statement<?>> statements() {
-		final List<lombok.ast.Statement<?>> methodStatements = new ArrayList<lombok.ast.Statement<?>>();
+	public List<lombok.ast.pg.Statement<?>> statements() {
+		final List<lombok.ast.pg.Statement<?>> methodStatements = new ArrayList<lombok.ast.pg.Statement<?>>();
 		for (JCStatement statement : get().body.stats) {
 			if (isConstructorCall(statement)) continue;
 			methodStatements.add(Stat(statement));
@@ -192,16 +192,16 @@ public final class JavacMethod implements lombok.ast.IMethod<JavacType, JavacNod
 		return Is.oneOf(((JCMethodInvocation) supectExpression).meth.toString(), "super", "this");
 	}
 
-	public List<lombok.ast.Annotation> annotations() {
+	public List<lombok.ast.pg.Annotation> annotations() {
 		return annotations(get().mods);
 	}
 
-	private List<lombok.ast.Annotation> annotations(final JCModifiers mods) {
-		final List<lombok.ast.Annotation> annotations = new ArrayList<lombok.ast.Annotation>();
+	private List<lombok.ast.pg.Annotation> annotations(final JCModifiers mods) {
+		final List<lombok.ast.pg.Annotation> annotations = new ArrayList<lombok.ast.pg.Annotation>();
 		for (JCAnnotation annotation : mods.annotations) {
 			Type type = METHOD.resolveMember(node(), annotation);
 			if (type.toString().startsWith("lombok.")) continue;
-			lombok.ast.Annotation ann = Annotation(Type(annotation.annotationType));
+			lombok.ast.pg.Annotation ann = Annotation(Type(annotation.annotationType));
 			for (JCExpression arg : annotation.args) {
 				if (arg instanceof JCAssign) {
 					JCAssign assign = (JCAssign) arg;
@@ -215,23 +215,23 @@ public final class JavacMethod implements lombok.ast.IMethod<JavacType, JavacNod
 		return annotations;
 	}
 
-	public List<lombok.ast.Argument> arguments(final ArgumentStyle... style) {
+	public List<lombok.ast.pg.Argument> arguments(final ArgumentStyle... style) {
 		final List<ArgumentStyle> styles = As.list(style);
-		final List<lombok.ast.Argument> methodArguments = new ArrayList<lombok.ast.Argument>();
+		final List<lombok.ast.pg.Argument> methodArguments = new ArrayList<lombok.ast.pg.Argument>();
 		for (JCVariableDecl param : get().params) {
-			lombok.ast.TypeRef argType = styles.contains(BOXED_TYPES) ? boxedType(param.vartype) : Type(param.vartype);
-			lombok.ast.Argument arg = Arg(argType, As.string(param.name));
+			lombok.ast.pg.TypeRef argType = styles.contains(BOXED_TYPES) ? boxedType(param.vartype) : Type(param.vartype);
+			lombok.ast.pg.Argument arg = Arg(argType, As.string(param.name));
 			if (styles.contains(INCLUDE_ANNOTATIONS)) arg.withAnnotations(annotations(param.mods));
 			methodArguments.add(arg);
 		}
 		return methodArguments;
 	}
 
-	public List<lombok.ast.TypeParam> typeParameters() {
-		final List<lombok.ast.TypeParam> typeParameters = new ArrayList<lombok.ast.TypeParam>();
+	public List<lombok.ast.pg.TypeParam> typeParameters() {
+		final List<lombok.ast.pg.TypeParam> typeParameters = new ArrayList<lombok.ast.pg.TypeParam>();
 		if (isConstructor()) return typeParameters;
 		for (JCTypeParameter typaram : get().typarams) {
-			final lombok.ast.TypeParam typeParam = TypeParam(As.string(typaram.name));
+			final lombok.ast.pg.TypeParam typeParam = TypeParam(As.string(typaram.name));
 			for (JCExpression expr : typaram.bounds) {
 				typeParam.withBound(Type(expr));
 			}
@@ -240,8 +240,8 @@ public final class JavacMethod implements lombok.ast.IMethod<JavacType, JavacNod
 		return typeParameters;
 	}
 
-	public List<lombok.ast.TypeRef> thrownExceptions() {
-		final List<lombok.ast.TypeRef> thrownExceptions = new ArrayList<lombok.ast.TypeRef>();
+	public List<lombok.ast.pg.TypeRef> thrownExceptions() {
+		final List<lombok.ast.pg.TypeRef> thrownExceptions = new ArrayList<lombok.ast.pg.TypeRef>();
 		for (Object thrownException : get().thrown) {
 			thrownExceptions.add(Type(thrownException));
 		}

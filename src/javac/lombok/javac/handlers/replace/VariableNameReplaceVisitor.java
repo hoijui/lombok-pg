@@ -21,7 +21,7 @@
  */
 package lombok.javac.handlers.replace;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 
 import lombok.javac.handlers.ast.JavacMethod;
 

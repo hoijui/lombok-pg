@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.ast.TypeRef;
+import lombok.ast.pg.TypeRef;
 import lombok.eclipse.EclipseNode;
 import lombok.eclipse.handlers.Eclipse;
 import lombok.eclipse.handlers.EclipseHandlerUtil;
@@ -48,7 +48,7 @@ import org.eclipse.jdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;
 
-public final class EclipseTypeEditor implements lombok.ast.ITypeEditor<EclipseMethod, ASTNode, TypeDeclaration, AbstractMethodDeclaration> {
+public final class EclipseTypeEditor implements lombok.ast.pg.ITypeEditor<EclipseMethod, ASTNode, TypeDeclaration, AbstractMethodDeclaration> {
 	private final EclipseType type;
 	private final EclipseASTMaker builder;
 
@@ -66,54 +66,54 @@ public final class EclipseTypeEditor implements lombok.ast.ITypeEditor<EclipseMe
 	}
 
 	@Override
-	public <T extends ASTNode> T build(final lombok.ast.Node<?> node) {
+	public <T extends ASTNode> T build(final lombok.ast.pg.Node<?> node) {
 		return builder.<T> build(node);
 	}
 
 	@Override
-	public <T extends ASTNode> T build(final lombok.ast.Node<?> node, final Class<T> extectedType) {
+	public <T extends ASTNode> T build(final lombok.ast.pg.Node<?> node, final Class<T> extectedType) {
 		return builder.build(node, extectedType);
 	}
 
 	@Override
-	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.Node<?>> nodes) {
+	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.pg.Node<?>> nodes) {
 		return builder.build(nodes);
 	}
 
 	@Override
-	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.Node<?>> nodes, final Class<T> extectedType) {
+	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.pg.Node<?>> nodes, final Class<T> extectedType) {
 		return builder.build(nodes, extectedType);
 	}
 
 	@Override
-	public void injectInitializer(final lombok.ast.Initializer initializer) {
+	public void injectInitializer(final lombok.ast.pg.Initializer initializer) {
 		final Initializer initializerBlock = builder.build(initializer);
 		Eclipse.injectInitializer(node(), initializerBlock);
 	}
 
 	@Override
-	public void injectField(final lombok.ast.FieldDecl fieldDecl) {
+	public void injectField(final lombok.ast.pg.FieldDecl fieldDecl) {
 		final FieldDeclaration field = builder.build(fieldDecl);
 		EclipseHandlerUtil.injectField(node(), field);
 	}
 
 	@Override
-	public void injectField(final lombok.ast.EnumConstant enumConstant) {
+	public void injectField(final lombok.ast.pg.EnumConstant enumConstant) {
 		final FieldDeclaration field = builder.build(enumConstant);
 		EclipseHandlerUtil.injectField(node(), field);
 	}
 
 	@Override
-	public AbstractMethodDeclaration injectMethod(final lombok.ast.MethodDecl methodDecl) {
+	public AbstractMethodDeclaration injectMethod(final lombok.ast.pg.MethodDecl methodDecl) {
 		return injectMethodImpl(methodDecl);
 	}
 
 	@Override
-	public AbstractMethodDeclaration injectConstructor(final lombok.ast.ConstructorDecl constructorDecl) {
+	public AbstractMethodDeclaration injectConstructor(final lombok.ast.pg.ConstructorDecl constructorDecl) {
 		return injectMethodImpl(constructorDecl);
 	}
 
-	private AbstractMethodDeclaration injectMethodImpl(final lombok.ast.AbstractMethodDecl<?> methodDecl) {
+	private AbstractMethodDeclaration injectMethodImpl(final lombok.ast.pg.AbstractMethodDecl<?> methodDecl) {
 		final AbstractMethodDeclaration method = builder.build(methodDecl, MethodDeclaration.class);
 		EclipseHandlerUtil.injectMethod(node(), method);
 
@@ -127,7 +127,7 @@ public final class EclipseTypeEditor implements lombok.ast.ITypeEditor<EclipseMe
 				}
 			}
 			if (!aboutToBeResolved) {
-				MethodScope scope = new MethodScope(type.scope, method, methodDecl.getModifiers().contains(lombok.ast.Modifier.STATIC));
+				MethodScope scope = new MethodScope(type.scope, method, methodDecl.getModifiers().contains(lombok.ast.pg.Modifier.STATIC));
 				MethodBinding methodBinding = null;
 				try {
 					methodBinding = (MethodBinding) Reflection.methodScopeCreateMethodMethod.invoke(scope, method);
@@ -148,7 +148,7 @@ public final class EclipseTypeEditor implements lombok.ast.ITypeEditor<EclipseMe
 	}
 
 	@Override
-	public void injectType(final lombok.ast.ClassDecl typeDecl) {
+	public void injectType(final lombok.ast.pg.ClassDecl typeDecl) {
 		final TypeDeclaration type = builder.build(typeDecl);
 		Eclipse.injectType(node(), type);
 	}

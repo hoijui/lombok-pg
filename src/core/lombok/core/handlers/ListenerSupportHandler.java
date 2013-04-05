@@ -21,13 +21,13 @@
  */
 package lombok.core.handlers;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.core.util.Names.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.ast.*;
+import lombok.ast.pg.*;
 
 public abstract class ListenerSupportHandler<TYPE_TYPE extends IType<? extends IMethod<?, ?, ?, ?>, ?, ?, ?, ?, ?>> {
 

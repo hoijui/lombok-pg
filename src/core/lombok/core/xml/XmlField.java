@@ -1,6 +1,6 @@
 package lombok.core.xml;
 
-import lombok.ast.Expression;
+import lombok.ast.pg.Expression;
 
 public class XmlField {
 	public Expression<?> name;

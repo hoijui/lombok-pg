@@ -22,7 +22,7 @@
 package lombok.core.handlers;
 
 import lombok.*;
-import lombok.ast.*;
+import lombok.ast.pg.*;
 import lombok.core.AnnotationValues;
 
 @RequiredArgsConstructor

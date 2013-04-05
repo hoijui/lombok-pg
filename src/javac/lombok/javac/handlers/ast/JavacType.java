@@ -22,7 +22,7 @@
 package lombok.javac.handlers.ast;
 
 import static com.sun.tools.javac.code.Flags.*;
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.javac.handlers.JavacHandlerUtil.createAnnotation;
 import static lombok.javac.handlers.JavacHandlerUtil.fieldExists;
 import static lombok.javac.handlers.JavacHandlerUtil.methodExists;
@@ -40,7 +40,7 @@ import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
 import com.sun.tools.javac.tree.JCTree.JCModifiers;
 import com.sun.tools.javac.tree.JCTree.JCTypeParameter;
 
-import lombok.ast.IType;
+import lombok.ast.pg.IType;
 import lombok.core.AnnotationValues;
 import lombok.core.AST.Kind;
 import lombok.core.util.As;
@@ -49,7 +49,7 @@ import lombok.javac.JavacNode;
 import lombok.javac.handlers.Javac;
 import lombok.javac.handlers.JavacHandlerUtil.MemberExistsResult;
 
-public final class JavacType implements lombok.ast.IType<JavacMethod, JavacField, JavacNode, JCTree, JCClassDecl, JCMethodDecl> {
+public final class JavacType implements lombok.ast.pg.IType<JavacMethod, JavacField, JavacNode, JCTree, JCClassDecl, JCMethodDecl> {
 	private final JavacNode typeNode;
 	private final JCTree source;
 	private final JavacTypeEditor editor;
@@ -107,7 +107,7 @@ public final class JavacType implements lombok.ast.IType<JavacMethod, JavacField
 		return annotationNode;
 	}
 
-	public <T extends lombok.ast.IType<?, ?, ?, ?, ?, ?>> T memberType(final String typeName) {
+	public <T extends lombok.ast.pg.IType<?, ?, ?, ?, ?, ?>> T memberType(final String typeName) {
 		for (JavacNode child : node().down()) {
 			if (child.getKind() != Kind.TYPE) continue;
 			if (child.getName().equals(typeName)) {
@@ -174,18 +174,18 @@ public final class JavacType implements lombok.ast.IType<JavacMethod, JavacField
 		return qualifiedName.toString();
 	}
 
-	public List<lombok.ast.TypeRef> typeArguments() {
-		final List<lombok.ast.TypeRef> typeArguments = new ArrayList<lombok.ast.TypeRef>();
+	public List<lombok.ast.pg.TypeRef> typeArguments() {
+		final List<lombok.ast.pg.TypeRef> typeArguments = new ArrayList<lombok.ast.pg.TypeRef>();
 		for (JCTypeParameter typaram : get().typarams) {
 			typeArguments.add(Type(As.string(typaram.name)));
 		}
 		return typeArguments;
 	}
 
-	public List<lombok.ast.TypeParam> typeParameters() {
-		final List<lombok.ast.TypeParam> typeParameters = new ArrayList<lombok.ast.TypeParam>();
+	public List<lombok.ast.pg.TypeParam> typeParameters() {
+		final List<lombok.ast.pg.TypeParam> typeParameters = new ArrayList<lombok.ast.pg.TypeParam>();
 		for (JCTypeParameter typaram : get().typarams) {
-			final lombok.ast.TypeParam typeParam = TypeParam(As.string(typaram.name));
+			final lombok.ast.pg.TypeParam typeParam = TypeParam(As.string(typaram.name));
 			for (JCExpression expr : typaram.bounds) {
 				typeParam.withBound(Type(expr));
 			}
@@ -194,14 +194,14 @@ public final class JavacType implements lombok.ast.IType<JavacMethod, JavacField
 		return typeParameters;
 	}
 
-	public java.util.List<lombok.ast.Annotation> annotations() {
+	public java.util.List<lombok.ast.pg.Annotation> annotations() {
 		return annotations(get().mods);
 	}
 
-	private java.util.List<lombok.ast.Annotation> annotations(final JCModifiers mods) {
-		final java.util.List<lombok.ast.Annotation> annotations = new java.util.ArrayList<lombok.ast.Annotation>();
+	private java.util.List<lombok.ast.pg.Annotation> annotations(final JCModifiers mods) {
+		final java.util.List<lombok.ast.pg.Annotation> annotations = new java.util.ArrayList<lombok.ast.pg.Annotation>();
 		for (JCAnnotation annotation : mods.annotations) {
-			lombok.ast.Annotation ann = Annotation(Type(annotation.annotationType));
+			lombok.ast.pg.Annotation ann = Annotation(Type(annotation.annotationType));
 			for (JCExpression arg : annotation.args) {
 				if (arg instanceof JCAssign) {
 					JCAssign assign = (JCAssign) arg;
@@ -219,7 +219,7 @@ public final class JavacType implements lombok.ast.IType<JavacMethod, JavacField
 		return (fieldExists(fieldName, typeNode) != MemberExistsResult.NOT_EXISTS);
 	}
 
-	public boolean hasMethod(final String methodName, final lombok.ast.TypeRef... argumentTypes) {
+	public boolean hasMethod(final String methodName, final lombok.ast.pg.TypeRef... argumentTypes) {
 		// TODO check actual types..
 		return (methodExists(methodName, typeNode, false, argumentTypes == null ? 0 : argumentTypes.length) != MemberExistsResult.NOT_EXISTS);
 	}

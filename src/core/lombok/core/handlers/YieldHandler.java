@@ -28,14 +28,14 @@
  */
 package lombok.core.handlers;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.core.util.Names.*;
 
 import java.io.Closeable;
 import java.util.*;
 
 import lombok.*;
-import lombok.ast.*;
+import lombok.ast.pg.*;
 import lombok.core.util.Is;
 
 public class YieldHandler<METHOD_TYPE extends IMethod<?, ?, ?, ?>, AST_BASE_TYPE> {

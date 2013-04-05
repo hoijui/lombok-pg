@@ -28,7 +28,7 @@ import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
 import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
 
-public final class EclipseFieldEditor implements lombok.ast.IFieldEditor<ASTNode> {
+public final class EclipseFieldEditor implements lombok.ast.pg.IFieldEditor<ASTNode> {
 	private final EclipseField field;
 	private final EclipseASTMaker builder;
 
@@ -41,23 +41,23 @@ public final class EclipseFieldEditor implements lombok.ast.IFieldEditor<ASTNode
 		return field.get();
 	}
 
-	public <T extends ASTNode> T build(final lombok.ast.Node<?> node) {
+	public <T extends ASTNode> T build(final lombok.ast.pg.Node<?> node) {
 		return builder.<T> build(node);
 	}
 
-	public <T extends ASTNode> T build(final lombok.ast.Node<?> node, final Class<T> extectedType) {
+	public <T extends ASTNode> T build(final lombok.ast.pg.Node<?> node, final Class<T> extectedType) {
 		return builder.build(node, extectedType);
 	}
 
-	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.Node<?>> nodes) {
+	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.pg.Node<?>> nodes) {
 		return builder.build(nodes);
 	}
 
-	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.Node<?>> nodes, final Class<T> extectedType) {
+	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.pg.Node<?>> nodes, final Class<T> extectedType) {
 		return builder.build(nodes, extectedType);
 	}
 
-	public void replaceInitialization(lombok.ast.Expression<?> initialization) {
+	public void replaceInitialization(lombok.ast.pg.Expression<?> initialization) {
 		get().initialization = (initialization == null) ? null : build(initialization.posHint(get().initialization), Expression.class);
 	}
 

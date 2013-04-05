@@ -21,15 +21,15 @@
  */
 package lombok.core.handlers;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.ast.IField;
-import lombok.ast.IType;
-import lombok.ast.MethodDecl;
-import lombok.ast.TypeRef;
+import lombok.ast.pg.IField;
+import lombok.ast.pg.IType;
+import lombok.ast.pg.MethodDecl;
+import lombok.ast.pg.TypeRef;
 
 public class CloneableHandler<TYPE_TYPE extends IType<?, FIELD_TYPE, ?, ?, ?, ?>, FIELD_TYPE extends IField<?, ?, ?, ?>> {
 	public void addCloneableMethod(final TYPE_TYPE type, final List<String> of, final List<String> excludes) {

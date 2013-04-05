@@ -2,8 +2,8 @@ package lombok.eclipse.handlers;
 
 import lombok.Singleton;
 import lombok.XmlSerializable;
-import lombok.ast.AST;
-import lombok.ast.Expression;
+import lombok.ast.pg.AST;
+import lombok.ast.pg.Expression;
 import lombok.core.AnnotationValues;
 import lombok.core.handlers.XmlSerializableHandler;
 import lombok.eclipse.EclipseAnnotationHandler;

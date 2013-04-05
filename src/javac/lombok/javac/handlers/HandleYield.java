@@ -28,7 +28,7 @@
  */
 package lombok.javac.handlers;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.core.util.ErrorMessages.*;
 import static lombok.javac.handlers.Javac.*;
 import static lombok.javac.handlers.JavacHandlerUtil.*;
@@ -36,7 +36,7 @@ import static lombok.javac.handlers.JavacHandlerUtil.*;
 import java.util.*;
 
 import lombok.*;
-import lombok.ast.*;
+import lombok.ast.pg.*;
 import lombok.core.handlers.YieldHandler;
 import lombok.core.handlers.YieldHandler.AbstractYieldDataCollector;
 import lombok.core.handlers.YieldHandler.ErrorHandler;

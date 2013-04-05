@@ -21,7 +21,7 @@
  */
 package lombok.core.handlers;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.core.util.ErrorMessages.*;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import lombok.*;
-import lombok.ast.*;
+import lombok.ast.pg.*;
 import lombok.core.LombokNode;
 import lombok.core.AST.Kind;
 import lombok.core.TransformationsUtil;
@@ -79,8 +79,8 @@ public abstract class FluentSetterHandler<TYPE_TYPE extends IType<?, FIELD_TYPE,
 		String filteredFieldName = field.filteredName();
 		TypeRef fieldType = field.type();
 		if (type.hasMethod(filteredFieldName, fieldType)) return;
-		List<lombok.ast.Annotation> nonNulls = field.annotations(TransformationsUtil.NON_NULL_PATTERN);
-		List<lombok.ast.Annotation> nullables = field.annotations(TransformationsUtil.NULLABLE_PATTERN);
+		List<lombok.ast.pg.Annotation> nonNulls = field.annotations(TransformationsUtil.NON_NULL_PATTERN);
+		List<lombok.ast.pg.Annotation> nullables = field.annotations(TransformationsUtil.NULLABLE_PATTERN);
 		MethodDecl methodDecl = MethodDecl(Type(type.name()).withTypeArguments(type.typeArguments()), filteredFieldName).withAccessLevel(level) //
 				.withArgument(Arg(fieldType, filteredFieldName).withAnnotations(nonNulls).withAnnotations(nullables));
 		if (!nonNulls.isEmpty() && !field.isPrimitive()) {

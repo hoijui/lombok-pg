@@ -64,7 +64,7 @@ public class HandleBoundSetter extends EclipseAnnotationHandler<BoundSetter> {
 			}
 
 			@Override
-			protected boolean hasMethodIncludingSupertypes(final EclipseType type, final String methodName, final lombok.ast.TypeRef... argumentTypes) {
+			protected boolean hasMethodIncludingSupertypes(final EclipseType type, final String methodName, final lombok.ast.pg.TypeRef... argumentTypes) {
 				return hasMethod(type.get().binding, methodName, type.editor().build(As.list(argumentTypes)));
 			}
 

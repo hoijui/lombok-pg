@@ -22,7 +22,7 @@
 package lombok.eclipse.handlers.ast;
 
 import static org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants.*;
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.eclipse.handlers.Eclipse.matchesType;
 import static lombok.eclipse.handlers.EclipseHandlerUtil.createAnnotation;
 
@@ -50,7 +50,7 @@ import lombok.eclipse.Eclipse;
 import lombok.eclipse.EclipseNode;
 import lombok.experimental.Accessors;
 
-public final class EclipseField implements lombok.ast.IField<EclipseType, EclipseNode, ASTNode, FieldDeclaration> {
+public final class EclipseField implements lombok.ast.pg.IField<EclipseType, EclipseNode, ASTNode, FieldDeclaration> {
 	private final EclipseNode fieldNode;
 	private final ASTNode source;
 	private final EclipseFieldEditor editor;
@@ -133,11 +133,11 @@ public final class EclipseField implements lombok.ast.IField<EclipseType, Eclips
 		return annotationNode;
 	}
 
-	public lombok.ast.TypeRef type() {
+	public lombok.ast.pg.TypeRef type() {
 		return Type(get().type);
 	}
 
-	public lombok.ast.TypeRef boxedType() {
+	public lombok.ast.pg.TypeRef boxedType() {
 		return EclipseASTUtil.boxedType(get().type);
 	}
 
@@ -167,12 +167,12 @@ public final class EclipseField implements lombok.ast.IField<EclipseType, Eclips
 		return EclipseType.typeOf(node(), source);
 	}
 
-	public lombok.ast.Expression<?> initialization() {
+	public lombok.ast.pg.Expression<?> initialization() {
 		return get().initialization == null ? null : Expr(get().initialization);
 	}
 
-	public List<lombok.ast.TypeRef> typeArguments() {
-		final List<lombok.ast.TypeRef> typeArguments = new ArrayList<lombok.ast.TypeRef>();
+	public List<lombok.ast.pg.TypeRef> typeArguments() {
+		final List<lombok.ast.pg.TypeRef> typeArguments = new ArrayList<lombok.ast.pg.TypeRef>();
 		final TypeReference type = get().type;
 		if (type instanceof ParameterizedQualifiedTypeReference) {
 			ParameterizedQualifiedTypeReference typeRef = (ParameterizedQualifiedTypeReference) type;
@@ -188,18 +188,18 @@ public final class EclipseField implements lombok.ast.IField<EclipseType, Eclips
 		return typeArguments;
 	}
 
-	public List<lombok.ast.Annotation> annotations() {
+	public List<lombok.ast.pg.Annotation> annotations() {
 		return annotations(null);
 	}
 
-	public List<lombok.ast.Annotation> annotations(final Pattern namePattern) {
-		List<lombok.ast.Annotation> result = new ArrayList<lombok.ast.Annotation>();
+	public List<lombok.ast.pg.Annotation> annotations(final Pattern namePattern) {
+		List<lombok.ast.pg.Annotation> result = new ArrayList<lombok.ast.pg.Annotation>();
 		for (Annotation annotation : Each.elementIn(get().annotations)) {
 			TypeReference typeRef = annotation.type;
 			char[][] typeName = typeRef.getTypeName();
 			String suspect = As.string(typeName[typeName.length - 1]);
 			if ((namePattern == null) || namePattern.matcher(suspect).matches()) {
-				lombok.ast.Annotation ann = Annotation(Type(annotation.type)).posHint(annotation);
+				lombok.ast.pg.Annotation ann = Annotation(Type(annotation.type)).posHint(annotation);
 				if (annotation instanceof SingleMemberAnnotation) {
 					ann.withValue(Expr(((SingleMemberAnnotation) annotation).memberValue));
 				} else if (annotation instanceof NormalAnnotation) {

@@ -21,20 +21,7 @@
  */
 package lombok.core.handlers;
 
-import static lombok.ast.AST.Annotation;
-import static lombok.ast.AST.Arg;
-import static lombok.ast.AST.Binary;
-import static lombok.ast.AST.Call;
-import static lombok.ast.AST.ClassDecl;
-import static lombok.ast.AST.Equal;
-import static lombok.ast.AST.Field;
-import static lombok.ast.AST.MethodDecl;
-import static lombok.ast.AST.Name;
-import static lombok.ast.AST.New;
-import static lombok.ast.AST.Not;
-import static lombok.ast.AST.Or;
-import static lombok.ast.AST.Return;
-import static lombok.ast.AST.Type;
+import static lombok.ast.pg.AST.*;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -43,12 +30,12 @@ import java.util.List;
 
 import lombok.Functions.Function1;
 import lombok.Predicates.Predicate1;
-import lombok.ast.Expression;
-import lombok.ast.IField;
-import lombok.ast.IType;
-import lombok.ast.ITypeEditor;
-import lombok.ast.MethodDecl;
-import lombok.ast.TypeRef;
+import lombok.ast.pg.Expression;
+import lombok.ast.pg.IField;
+import lombok.ast.pg.IType;
+import lombok.ast.pg.ITypeEditor;
+import lombok.ast.pg.MethodDecl;
+import lombok.ast.pg.TypeRef;
 
 public class FilterableHandler<TYPE_TYPE extends IType<?, FIELD_TYPE, ?, ?, ?, ?>, FIELD_TYPE extends IField<?, ?, ?, ?>> {
 	public void addFilterMethods(final TYPE_TYPE type) {		

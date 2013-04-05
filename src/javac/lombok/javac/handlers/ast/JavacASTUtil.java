@@ -21,7 +21,7 @@
  */
 package lombok.javac.handlers.ast;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.core.util.Names.*;
 
 import com.sun.tools.javac.tree.JCTree.JCExpression;
@@ -33,9 +33,9 @@ import lombok.core.util.Is;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JavacASTUtil {
 
-	public static lombok.ast.TypeRef boxedType(final JCExpression type) {
+	public static lombok.ast.pg.TypeRef boxedType(final JCExpression type) {
 		if (type == null) return null;
-		lombok.ast.TypeRef boxedType = Type(type);
+		lombok.ast.pg.TypeRef boxedType = Type(type);
 		if (type instanceof JCPrimitiveTypeTree) {
 			final String name = type.toString();
 			if ("int".equals(name)) {

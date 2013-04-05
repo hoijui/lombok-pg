@@ -38,8 +38,8 @@ import lombok.eclipse.handlers.ast.EclipseMethod;
 
 public class EclipseParameterValidator implements IParameterValidator<EclipseMethod> {
 	@Override
-	public List<lombok.ast.Statement<?>> validateParameterOf(final EclipseMethod method) {
-		final List<lombok.ast.Statement<?>> validateStatements = new ArrayList<lombok.ast.Statement<?>>();
+	public List<lombok.ast.pg.Statement<?>> validateParameterOf(final EclipseMethod method) {
+		final List<lombok.ast.pg.Statement<?>> validateStatements = new ArrayList<lombok.ast.pg.Statement<?>>();
 		int argumentIndex = 0;
 		for (Argument argument : Each.elementIn(method.get().arguments)) {
 			final String argumentName = new String(argument.name);
@@ -55,7 +55,7 @@ public class EclipseParameterValidator implements IParameterValidator<EclipseMet
 				break;
 			}
 		}
-		for (lombok.ast.Statement<?> validateStatement : validateStatements) {
+		for (lombok.ast.pg.Statement<?> validateStatement : validateStatements) {
 			validateStatement.posHint(method.get());
 		}
 		return validateStatements;

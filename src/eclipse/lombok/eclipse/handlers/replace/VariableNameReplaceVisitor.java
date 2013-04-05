@@ -1,6 +1,6 @@
 package lombok.eclipse.handlers.replace;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 
 import lombok.core.util.As;
 import lombok.eclipse.handlers.ast.EclipseMethod;

@@ -21,7 +21,7 @@
  */
 package lombok.javac.handlers;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.core.util.ErrorMessages.*;
 import static lombok.javac.handlers.Javac.*;
 

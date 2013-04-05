@@ -21,18 +21,7 @@
  */
 package lombok.core.handlers;
 
-import static lombok.ast.AST.Annotation;
-import static lombok.ast.AST.Call;
-import static lombok.ast.AST.False;
-import static lombok.ast.AST.Field;
-import static lombok.ast.AST.LocalDecl;
-import static lombok.ast.AST.MethodDecl;
-import static lombok.ast.AST.Name;
-import static lombok.ast.AST.New;
-import static lombok.ast.AST.Return;
-import static lombok.ast.AST.String;
-import static lombok.ast.AST.True;
-import static lombok.ast.AST.Type;
+import static lombok.ast.pg.AST.*;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -47,12 +36,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import lombok.ast.Annotation;
-import lombok.ast.Expression;
-import lombok.ast.IField;
-import lombok.ast.IType;
-import lombok.ast.MethodDecl;
-import lombok.ast.TypeRef;
+import lombok.ast.pg.Annotation;
+import lombok.ast.pg.Expression;
+import lombok.ast.pg.IField;
+import lombok.ast.pg.IType;
+import lombok.ast.pg.MethodDecl;
+import lombok.ast.pg.TypeRef;
 import lombok.core.xml.XAttribute;
 import lombok.core.xml.XElement;
 import lombok.core.xml.XmlField;
