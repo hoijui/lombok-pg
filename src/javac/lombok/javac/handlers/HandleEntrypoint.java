@@ -79,7 +79,7 @@ public class HandleEntrypoint {
 		@Override
 		public void visitType(final JavacNode typeNode, final JCClassDecl type) {
 			boolean implementsInterface = false;
-			boolean isAnImport = typeNode.getImportStatements().contains(interfaze.getName());
+			boolean isAnImport = typeNode.getImportList().contains(interfaze.getName());
 			if (type.getImplementsClause() != null) for (JCExpression exp : type.getImplementsClause()) {
 				if (exp.toString().equals(interfaze.getName()) || (isAnImport && exp.toString().equals(interfaze.getSimpleName()))) {
 					implementsInterface = true;

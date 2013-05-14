@@ -2,6 +2,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Builder;
+import lombok.BuilderExtension;
 @Builder class BuilderGeneric<K extends Comparable<K>, V extends List<K>> {
   public @java.lang.SuppressWarnings("all") interface FooDef<K extends Comparable<K>, V extends List<K>> {
     public OptionalDef<K, V> foo(final String foo);

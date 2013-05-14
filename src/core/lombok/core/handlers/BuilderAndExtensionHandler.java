@@ -58,6 +58,7 @@ import java.util.Set;
 
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.BuilderExtension;
 import lombok.Getter;
 import lombok.ast.pg.AbstractMethodDecl;
 import lombok.ast.pg.Argument;
@@ -94,7 +95,7 @@ public abstract class BuilderAndExtensionHandler<TYPE_TYPE extends IType<METHOD_
 	}
 
 	public void handleExtension(final TYPE_TYPE type, final METHOD_TYPE method, final IParameterValidator<METHOD_TYPE> validation,
-			final IParameterSanitizer<METHOD_TYPE> sanitizer, final Builder builder, final Builder.Extension extension) {
+			final IParameterSanitizer<METHOD_TYPE> sanitizer, final Builder builder, final BuilderExtension extension) {
 		TYPE_TYPE builderType = type.<TYPE_TYPE> memberType(BUILDER);
 		final BuilderData<TYPE_TYPE, METHOD_TYPE, FIELD_TYPE> builderData = new BuilderData<TYPE_TYPE, METHOD_TYPE, FIELD_TYPE>(type, builder).collect();
 
