@@ -18,10 +18,11 @@ import org.mangosdk.spi.ProviderFor;
 public class HandleAttribute extends EclipseAnnotationHandler<Attribute> {
 
 	public void handle(final AnnotationValues<Attribute> annotation, final Annotation ast, final EclipseNode annotationNode) {
-		EclipseType type = EclipseType.typeOf(annotationNode, ast);
-		EclipseMethod method = EclipseMethod.methodOf(annotationNode, ast);
-
-		new AttributeHandler<EclipseType, EclipseMethod>(type, method, annotationNode).handle();
+		final EclipseType type = EclipseType.typeOf(annotationNode, ast);
+		final EclipseMethod method = EclipseMethod.methodOf(annotationNode, ast);	
+		final EclipseField field = EclipseField.fieldOf(annotationNode, ast);
+		
+		new AttributeHandler<EclipseType, EclipseMethod, EclipseField>(type, method, field, annotationNode).handle();
 	}
 
 }

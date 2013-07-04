@@ -25,7 +25,6 @@ import static lombok.javac.handlers.Javac.deleteImport;
 import static lombok.javac.handlers.JavacHandlerUtil.deleteAnnotationIfNeccessary;
 import lombok.AccessLevel;
 import lombok.Attribute;
-import lombok.LazyGetter;
 import lombok.core.AnnotationValues;
 import lombok.core.handlers.AttributeHandler;
 import lombok.javac.JavacAnnotationHandler;
@@ -48,8 +47,9 @@ public class HandleAttribute extends JavacAnnotationHandler<Attribute> {
 	public void handle(final AnnotationValues<Attribute> annotation, final JCAnnotation ast, final JavacNode annotationNode) {
 		final JavacType type = JavacType.typeOf(annotationNode, ast);
 		final JavacMethod method = JavacMethod.methodOf(annotationNode, ast);
+		final JavacField field = JavacField.fieldOf(annotationNode, ast);
 		
-		new AttributeHandler<JavacType, JavacMethod>(type, method, annotationNode).handle();
+		new AttributeHandler<JavacType, JavacMethod, JavacField>(type, method, field, annotationNode).handle();
 		deleteAnnotationIfNeccessary(annotationNode, Attribute.class);
 		deleteImport(annotationNode, AccessLevel.class);
 	}
