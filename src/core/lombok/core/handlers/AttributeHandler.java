@@ -62,15 +62,22 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 	
 	private void injectAttribute( final TYPE_TYPE type, final TypeRef attributeType, final String attributeName) {
 		final String typeName = attributeType.getTypeName();
-		
 		final Call createAttribute = new Call( Name( Attributes.class), "of" )
 			.withArgument(AST.ClassLiteral(type.qualifiedName()))
 			.withArgument(new StringLiteral(attributeName))
 			.withArgument(AST.ClassLiteral(typeName));
 		
+		final char firstChar = typeName.charAt(0);
+		final String attributeTypeName;
+		if( Character.isLowerCase(firstChar) ) { // Primitive class
+			attributeTypeName = Character.toUpperCase(firstChar) + typeName.substring(1); 
+		} 
+		else {
+			attributeTypeName = typeName;
+		}
 		final TypeRef attributeTypeRef = Type(Attribute.class)
 				.withTypeArgument(Type(type.qualifiedName()))
-				.withTypeArgument(attributeType);
+				.withTypeArgument(Type(attributeTypeName));
 		
 		type.editor().injectField( FieldDecl(attributeTypeRef, "_" + attributeName)
 				.withInitialization(createAttribute)
