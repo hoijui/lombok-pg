@@ -624,4 +624,9 @@ public final class ASTPrinter implements ASTVisitor<ASTPrinter.State, ASTPrinter
 			return node.accept(printer, this);
 		}
 	}
+
+	@Override
+	public State visitClassLiteral(ClassLiteral node, final State state) {
+		return state.print(node.getTypeName() + ".class");
+	}
 }

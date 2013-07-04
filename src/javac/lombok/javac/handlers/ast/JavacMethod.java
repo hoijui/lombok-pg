@@ -46,6 +46,8 @@ import com.sun.tools.javac.tree.JCTree.JCAssign;
 import com.sun.tools.javac.tree.JCTree.JCAnnotation;
 import com.sun.tools.javac.tree.JCTree.JCExpression;
 import com.sun.tools.javac.tree.JCTree.JCExpressionStatement;
+import com.sun.tools.javac.tree.JCTree.JCIdent;
+import com.sun.tools.javac.tree.JCTree.JCLiteral;
 import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
 import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
 import com.sun.tools.javac.tree.JCTree.JCModifiers;
@@ -73,7 +75,13 @@ public final class JavacMethod implements lombok.ast.IMethod<JavacType, JavacNod
 	}
 
 	public lombok.ast.TypeRef returns() {
-		return isConstructor() ? null : Type(returnType());
+		JCExpression returnType = returnType();
+		String typeName = "unresolved";
+		if (returnType instanceof JCIdent) {
+			JCIdent jcIdent = (JCIdent) returnType;
+			typeName = jcIdent.getName().toString();
+		}
+		return isConstructor() ? null : Type(returnType, typeName);
 	}
 
 	public lombok.ast.TypeRef boxedReturns() {

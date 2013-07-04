@@ -78,7 +78,7 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 			final Call createAttribute = new Call( Name( Attributes.class), "of" )
 				.withArgument(AST.ClassLiteral(type.qualifiedName()))
 				.withArgument(new StringLiteral(attributeName))
-				.withArgument(AST.ClassLiteral(returnType.getTypeName()));
+				.withArgument(AST.Cast(AST.Type(Class.class), AST.ClassLiteral(returnType.getTypeName())));
 			
 			
 			type.editor().injectField( FieldDecl(Type(Attribute.class)
