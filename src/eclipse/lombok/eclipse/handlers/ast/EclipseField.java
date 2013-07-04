@@ -134,7 +134,8 @@ public final class EclipseField implements lombok.ast.IField<EclipseType, Eclips
 	}
 
 	public lombok.ast.TypeRef type() {
-		return Type(get().type);
+		final TypeReference type = get().type;
+		return Type(type, Eclipse.toQualifiedName(type.getTypeName() ));
 	}
 
 	public lombok.ast.TypeRef boxedType() {
