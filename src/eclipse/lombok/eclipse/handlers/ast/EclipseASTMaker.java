@@ -63,6 +63,7 @@ import org.eclipse.jdt.internal.compiler.ast.BreakStatement;
 import org.eclipse.jdt.internal.compiler.ast.CaseStatement;
 import org.eclipse.jdt.internal.compiler.ast.CastExpression;
 import org.eclipse.jdt.internal.compiler.ast.CharLiteral;
+import org.eclipse.jdt.internal.compiler.ast.ClassLiteralAccess;
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.ContinueStatement;
@@ -134,6 +135,7 @@ import lombok.core.util.As;
 import lombok.core.util.Cast;
 import lombok.core.util.Each;
 import lombok.core.util.Is;
+import lombok.eclipse.Eclipse;
 import lombok.eclipse.EclipseNode;
 
 @RequiredArgsConstructor
@@ -720,6 +722,19 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 			returnType = Type(methodNodeOf(sourceNode).getName());
 		}
 		return build(Return(DefaultValue(returnType)));
+	}
+	
+	@Override
+	public ASTNode visitClassLiteral(String typeName) {
+		char[][] fromQualifiedName = Eclipse.fromQualifiedName(typeName);
+		long [] poss = new long[fromQualifiedName.length];
+		ClassLiteralAccess classLiteralAccess;
+		if (fromQualifiedName.length == 1) {
+			classLiteralAccess = new ClassLiteralAccess(0, new SingleTypeReference(fromQualifiedName[0], 0));
+		} else {
+			classLiteralAccess = new ClassLiteralAccess(0, new QualifiedTypeReference(fromQualifiedName, poss));
+		}
+		return classLiteralAccess;
 	}
 
 	@Override

@@ -280,9 +280,17 @@ public final class AST {
 	public static TypeRef Type(final String typeName) {
 		return new TypeRef(typeName);
 	}
+	
+	public static ClassLiteral ClassLiteral(final String typeName) {
+		return new ClassLiteral(typeName);
+	}
 
 	public static TypeRef Type(final Object wrappedObject) {
 		return new WrappedTypeRef(wrappedObject);
+	}
+
+	public static TypeRef Type(final Object wrappedObject, final String typeName) {
+		return new WrappedTypeRef(wrappedObject, typeName);
 	}
 
 	public static TypeParam TypeParam(final String name) {

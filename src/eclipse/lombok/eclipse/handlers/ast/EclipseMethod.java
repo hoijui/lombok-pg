@@ -72,7 +72,8 @@ public final class EclipseMethod implements lombok.ast.IMethod<EclipseType, Ecli
 	}
 
 	public lombok.ast.TypeRef returns() {
-		return isConstructor() ? null : Type(returnType());
+		TypeReference returnType = returnType();
+		return isConstructor() ? null : Type(returnType, lombok.eclipse.Eclipse.toQualifiedName(returnType.getTypeName()));
 	}
 
 	public lombok.ast.TypeRef boxedReturns() {

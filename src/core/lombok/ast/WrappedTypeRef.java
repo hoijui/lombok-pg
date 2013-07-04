@@ -32,6 +32,11 @@ public class WrappedTypeRef extends TypeRef {
 		this.wrappedObject = wrappedObject;
 	}
 
+	public WrappedTypeRef(final Object wrappedObject, String typeName) {
+		super(typeName);
+		this.wrappedObject = wrappedObject;
+	}
+
 	@Override
 	public <RETURN_TYPE, PARAMETER_TYPE> RETURN_TYPE accept(final ASTVisitor<RETURN_TYPE, PARAMETER_TYPE> v, final PARAMETER_TYPE p) {
 		return v.visitWrappedTypeRef(this, p);

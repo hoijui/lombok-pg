@@ -21,6 +21,8 @@
  */
 package lombok.ast;
 
+import org.eclipse.jdt.internal.compiler.ast.ASTNode;
+
 public interface ASTVisitor<RETURN_TYPE, PARAMETER_TYPE> {
 
 	RETURN_TYPE visitAnnotation(Annotation node, PARAMETER_TYPE p);
@@ -120,4 +122,6 @@ public interface ASTVisitor<RETURN_TYPE, PARAMETER_TYPE> {
 	RETURN_TYPE visitWrappedStatement(WrappedStatement node, PARAMETER_TYPE p);
 
 	RETURN_TYPE visitWrappedTypeRef(WrappedTypeRef node, PARAMETER_TYPE p);
+
+	RETURN_TYPE visitClassLiteral(String typeName);
 }

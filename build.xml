@@ -198,6 +198,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 			<fileset dir="build/lombok-pg" />
 			<fileset dir="." includes="LICENSE" />
 			<fileset dir="." includes="AUTHORS" />
+			
 			<manifest>
 				<attribute name="Premain-Class" value="lombok.core.LombokPGAgent" />
 				<attribute name="Agent-Class" value="lombok.core.LombokPGAgent" />
