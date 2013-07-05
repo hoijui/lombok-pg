@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 
 import com.sun.tools.javac.code.BoundKind;
 import com.sun.tools.javac.code.Flags;
+import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.code.TypeTags;
 import com.sun.tools.javac.code.Symbol.MethodSymbol;
@@ -84,6 +85,7 @@ import com.sun.tools.javac.util.ListBuffer;
 import com.sun.tools.javac.util.Name;
 
 import lombok.RequiredArgsConstructor;
+import lombok.ast.ClassLiteral;
 import lombok.core.util.As;
 import lombok.core.util.Cast;
 import lombok.javac.Javac;
@@ -728,5 +730,13 @@ public final class JavacASTMaker implements lombok.ast.ASTVisitor<JCTree, Void> 
 			typeRef = setGeneratedBy(M(node).TypeArray(typeRef), source);
 		}
 		return typeRef;
+	}
+
+	@Override
+	public JCTree visitClassLiteral(final ClassLiteral node, final Void p) {
+		String typeName = node.getTypeName();
+		System.out.println("TYPNAME: " + typeName);
+		final JCExpression literal = setGeneratedBy(M(node).ClassLiteral(new ClassSymbol(0, name(typeName), null)), source);
+		return literal;
 	}
 }

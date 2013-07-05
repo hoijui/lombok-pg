@@ -123,5 +123,5 @@ public interface ASTVisitor<RETURN_TYPE, PARAMETER_TYPE> {
 
 	RETURN_TYPE visitWrappedTypeRef(WrappedTypeRef node, PARAMETER_TYPE p);
 
-	RETURN_TYPE visitClassLiteral(String typeName);
+	RETURN_TYPE visitClassLiteral(ClassLiteral node, PARAMETER_TYPE p);
 }

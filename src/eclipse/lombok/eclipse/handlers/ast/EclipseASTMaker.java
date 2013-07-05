@@ -131,6 +131,7 @@ import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;
 
 import lombok.*;
+import lombok.ast.ClassLiteral;
 import lombok.core.util.As;
 import lombok.core.util.Cast;
 import lombok.core.util.Each;
@@ -725,8 +726,8 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 	
 	@Override
-	public ASTNode visitClassLiteral(String typeName) {
-		char[][] fromQualifiedName = Eclipse.fromQualifiedName(typeName);
+	public ASTNode visitClassLiteral(ClassLiteral node, final Void p) {
+		char[][] fromQualifiedName = Eclipse.fromQualifiedName(node.getTypeName());
 		long [] poss = new long[fromQualifiedName.length];
 		ClassLiteralAccess classLiteralAccess;
 		if (fromQualifiedName.length == 1) {
