@@ -17,9 +17,8 @@ import lombok.ast.StringLiteral;
 import lombok.ast.TypeRef;
 import lombok.core.DiagnosticsReceiver;
 
-import com.doctusoft.bean.Attribute;
-import com.doctusoft.bean.Attributes;
 import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
+import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 
 @RequiredArgsConstructor
 public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?, ?, ?>, METHOD_TYPE extends IMethod<TYPE_TYPE, ?, ?, ?>, FIELD_TYPE extends IField<TYPE_TYPE, ?, ?, ?>> {
@@ -58,7 +57,14 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 	}
 
 	private void createAttribute( final TYPE_TYPE type, final FIELD_TYPE field ) {
-		injectAttribute(type, field.type().getTypeName(), field.filteredName());
+		String returnType = field.type().getTypeName();
+		try {
+			JCVariableDecl fd = (JCVariableDecl) field.get();
+			returnType = fd.getType().toString();
+		} catch (Throwable t) {
+			// do nothing, it's probably because JCMethodDecl is not found under Eclipse, and it's normal
+		}		
+		injectAttribute(type, field.type(), returnType, field.filteredName());
 	}
 	
 	private void createAttribute(final TYPE_TYPE type, final METHOD_TYPE method) {
@@ -83,21 +89,32 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 		} catch (Throwable t) {
 			// do nothing, it's probably because JCMethodDecl is not found under Eclipse, and it's normal
 		}		
-		injectAttribute(type, returnType, attributeName);
+		injectAttribute(type, method.returns(), returnType, attributeName);
 	}
 	
-	private void injectAttribute( final TYPE_TYPE type, final String attributeTypeName, final String attributeName) {
+	private void injectAttribute( final TYPE_TYPE type, final TypeRef valueTypeRef, String attributeTypeName, final String attributeName) {
 		final boolean isQualified = attributeTypeName.contains(".");
-		final Call createAttribute = new Call( Name( Attributes.class), "of" )
-			.withArgument(AST.Cast(AST.Type(Class.class), new Call( Name( Attributes.class), "uncheckedForName").withArgument(new StringLiteral(type.qualifiedName()))))
+		attributeTypeName = attributeTypeName.replaceAll("<.*>", "");
+		TypeRef mappedValueTypeRef = valueTypeRef;
+		// for non-primitives we retain the original typeref because it contains the type arguments properly (eg List<String>)
+		if (primitives.containsKey(attributeTypeName)) {
+			// for primitives, we have to map the type to it's object equivalent. This will not contain any type-argument of course
+			mappedValueTypeRef = AST.Type(getAttributeTypeName(attributeTypeName));
+			// we map primitives types to their object equivalents. Under javac, I could not easily create a classliteral for primitive types,
+			// so I decided to use the object equivalent in all cases.
+			attributeTypeName = getAttributeTypeName(attributeTypeName);
+		}
+		String attributesClassName = "com.doctusoft.common.core.bean.Attributes";
+		final Call createAttribute = new Call( Name( attributesClassName ), "of" )
+			.withArgument(AST.Cast(AST.Type(Class.class), new Call( Name( attributesClassName ), "uncheckedForName").withArgument(new StringLiteral(type.qualifiedName()))))
 			.withArgument(new StringLiteral(attributeName))
 			.withArgument(isQualified?
-						AST.Cast(AST.Type(Class.class), new Call( Name( Attributes.class), "uncheckedForName").withArgument(new StringLiteral(attributeTypeName)))
+						AST.Cast(AST.Type(Class.class), new Call( Name( attributesClassName ), "uncheckedForName").withArgument(new StringLiteral(attributeTypeName)))
 						:AST.ClassLiteral(attributeTypeName, null));
 		
-		final TypeRef attributeTypeRef = Type(Attribute.class)
+		final TypeRef attributeTypeRef = Type("com.doctusoft.common.core.bean.Attribute")
 				.withTypeArgument(Type(type.qualifiedName()))
-				.withTypeArgument(AST.Type(attributeTypeName));
+				.withTypeArgument(mappedValueTypeRef);
 		
 		type.editor().injectField( FieldDecl(attributeTypeRef, "_" + attributeName)
 				.withInitialization(createAttribute)
@@ -105,8 +122,7 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 	}
 	
 	private String getAttributeTypeName( final String typeName) {
-		final char firstChar = typeName.charAt(0);
-		if( Character.isLowerCase(firstChar) ) {
+		if( primitives.containsKey(typeName) ) {
 			final String attributeTypeName = primitives.get(typeName);
 			if( attributeTypeName != null) {
 				return attributeTypeName;

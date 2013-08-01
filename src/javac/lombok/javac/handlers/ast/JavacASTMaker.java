@@ -738,7 +738,6 @@ public final class JavacASTMaker implements lombok.ast.ASTVisitor<JCTree, Void> 
 	public JCTree visitClassLiteral(final ClassLiteral node, final Void p) {
 		String typeName = node.getTypeName();
 		JavacType javacType = (JavacType) node.getWrappedObject();
-		System.out.println("TYPNAME: " + typeName);
 		// This currently doesn't work, I couldn't figure out how to it
 //		if (javacType != null) {
 //			JCClassDecl decl = javacType.get();
