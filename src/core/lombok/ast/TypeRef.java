@@ -36,10 +36,6 @@ public class TypeRef extends Expression<TypeRef> {
 		this(clazz.getName());
 	}
 	
-	public TypeRef(boolean x, String className) {
-		this(className);
-	}
-
 	public TypeRef makeSuperType() {
 		superType = true;
 		return this;

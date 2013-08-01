@@ -15,6 +15,7 @@ import lombok.core.DiagnosticsReceiver;
 
 import com.doctusoft.bean.Attribute;
 import com.doctusoft.bean.Attributes;
+import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
 
 @RequiredArgsConstructor
 public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?, ?, ?>, METHOD_TYPE extends IMethod<TYPE_TYPE, ?, ?, ?>, FIELD_TYPE extends IField<TYPE_TYPE, ?, ?, ?>> {
@@ -38,7 +39,7 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 	}
 
 	private void createAttribute( final TYPE_TYPE type, final FIELD_TYPE field ) {
-		injectAttribute(type, field.type(), field.filteredName());
+		injectAttribute(type, field.type().getTypeName(), field.filteredName());
 	}
 	
 	private void createAttribute(final TYPE_TYPE type, final METHOD_TYPE method) {
@@ -56,21 +57,29 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 			return;
 		}
 
-		final TypeRef returnType = method.returns();
+		String returnType = method.returns().getTypeName();
+		try {
+			JCMethodDecl md = (JCMethodDecl) method.get();
+			returnType = md.restype.toString();
+		} catch (Throwable t) {
+			// do nothing, it's probably because JCMethodDecl is not found under Eclipse, and it's normal
+		}		
 		injectAttribute(type, returnType, attributeName);
 	}
 	
-	private void injectAttribute( final TYPE_TYPE type, final TypeRef attributeType, final String attributeName) {
-		final String typeName = attributeType.getTypeName();
+	private void injectAttribute( final TYPE_TYPE type, final String attributeTypeName, final String attributeName) {
+		final boolean isQualified = attributeTypeName.contains(".");
 		
 		final Call createAttribute = new Call( Name( Attributes.class), "of" )
-			.withArgument(AST.ClassLiteral(type.qualifiedName()))
+			.withArgument(AST.Cast(AST.Type(Class.class), new Call( Name( Attributes.class), "uncheckedForName").withArgument(new StringLiteral(type.qualifiedName()))))
 			.withArgument(new StringLiteral(attributeName))
-			.withArgument(AST.ClassLiteral(typeName));
+			.withArgument(isQualified?
+						AST.Cast(AST.Type(Class.class), new Call( Name( Attributes.class), "uncheckedForName").withArgument(new StringLiteral(attributeTypeName)))
+						:AST.ClassLiteral(attributeTypeName, null));
 		
 		final TypeRef attributeTypeRef = Type(Attribute.class)
 				.withTypeArgument(Type(type.qualifiedName()))
-				.withTypeArgument(attributeType);
+				.withTypeArgument(AST.Type(attributeTypeName));
 		
 		type.editor().injectField( FieldDecl(attributeTypeRef, "_" + attributeName)
 				.withInitialization(createAttribute)

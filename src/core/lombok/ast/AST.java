@@ -281,8 +281,8 @@ public final class AST {
 		return new TypeRef(typeName);
 	}
 	
-	public static ClassLiteral ClassLiteral(final String typeName) {
-		return new ClassLiteral(typeName);
+	public static ClassLiteral ClassLiteral(final String typeName, Object wrappedObject) {
+		return new ClassLiteral(typeName, wrappedObject);
 	}
 
 	public static TypeRef Type(final Object wrappedObject) {

@@ -36,6 +36,8 @@ import java.util.Map.Entry;
 import com.sun.tools.javac.code.BoundKind;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
+import com.sun.tools.javac.code.Symbol.PackageSymbol;
+import com.sun.tools.javac.code.Symbol.TypeSymbol;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.code.TypeTags;
 import com.sun.tools.javac.code.Symbol.MethodSymbol;
@@ -735,7 +737,17 @@ public final class JavacASTMaker implements lombok.ast.ASTVisitor<JCTree, Void> 
 	@Override
 	public JCTree visitClassLiteral(final ClassLiteral node, final Void p) {
 		String typeName = node.getTypeName();
+		JavacType javacType = (JavacType) node.getWrappedObject();
 		System.out.println("TYPNAME: " + typeName);
+		// This currently doesn't work, I couldn't figure out how to it
+//		if (javacType != null) {
+//			JCClassDecl decl = javacType.get();
+//			System.out.println("type: " + decl.type);
+//			System.out.println("name: " + decl.name);
+//			System.out.println("sym: " + decl.sym);
+//			final JCExpression literal = setGeneratedBy(M(node).ClassLiteral(new Type(TypeTags.CLASS, new TypeSymbol(0, decl.name, decl.type, decl.sym))), source);
+//			return literal;
+//		}
 		final JCExpression literal = setGeneratedBy(M(node).ClassLiteral(new ClassSymbol(0, name(typeName), null)), source);
 		return literal;
 	}

@@ -20,6 +20,14 @@ public final class Attributes {
 		return new AttributeImpl<E, T>(null, name,null);
 	}
 	
+	public static Class uncheckedForName(final String className) {
+		try {
+			return Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 
 //	public static <E, T> Function<E, T> functionOf( final Attribute<E, T> attribute ) {
 //		return new AttributeFunction<E, T>( attribute );
