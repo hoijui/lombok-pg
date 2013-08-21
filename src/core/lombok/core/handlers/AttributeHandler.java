@@ -105,11 +105,12 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 			attributeTypeName = getAttributeTypeName(attributeTypeName);
 		}
 		String attributesClassName = "com.doctusoft.common.core.bean.Attributes";
+		String dsUtilsName = "lombok.DsUtils";
 		final Call createAttribute = new Call( Name( attributesClassName ), "of" )
-			.withArgument(AST.Cast(AST.Type(Class.class), new Call( Name( attributesClassName ), "uncheckedForName").withArgument(new StringLiteral(type.qualifiedName()))))
+			.withArgument(AST.Cast(AST.Type(Class.class), new Call( Name( dsUtilsName ), "uncheckedForName").withArgument(new StringLiteral(type.qualifiedName()))))
 			.withArgument(new StringLiteral(attributeName))
 			.withArgument(isQualified?
-						AST.Cast(AST.Type(Class.class), new Call( Name( attributesClassName ), "uncheckedForName").withArgument(new StringLiteral(attributeTypeName)))
+						AST.Cast(AST.Type(Class.class), new Call( Name( dsUtilsName ), "uncheckedForName").withArgument(new StringLiteral(attributeTypeName)))
 						:AST.ClassLiteral(attributeTypeName, null));
 		
 		final TypeRef attributeTypeRef = Type("com.doctusoft.common.core.bean.Attribute")
