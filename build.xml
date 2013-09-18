@@ -194,7 +194,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 	<!-- dist -->
 	<target name="dist" description="Builds the lombok-pg artifacts" depends="compile, version">
 		<mkdir dir="dist" />
-		<jar destfile="dist/lombok-pg-${lombok.version}.jar">
+		<jar destfile="dist/lombok-ds-${lombok.version}.jar">
 			<fileset dir="build/lombok-pg" />
 			<fileset dir="." includes="LICENSE" />
 			<fileset dir="." includes="AUTHORS" />
@@ -238,7 +238,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 		<ant antfile="buildScripts/javadoc.ant.xml" target="javadoc" inheritAll="false">
 			<property name="lombok.version" value="${lombok.version}" />
 		</ant>
-		<jar destfile="dist/lombok-pg-${lombok.version}-javadoc.jar">
+		<jar destfile="dist/lombok-ds-${lombok.version}-javadoc.jar">
 			<fileset dir="build/javadoc" />
 			<fileset dir="." includes="LICENSE" />
 			<fileset dir="." includes="AUTHORS" />
