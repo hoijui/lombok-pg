@@ -1,10 +1,8 @@
 package lombok.eclipse.handlers;
 
 import lombok.Attribute;
-import lombok.LazyGetter;
 import lombok.core.AnnotationValues;
 import lombok.core.handlers.AttributeHandler;
-import lombok.core.handlers.LazyGetterHandler;
 import lombok.eclipse.EclipseAnnotationHandler;
 import lombok.eclipse.EclipseNode;
 import lombok.eclipse.handlers.ast.EclipseField;
