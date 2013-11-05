@@ -91,9 +91,10 @@ public final class PropertyAttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE,
 		injectAttribute(type, method.returns(), returnType, attributeName);
 	}
 	
-	private void injectAttribute( final TYPE_TYPE type, final TypeRef valueTypeRef, String attributeTypeName, final String attributeName) {
-		final boolean isQualified = attributeTypeName.contains(".");
-		attributeTypeName = attributeTypeName.replaceAll("<.*>", "");
+	private void injectAttribute( final TYPE_TYPE type, final TypeRef valueTypeRef, String _attributeTypeName, final String attributeName) {
+		final boolean isQualified = _attributeTypeName.contains(".");
+		_attributeTypeName = _attributeTypeName.replaceAll("<.*>", "");
+		String attributeTypeName = _attributeTypeName;
 		TypeRef mappedValueTypeRef = valueTypeRef;
 		// for non-primitives we retain the original typeref because it contains the type arguments properly (eg List<String>)
 		if (primitives.containsKey(attributeTypeName)) {
@@ -105,7 +106,11 @@ public final class PropertyAttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE,
 		}
 		
 		// TODO handle boolean attributes
-		String getterName = "get" + attributeName.substring(0, 1).toUpperCase() + attributeName.substring(1);
+		String getterPrefix = "get";
+		if (_attributeTypeName.equals("boolean")) {
+			getterPrefix = "is";
+		}
+		String getterName = getterPrefix + attributeName.substring(0, 1).toUpperCase() + attributeName.substring(1);
 		String setterName = "set" + attributeName.substring(0, 1).toUpperCase() + attributeName.substring(1);
 		
 		TypeRef hostTypeRef = Type(type.qualifiedName());
