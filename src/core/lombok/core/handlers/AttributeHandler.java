@@ -1,7 +1,16 @@
 package lombok.core.handlers;
 
+import static lombok.ast.AST.Annotation;
+import static lombok.ast.AST.Arg;
+import static lombok.ast.AST.Call;
+import static lombok.ast.AST.ClassDecl;
 import static lombok.ast.AST.FieldDecl;
+import static lombok.ast.AST.MethodDecl;
 import static lombok.ast.AST.Name;
+import static lombok.ast.AST.New;
+import static lombok.ast.AST.Null;
+import static lombok.ast.AST.Return;
+import static lombok.ast.AST.String;
 import static lombok.ast.AST.Type;
 
 import java.util.HashMap;
@@ -10,6 +19,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.ast.AST;
 import lombok.ast.Call;
+import lombok.ast.Expression;
 import lombok.ast.IField;
 import lombok.ast.IMethod;
 import lombok.ast.IType;
@@ -92,9 +102,10 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 		injectAttribute(type, method.returns(), returnType, attributeName);
 	}
 	
-	private void injectAttribute( final TYPE_TYPE type, final TypeRef valueTypeRef, String attributeTypeName, final String attributeName) {
-		final boolean isQualified = attributeTypeName.contains(".");
-		attributeTypeName = attributeTypeName.replaceAll("<.*>", "");
+	private void injectAttribute( final TYPE_TYPE type, final TypeRef valueTypeRef, String _attributeTypeName, final String attributeName) {
+		final boolean isQualified = _attributeTypeName.contains(".");
+		_attributeTypeName = _attributeTypeName.replaceAll("<.*>", "");
+		String attributeTypeName = _attributeTypeName;
 		TypeRef mappedValueTypeRef = valueTypeRef;
 		// for non-primitives we retain the original typeref because it contains the type arguments properly (eg List<String>)
 		if (primitives.containsKey(attributeTypeName)) {
@@ -104,22 +115,59 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 			// so I decided to use the object equivalent in all cases.
 			attributeTypeName = getAttributeTypeName(attributeTypeName);
 		}
-		String attributesClassName = "com.doctusoft.common.core.bean.Attributes";
-		String dsUtilsName = "lombok.DsUtils";
-		final Call createAttribute = new Call( Name( attributesClassName ), "of" )
-			.withArgument(AST.Cast(AST.Type(Class.class), new Call( Name( dsUtilsName ), "uncheckedForName").withArgument(new StringLiteral(type.qualifiedName()))))
-			.withArgument(new StringLiteral(attributeName))
-			.withArgument(isQualified?
-						AST.Cast(AST.Type(Class.class), new Call( Name( dsUtilsName ), "uncheckedForName").withArgument(new StringLiteral(attributeTypeName)))
-						:AST.ClassLiteral(attributeTypeName, null));
 		
+		String getterPrefix = "get";
+		if (_attributeTypeName.equals("boolean")) {
+			getterPrefix = "is";
+		}
+		String getterName = getterPrefix + attributeName.substring(0, 1).toUpperCase() + attributeName.substring(1);
+		String setterName = "set" + attributeName.substring(0, 1).toUpperCase() + attributeName.substring(1);
+		
+		String qualifiedHostTypeName = type.qualifiedName();
+		if (qualifiedHostTypeName.contains("$")) {
+			qualifiedHostTypeName = qualifiedHostTypeName.substring(qualifiedHostTypeName.lastIndexOf('$') + 1);
+		}
+		TypeRef hostTypeRef = Type(qualifiedHostTypeName);
 		final TypeRef attributeTypeRef = Type("com.doctusoft.common.core.bean.Attribute")
-				.withTypeArgument(Type(type.qualifiedName()))
+				.withTypeArgument(hostTypeRef)
 				.withTypeArgument(mappedValueTypeRef);
 		
+		// TODO: return correct type literals from getParent and getType
+		// TODO: add proper type arguments to the return types of getParent and getType that work with Eclipse Indigo
+		// adding typearguments to the class, eclipse indigo throws InvalidArgumentExceptions in dom.ASTNode.setSourceRange()
+		// TODO: leave setValue empty if there's no setter for that attributebo
+		Expression<?> initialization = New(attributeTypeRef).withTypeDeclaration(
+				ClassDecl("").makeAnonymous().makeLocal()
+					.withMethod(MethodDecl(mappedValueTypeRef, "getValue").makePublic().withAnnotation(Annotation(Type(Override.class)))
+							.withArgument(Arg(hostTypeRef, "instance"))
+							.withStatement(Return(Call(Name("instance"), getterName)))
+							)
+					.withMethod(MethodDecl(Type("void"), "setValue").makePublic().withAnnotation(Annotation(Type(Override.class)))
+							.withArgument(Arg(hostTypeRef, "instance"))
+							.withArgument(Arg(mappedValueTypeRef, "value"))
+							.withStatement(Call(Name("instance"), setterName).withArgument(Name("value")))
+							)
+// the version without typearguments							
+					.withMethod(MethodDecl(Type("Class"), "getParent").makePublic().withAnnotation(Annotation(Type(Override.class)))
+							.withStatement(Return(Null()))
+							)
+					.withMethod(MethodDecl(Type("Class"), "getType").makePublic().withAnnotation(Annotation(Type(Override.class)))
+							.withStatement(Return(Null()))
+							)
+//					.withMethod(MethodDecl(Type("Class").withTypeArgument(hostTypeRef), "getParent").makePublic().withAnnotation(Annotation(Type(Override.class)))
+//							.withStatement(Return(hostTypeRef))
+//							)
+//					.withMethod(MethodDecl(Type("Class").withTypeArgument(mappedValueTypeRef), "getType").makePublic().withAnnotation(Annotation(Type(Override.class)))
+//							.withStatement(Return(mappedValueTypeRef))
+//							)
+					.withMethod(MethodDecl(Type("String"), "getName").makePublic().withAnnotation(Annotation(Type(Override.class)))
+							.withStatement(Return(String(attributeName)))
+							)
+				);
 		type.editor().injectField( FieldDecl(attributeTypeRef, "_" + attributeName)
-				.withInitialization(createAttribute)
-				.makeFinal().makeStatic().makePublic());
+				.makeFinal().makeStatic().makePublic()
+				.withInitialization(initialization)
+				);
 	}
 	
 	private String getAttributeTypeName( final String typeName) {
