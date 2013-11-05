@@ -30,8 +30,8 @@ public class MethodRefHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?, ?, ?
 	private final DiagnosticsReceiver diagnosticsReceiver;
 
 	public void handle(AnnotationValues<MethodRef> annotation) {
-		String staticFieldName = "_" + method.name();
-		String fieldName = method.name();
+		String staticFieldName = "__" + method.name();
+		String fieldName = "_" + method.name();
 
 		TypeRef classTypeRef = Type(type.qualifiedName());
 		TypeRef returns = method.returns(); 	// TODO map primitive types and void
@@ -40,18 +40,36 @@ public class MethodRefHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?, ?, ?
 			returns = new TypeRef(Void.class);	// map simple 'void' to 'Void'
 			isVoid = true;
 		}
-		final TypeRef staticFieldTypeRef = Type("com.doctusoft.common.core.bean.ClassMethodReference")
+		
+		List<Argument> arguments = method.arguments();
+		String staticRefTypeName = "com.doctusoft.common.core.bean.ClassMethodReference";
+		String objectRefTypeName = "com.doctusoft.common.core.bean.ObjectMethodReference";
+		int argumentsSize = arguments.size();
+		if (argumentsSize <= 2) {
+			staticRefTypeName = "com.doctusoft.common.core.bean.ParametricClassMethodReferences.ClassMethodReference" + argumentsSize;
+			objectRefTypeName = "com.doctusoft.common.core.bean.ParametricObjectMethodReferences.ObjectMethodReference" + argumentsSize;
+		}
+		final TypeRef staticFieldTypeRef = Type(staticRefTypeName)
 				.withTypeArgument(classTypeRef)
 				.withTypeArgument(returns);
 
-		final TypeRef fieldTypeRef = Type("com.doctusoft.common.core.bean.ObjectMethodReference")
+		final TypeRef fieldTypeRef = Type(objectRefTypeName)
 				.withTypeArgument(Type(type.qualifiedName()))
 				.withTypeArgument(returns);
+		
+		if (argumentsSize <= 2) {
+			// add parameter arguments
+			for (Argument argument : arguments) {
+				staticFieldTypeRef.withTypeArgument(argument.getType());
+				fieldTypeRef.withTypeArgument(argument.getType());
+			}
+			// TODO in case of these references, we can also generate the invoke() method so that parameter names also match
+		}
 		
 		Call call = Call(Name("object"), method.name());
 		int index = 0;
 		for (Argument argument :  method.arguments()) {
-			TypeRef argumentType = argument.getType();	// TODO handle primitve types
+			TypeRef argumentType = argument.getType();	// TODO handle primitive types
 			call.withArgument(Cast(argumentType, ArrayRef(Name("arguments"), Number(index))));
 			index ++;
 		}
