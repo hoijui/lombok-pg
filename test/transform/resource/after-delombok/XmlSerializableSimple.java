@@ -14,11 +14,17 @@ class DataObject implements lombok.core.xml.XmlSerializable {
 	@java.lang.SuppressWarnings("all")
 	public lombok.core.xml.XElement toXml() {
 		final lombok.core.xml.XElement element = new lombok.core.xml.XElement("DataObject");
+		this.appendElements(element);
+		return element;
+	}
+	
+	@java.lang.Override
+	@java.lang.SuppressWarnings("all")
+	public void appendElements(final lombok.core.xml.XElement element) {
 		element.appendChild(new lombok.core.xml.XAttribute("dataObjectId", this.dataObjectId));
 		element.appendChild(new lombok.core.xml.XAttribute("name", this.name));
 		element.appendChild(new lombok.core.xml.XAttribute("description", this.description));
 		element.appendChild(new lombok.core.xml.XAttribute("createdDate", this.createdDate));
 		element.appendChild(new lombok.core.xml.XAttribute("updatedDate", this.updatedDate));
-		return element;
 	}
 }

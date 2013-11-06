@@ -475,6 +475,17 @@ public final class ASTPrinter implements ASTVisitor<ASTPrinter.State, ASTPrinter
 	public State visitStringLiteral(final StringLiteral node, final State state) {
 		return state.print("\"").print(node.getString()).print("\"");
 	}
+	
+	@Override
+	public State visitSuper(final Super node, final State state) {
+		if (!node.isImplicit()) {
+			if (node.getType() != null) {
+				state.print(node.getType(), this).print(".");
+			}
+			state.print("super");
+		}
+		return state;
+	}
 
 	@Override
 	public State visitSwitch(final Switch node, final State state) {
@@ -482,7 +493,7 @@ public final class ASTPrinter implements ASTVisitor<ASTPrinter.State, ASTPrinter
 		for (Case caze : node.getCases()) state.print(caze, this);
 		return state.printIndent().print("}");
 	}
-
+	
 	@Override
 	public State visitSynchronized(final Synchronized node, final State state) {
 		state.print("synchronized (").print(node.getLock(), this).print(") {\n");

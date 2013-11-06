@@ -92,6 +92,8 @@ public interface ASTVisitor<RETURN_TYPE, PARAMETER_TYPE> {
 	RETURN_TYPE visitReturnDefault(ReturnDefault node, PARAMETER_TYPE p);
 
 	RETURN_TYPE visitStringLiteral(StringLiteral node, PARAMETER_TYPE p);
+	
+	RETURN_TYPE visitSuper(Super node, PARAMETER_TYPE p);
 
 	RETURN_TYPE visitSwitch(Switch node, PARAMETER_TYPE p);
 

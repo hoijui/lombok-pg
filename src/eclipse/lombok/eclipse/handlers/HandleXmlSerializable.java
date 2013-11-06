@@ -16,6 +16,7 @@ import org.eclipse.jdt.internal.compiler.ast.Annotation;
 import org.eclipse.jdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.jdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.jdt.internal.compiler.ast.StringLiteral;
+import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import org.mangosdk.spi.ProviderFor;
 
 /**
@@ -58,6 +59,15 @@ public class HandleXmlSerializable extends EclipseAnnotationHandler<XmlSerializa
 			}
 			
 			return value;
+		}
+
+		@Override
+		protected boolean isSuperObject(EclipseType type) {
+			if (type.get().superclass == null) {
+				return true;
+			}
+			
+			return EclipseHandlerUtil.typeEquals(type.get().superclass.getTypeName(), Object.class.getName());
 		}		
 	}
 }

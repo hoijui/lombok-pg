@@ -561,6 +561,16 @@ public final class JavacASTMaker implements lombok.ast.pg.ASTVisitor<JCTree, Voi
 		final JCLiteral literal = setGeneratedBy(M(node).Literal(node.getString()), source);
 		return literal;
 	}
+	
+	@Override
+	public JCTree visitSuper(final lombok.ast.pg.Super node, final Void p) {
+		final Name superName = name("super");
+		if (node.getType() == null) {
+			return setGeneratedBy(M(node).Ident(superName), source);
+		} else {
+			return setGeneratedBy(M(node).Select(build(node.getType(), JCExpression.class), superName), source);
+		}
+	}
 
 	@Override
 	public JCTree visitSwitch(final lombok.ast.pg.Switch node, final Void p) {

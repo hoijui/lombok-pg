@@ -29,6 +29,15 @@ public class HandleXmlSerializable extends JavacAnnotationHandler<XmlSerializabl
 		@Override
 		protected Expression<?> getAnnotationValue(Expression<?> value) {
 			return value;
+		}
+
+		@Override
+		protected boolean isSuperObject(JavacType type) {
+			if (type.get().getExtendsClause() == null) {
+				return true;
+			}
+			
+			return type.get().getExtendsClause().type.getKind().name().equals(Object.class.getName());
 		}		
 	}
 }

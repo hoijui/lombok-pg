@@ -74,14 +74,26 @@ public abstract class XmlSerializableHandler<TYPE_TYPE extends IType<?, FIELD_TY
 			rootName = getAnnotationValue(root.getValues().get("name"));
 		}
 		
-		MethodDecl method = MethodDecl(typeRef, "toXml")
+		MethodDecl toXmlMethod = MethodDecl(typeRef, "toXml")
 				.withAnnotation(Annotation(Type(Override.class)))
 				.makePublic()
 				.implementing();
 		
-		method.withStatement(
+		toXmlMethod.withStatement(
 				LocalDecl(typeRef, "element").makeFinal()
 				.withInitialization(New(typeRef).withArgument(rootName)));
+		
+		toXmlMethod.withStatement(Call(This(), "appendElements").withArgument(Name("element")));
+		
+		MethodDecl appendElementsMethod = MethodDecl(Type(void.class), "appendElements")
+				.withAnnotation(Annotation(Type(Override.class)))
+				.makePublic()
+				.withArgument(Arg(Type(XElement.class), "element"))
+				.implementing();
+		
+		if (!isSuperObject(type)) {
+			appendElementsMethod.withStatement(Call(Super(), "appendElements").withArgument(Name("element")));
+		}
 		
 		List<FIELD_TYPE> fields = new ArrayList<FIELD_TYPE>();
 				
@@ -103,7 +115,7 @@ public abstract class XmlSerializableHandler<TYPE_TYPE extends IType<?, FIELD_TY
 			}
 			
 			if (xmlField.adapter != null) {
-				method.withStatement(
+				appendElementsMethod.withStatement(
 						Call(Name("element"), "appendChild")
 						.withArgument(
 								New(innerType)
@@ -115,9 +127,9 @@ public abstract class XmlSerializableHandler<TYPE_TYPE extends IType<?, FIELD_TY
 										)
 										.withArgument(Field(field.name())))));
 			} else if (isKnownType(field.boxedType())) {
-				method.withStatement(Call(Name("element"), "appendChild").withArgument(New(innerType).withArgument(xmlField.name).withArgument(Field(field.name()))));
+				appendElementsMethod.withStatement(Call(Name("element"), "appendChild").withArgument(New(innerType).withArgument(xmlField.name).withArgument(Field(field.name()))));
 			} else {
-				method.withStatement(
+				appendElementsMethod.withStatement(
 						Call(Name(XmlUtils.class), "append")
 						.withArgument(Name("element"))
 						.withArgument(Field(field.name()))
@@ -126,10 +138,11 @@ public abstract class XmlSerializableHandler<TYPE_TYPE extends IType<?, FIELD_TY
 			}
 		}
 		
-		method.withStatement(Return(Name("element")));
+		toXmlMethod.withStatement(Return(Name("element")));
 		
 		type.editor().implementing(Type(XmlSerializable.class));
-		type.editor().injectMethod(method);
+		type.editor().injectMethod(toXmlMethod);
+		type.editor().injectMethod(appendElementsMethod);
 	}
 	
 	private boolean hasXmlTrasient(FIELD_TYPE field) {
@@ -193,4 +206,5 @@ public abstract class XmlSerializableHandler<TYPE_TYPE extends IType<?, FIELD_TY
 	}
 	
 	protected abstract Expression<?> getAnnotationValue(Expression<?> value);
+	protected abstract boolean isSuperObject(TYPE_TYPE type);
 }

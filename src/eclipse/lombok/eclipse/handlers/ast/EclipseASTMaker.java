@@ -25,7 +25,6 @@ import static org.eclipse.jdt.internal.compiler.ast.ASTNode.IsSuperType;
 import static org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants.*;
 import static org.eclipse.jdt.internal.compiler.lookup.ExtraCompilerModifiers.AccSemicolonBody;
 import static org.eclipse.jdt.internal.compiler.lookup.ExtraCompilerModifiers.AccImplementing;
-
 import static lombok.ast.pg.AST.*;
 import static lombok.eclipse.Eclipse.ECLIPSE_DO_NOT_TOUCH_FLAG;
 import static lombok.eclipse.Eclipse.fromQualifiedName;
@@ -105,6 +104,7 @@ import org.eclipse.jdt.internal.compiler.ast.PostfixExpression;
 import org.eclipse.jdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.jdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.jdt.internal.compiler.ast.QualifiedNameReference;
+import org.eclipse.jdt.internal.compiler.ast.QualifiedSuperReference;
 import org.eclipse.jdt.internal.compiler.ast.QualifiedThisReference;
 import org.eclipse.jdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.jdt.internal.compiler.ast.ReturnStatement;
@@ -113,6 +113,7 @@ import org.eclipse.jdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.jdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.jdt.internal.compiler.ast.Statement;
 import org.eclipse.jdt.internal.compiler.ast.StringLiteral;
+import org.eclipse.jdt.internal.compiler.ast.SuperReference;
 import org.eclipse.jdt.internal.compiler.ast.SwitchStatement;
 import org.eclipse.jdt.internal.compiler.ast.SynchronizedStatement;
 import org.eclipse.jdt.internal.compiler.ast.ThisReference;
@@ -728,6 +729,21 @@ public final class EclipseASTMaker implements lombok.ast.pg.ASTVisitor<ASTNode, 
 		final StringLiteral stringLiteral = new StringLiteral(node.getString().toCharArray(), 0, 0, 1);
 		setGeneratedByAndCopyPos(stringLiteral, source, posHintOf(node));
 		return stringLiteral;
+	}
+	
+	@Override
+	public ASTNode visitSuper(final lombok.ast.pg.Super node, final Void p) {
+		final ThisReference superReference;
+		if (node.getType() != null) {
+			superReference = new QualifiedSuperReference(build(node.getType(), TypeReference.class), 0, 0);
+		} else {
+			superReference = new SuperReference(0, 0);
+			if (node.isImplicit()) {
+				superReference.bits |= ASTNode.IsImplicitThis;
+			}
+		}
+		setGeneratedByAndCopyPos(superReference, source, posHintOf(node));
+		return superReference;
 	}
 
 	@Override

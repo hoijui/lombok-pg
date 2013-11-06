@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import lombok.XmlSerializable;
 @XmlSerializable
 @XmlRootElement(name = DataObject.ROOT_NAME)
-class DataObject implements lombok.core.xml.XmlSerializable {
+class DataObject extends OtherObject implements lombok.core.xml.XmlSerializable {
 	
 	public static final String ROOT_NAME = "do";
 	private static final String DESC = "desc";
@@ -19,10 +19,6 @@ class DataObject implements lombok.core.xml.XmlSerializable {
 	private String name;
 	@XmlAttribute(name = DESC)
 	private String description;
-	@XmlJavaTypeAdapter(TimestampAdapter.class)
-	private Timestamp createdDate;
-	@XmlJavaTypeAdapter(TimestampAdapter.class)
-	private Timestamp updatedDate;
 	
 	@java.lang.Override
 	@java.lang.SuppressWarnings("all")
@@ -35,20 +31,28 @@ class DataObject implements lombok.core.xml.XmlSerializable {
 	@java.lang.Override
 	@java.lang.SuppressWarnings("all")
 	public void appendElements(final lombok.core.xml.XElement element) {
+		super.appendElements(element);
 		element.appendChild(new lombok.core.xml.XElement("id", this.dataObjectId));
 		element.appendChild(new lombok.core.xml.XAttribute(DESC, this.description));
-		element.appendChild(new lombok.core.xml.XAttribute("createdDate", new TimestampAdapter().marshal(this.createdDate)));
-		element.appendChild(new lombok.core.xml.XAttribute("updatedDate", new TimestampAdapter().marshal(this.updatedDate)));
 	}
 }
-class TimestampAdapter extends XmlAdapter<Long, Timestamp> {
-	@Override
-	public Timestamp unmarshal(Long v) {
-		return new Timestamp(v);
+@XmlSerializable
+class OtherObject implements lombok.core.xml.XmlSerializable {
+	
+	@XmlAttribute
+	private long id;
+	
+	@java.lang.Override
+	@java.lang.SuppressWarnings("all")
+	public lombok.core.xml.XElement toXml() {
+		final lombok.core.xml.XElement element = new lombok.core.xml.XElement("OtherObject");
+		this.appendElements(element);
+		return element;
 	}
-
-	@Override
-	public Long marshal(Timestamp v) {
-		return v.getTime();
+	
+	@java.lang.Override
+	@java.lang.SuppressWarnings("all")
+	public void appendElements(final lombok.core.xml.XElement element) {
+		element.appendChild(new lombok.core.xml.XAttribute("id", this.id));
 	}
 }

@@ -257,6 +257,14 @@ public final class AST {
 	public static This This(final TypeRef type) {
 		return new This(type);
 	}
+	
+	public static Super Super() {
+		return new Super();
+	}
+	
+	public static Super Super(final TypeRef type) {
+		return new Super(type);
+	}
 
 	public static Throw Throw(final Expression<?> init) {
 		return new Throw(init);

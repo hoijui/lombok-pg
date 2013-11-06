@@ -5,7 +5,7 @@ This buildfile is part of lombok-pg. It is the main entry point that contains
 the common tasks and can be called on to run the main aspects of all the sub-scripts.
 	</description>
 
-	<property name="build.compiler" value="javac1.6" />
+	<property name="build.compiler" value="javac1.7" />
 
 	<!-- resolve -->
 	<property name="ivy.retrieve.pattern" value="${basedir}/lib/[conf]/[artifact].[ext]" />
