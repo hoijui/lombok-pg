@@ -5,6 +5,7 @@ import lombok.core.AnnotationValues;
 import lombok.core.handlers.MethodRefHandler;
 import lombok.eclipse.EclipseAnnotationHandler;
 import lombok.eclipse.EclipseNode;
+import lombok.eclipse.handlers.EclipseHandlerUtil.MemberExistsResult;
 import lombok.eclipse.handlers.ast.EclipseMethod;
 import lombok.eclipse.handlers.ast.EclipseType;
 
@@ -20,7 +21,9 @@ public class HandleMethodRef extends EclipseAnnotationHandler<MethodRef> {
 		final EclipseType type = EclipseType.typeOf(annotationNode, ast);
 		final EclipseMethod method = EclipseMethod.methodOf(annotationNode, ast);
 		
-		new MethodRefHandler(type, method, annotationNode).handle(annotation);
+		boolean getThisExists = EclipseHandlerUtil.methodExists("__getThis", annotationNode, false, 0) != MemberExistsResult.NOT_EXISTS;
+		
+		new MethodRefHandler(type, method, annotationNode, getThisExists).handle(annotation);
 	}
 
 }

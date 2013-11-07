@@ -18,12 +18,11 @@ import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import lombok.ast.AST;
-import lombok.ast.Call;
+import lombok.ast.ClassLiteral;
 import lombok.ast.Expression;
 import lombok.ast.IField;
 import lombok.ast.IMethod;
 import lombok.ast.IType;
-import lombok.ast.StringLiteral;
 import lombok.ast.TypeRef;
 import lombok.core.DiagnosticsReceiver;
 
@@ -68,13 +67,16 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 
 	private void createAttribute( final TYPE_TYPE type, final FIELD_TYPE field ) {
 		String returnType = field.type().getTypeName();
+		Object wrappedJavacAttrType = null;
 		try {
 			JCVariableDecl fd = (JCVariableDecl) field.get();
 			returnType = fd.getType().toString();
+			wrappedJavacAttrType = fd.vartype.type;
+//			System.out.println(returnType + " wrapped: " + wrappedJavacAttrType);
 		} catch (Throwable t) {
 			// do nothing, it's probably because JCMethodDecl is not found under Eclipse, and it's normal
 		}		
-		injectAttribute(type, field.type(), returnType, field.filteredName());
+		injectAttribute(type, field.type(), returnType, field.filteredName(), wrappedJavacAttrType);
 	}
 	
 	private void createAttribute(final TYPE_TYPE type, final METHOD_TYPE method) {
@@ -93,16 +95,18 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 		}
 
 		String returnType = method.returns().getTypeName();
+		Object wrappedJavacAttrType = null;
 		try {
 			JCMethodDecl md = (JCMethodDecl) method.get();
+			wrappedJavacAttrType = md.restype.type;
 			returnType = md.restype.toString();
 		} catch (Throwable t) {
 			// do nothing, it's probably because JCMethodDecl is not found under Eclipse, and it's normal
 		}		
-		injectAttribute(type, method.returns(), returnType, attributeName);
+		injectAttribute(type, method.returns(), returnType, attributeName, wrappedJavacAttrType);
 	}
 	
-	private void injectAttribute( final TYPE_TYPE type, final TypeRef valueTypeRef, String _attributeTypeName, final String attributeName) {
+	private void injectAttribute( final TYPE_TYPE type, final TypeRef valueTypeRef, String _attributeTypeName, final String attributeName, final Object wrappedJavacAttrType) {
 		final boolean isQualified = _attributeTypeName.contains(".");
 		_attributeTypeName = _attributeTypeName.replaceAll("<.*>", "");
 		String attributeTypeName = _attributeTypeName;
@@ -123,7 +127,7 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 		String getterName = getterPrefix + attributeName.substring(0, 1).toUpperCase() + attributeName.substring(1);
 		String setterName = "set" + attributeName.substring(0, 1).toUpperCase() + attributeName.substring(1);
 		
-		String qualifiedHostTypeName = type.qualifiedName();
+		String qualifiedHostTypeName = type.name();
 		if (qualifiedHostTypeName.contains("$")) {
 			qualifiedHostTypeName = qualifiedHostTypeName.substring(qualifiedHostTypeName.lastIndexOf('$') + 1);
 		}
@@ -132,10 +136,11 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 				.withTypeArgument(hostTypeRef)
 				.withTypeArgument(mappedValueTypeRef);
 		
-		// TODO: return correct type literals from getParent and getType
+		// TODO: add "rawtypes" to suppresswarnings. This needs ArrayLiteral or something like that
 		// TODO: add proper type arguments to the return types of getParent and getType that work with Eclipse Indigo
 		// adding typearguments to the class, eclipse indigo throws InvalidArgumentExceptions in dom.ASTNode.setSourceRange()
-		// TODO: leave setValue empty if there's no setter for that attributebo
+		// TODO: leave setValue empty if there's no setter for that attribute
+		String valueTypeString = mappedValueTypeRef.toString().replaceAll("<.*>", "");
 		Expression<?> initialization = New(attributeTypeRef).withTypeDeclaration(
 				ClassDecl("").makeAnonymous().makeLocal()
 					.withMethod(MethodDecl(mappedValueTypeRef, "getValue").makePublic().withAnnotation(Annotation(Type(Override.class)))
@@ -148,18 +153,20 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 							.withStatement(Call(Name("instance"), setterName).withArgument(Name("value")))
 							)
 // the version without typearguments							
-					.withMethod(MethodDecl(Type("Class"), "getParent").makePublic().withAnnotation(Annotation(Type(Override.class)))
-							.withStatement(Return(Null()))
-							)
-					.withMethod(MethodDecl(Type("Class"), "getType").makePublic().withAnnotation(Annotation(Type(Override.class)))
-							.withStatement(Return(Null()))
-							)
-//					.withMethod(MethodDecl(Type("Class").withTypeArgument(hostTypeRef), "getParent").makePublic().withAnnotation(Annotation(Type(Override.class)))
-//							.withStatement(Return(hostTypeRef))
+//					.withMethod(MethodDecl(Type("Class"), "getParent").makePublic().withAnnotation(Annotation(Type(Override.class)))
+//							.withStatement(Return(Null()))
 //							)
-//					.withMethod(MethodDecl(Type("Class").withTypeArgument(mappedValueTypeRef), "getType").makePublic().withAnnotation(Annotation(Type(Override.class)))
-//							.withStatement(Return(mappedValueTypeRef))
+//					.withMethod(MethodDecl(Type("Class"), "getType").makePublic().withAnnotation(Annotation(Type(Override.class)))
+//							.withStatement(Return(Null()))
 //							)
+					.withMethod(MethodDecl(Type("Class").withTypeArgument(hostTypeRef), "getParent").makePublic().withAnnotation(Annotation(Type(Override.class)))
+							.withStatement(Return(AST.ClassLiteral(hostTypeRef.toString(), type.get())))
+							)
+					.withMethod(MethodDecl(Type("Class").withTypeArgument(mappedValueTypeRef), "getType").makePublic()
+							.withAnnotation(Annotation(Type(Override.class)))
+							.withAnnotation(Annotation(Type(SuppressWarnings.class)).withValue(AST.String("unchecked")))
+							.withStatement(Return(AST.Cast(Type(Class.class), AST.ClassLiteral(valueTypeString, wrappedJavacAttrType))))
+							)
 					.withMethod(MethodDecl(Type("String"), "getName").makePublic().withAnnotation(Annotation(Type(Override.class)))
 							.withStatement(Return(String(attributeName)))
 							)
@@ -170,7 +177,7 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 				);
 	}
 	
-	private String getAttributeTypeName( final String typeName) {
+	public static String getAttributeTypeName( final String typeName) {
 		if( primitives.containsKey(typeName) ) {
 			final String attributeTypeName = primitives.get(typeName);
 			if( attributeTypeName != null) {

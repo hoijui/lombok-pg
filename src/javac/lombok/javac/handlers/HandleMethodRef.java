@@ -10,6 +10,7 @@ import lombok.core.handlers.AttributeHandler;
 import lombok.core.handlers.MethodRefHandler;
 import lombok.javac.JavacAnnotationHandler;
 import lombok.javac.JavacNode;
+import lombok.javac.handlers.JavacHandlerUtil.MemberExistsResult;
 import lombok.javac.handlers.ast.JavacField;
 import lombok.javac.handlers.ast.JavacMethod;
 import lombok.javac.handlers.ast.JavacType;
@@ -27,7 +28,9 @@ public class HandleMethodRef extends JavacAnnotationHandler<MethodRef> {
 		final JavacType type = JavacType.typeOf(annotationNode, ast);
 		final JavacMethod method = JavacMethod.methodOf(annotationNode, ast);
 		
-		new MethodRefHandler<JavacType, JavacMethod, JavacField>(type, method, annotationNode).handle(annotation);
+		boolean getThisExists = JavacHandlerUtil.methodExists("__getThis", annotationNode, false, 0) != MemberExistsResult.NOT_EXISTS;
+		
+		new MethodRefHandler<JavacType, JavacMethod, JavacField>(type, method, annotationNode, getThisExists).handle(annotation);
 		deleteAnnotationIfNeccessary(annotationNode, MethodRef.class);
 		deleteImport(annotationNode, AccessLevel.class);
 	}

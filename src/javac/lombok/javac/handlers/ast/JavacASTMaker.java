@@ -88,6 +88,7 @@ import com.sun.tools.javac.util.Name;
 
 import lombok.RequiredArgsConstructor;
 import lombok.ast.ClassLiteral;
+import lombok.ast.TypeRef;
 import lombok.core.util.As;
 import lombok.core.util.Cast;
 import lombok.javac.Javac;
@@ -737,7 +738,7 @@ public final class JavacASTMaker implements lombok.ast.ASTVisitor<JCTree, Void> 
 	@Override
 	public JCTree visitClassLiteral(final ClassLiteral node, final Void p) {
 		String typeName = node.getTypeName();
-		JavacType javacType = (JavacType) node.getWrappedObject();
+//		JavacType javacType = (JavacType) node.getWrappedObject();
 		// This currently doesn't work, I couldn't figure out how to it
 //		if (javacType != null) {
 //			JCClassDecl decl = javacType.get();
@@ -747,7 +748,25 @@ public final class JavacASTMaker implements lombok.ast.ASTVisitor<JCTree, Void> 
 //			final JCExpression literal = setGeneratedBy(M(node).ClassLiteral(new Type(TypeTags.CLASS, new TypeSymbol(0, decl.name, decl.type, decl.sym))), source);
 //			return literal;
 //		}
-		final JCExpression literal = setGeneratedBy(M(node).ClassLiteral(new ClassSymbol(0, name(typeName), null)), source);
-		return literal;
+//		System.out.println("type:" + typeName);
+		Object wrappedObject = node.getWrappedObject();
+		TreeMaker m = M(node);
+		if (wrappedObject != null) {
+//			System.out.println("wrapped: " + wrappedObject.getClass());
+			Type type = null;
+			if (wrappedObject instanceof JCClassDecl) {
+				type = ((JCClassDecl) wrappedObject).sym.type;
+			}
+			if (wrappedObject instanceof Type) {
+				type = (Type) wrappedObject;
+			}
+			// TODO types with wildcard type parameters throw a compiler exception
+			final JCExpression literal = setGeneratedBy(m.ClassLiteral(type), source);
+			return literal;
+		} else {
+//			System.out.println("wrapped: null, using typename");
+			final JCExpression literal = setGeneratedBy(m.ClassLiteral(new ClassSymbol(0, name(typeName), null)), source);
+			return literal;
+		}
 	}
 }
