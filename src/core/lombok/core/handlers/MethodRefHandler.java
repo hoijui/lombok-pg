@@ -45,6 +45,7 @@ public class MethodRefHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?, ?, ?
 	public void handle(AnnotationValues<MethodRef> annotation) {
 		String staticFieldName = "__" + method.name();
 		String fieldName = "_" + method.name();
+		boolean isInterface = type.isInterface();
 
 		TypeRef classTypeRef = Type(type.qualifiedName());
 		TypeRef returns = method.returns(); 	// TODO map primitive types and void
@@ -103,22 +104,23 @@ public class MethodRefHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?, ?, ?
 					.makeStatic().makeFinal().makePublic()
 					.withInitialization(initialization));
 
-		if (!getThisExists) {
-			/*
-			 * I could just use This() as parameter of the .on() invocation below, but that raises 'illegal forward refernce' when compiled with Javac.
-			 * The exact same code written in pure java works, but this code generation might have some hack.
-			 * The "__getThis()" method is a workaround for this;
-			 */
-			type.editor().injectMethod(AST.MethodDecl(classTypeRef, "__getThis").withStatement(
-						Return(This())).makePrivate());
+		if (!isInterface) {
+			if (!getThisExists) {
+				/*
+				 * I could just use This() as parameter of the .on() invocation below, but that raises 'illegal forward refernce' when compiled with Javac.
+				 * The exact same code written in pure java works, but this code generation might have some hack.
+				 * The "__getThis()" method is a workaround for this;
+				 */
+				type.editor().injectMethod(AST.MethodDecl(classTypeRef, "__getThis").withStatement(
+							Return(This())).makePrivate());
+			}
+			
+			
+			type.editor().injectField(new FieldDecl(fieldTypeRef, fieldName)
+					.makeFinal().makePublic()
+					.withInitialization(Call(Name(staticFieldName), "on").withArgument(Call("__getThis")))
+					);
 		}
-		
-		
-		type.editor().injectField(new FieldDecl(fieldTypeRef, fieldName)
-				.makeFinal().makePublic()
-				.withInitialization(Call(Name(staticFieldName), "on").withArgument(Call("__getThis")))
-				);
-
 	}
 	
 	public static TypeRef mapPrimitiveTypes(TypeRef sourceRef) {
