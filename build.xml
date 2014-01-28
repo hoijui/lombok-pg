@@ -18,7 +18,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 
 	<target name="download-maven-ant-tasks" unless="maven.available">
 		<mkdir dir="${basedir}/lib" />
-		<get src="http://apache.lehtivihrea.org//maven/binaries/maven-ant-tasks-2.1.3.jar" dest="${basedir}/lib/maven-ant-tasks.jar" usetimestamp="true" />
+		<get src="http://apache.lehtivihrea.org/maven/ant-tasks/2.1.3/binaries/maven-ant-tasks-2.1.3.jar" dest="${basedir}/lib/maven-ant-tasks.jar" usetimestamp="true" />
 	</target>
 
 	<target name="ensure-ipp" depends="download-ipp">
