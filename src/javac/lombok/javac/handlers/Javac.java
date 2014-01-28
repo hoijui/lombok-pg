@@ -28,6 +28,7 @@ import lombok.NoArgsConstructor;
 import lombok.core.AST.Kind;
 import lombok.core.ImportList;
 import lombok.javac.JavacNode;
+import lombok.javac.JavacTreeMaker;
 
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCAnnotation;
@@ -38,7 +39,6 @@ import com.sun.tools.javac.tree.JCTree.JCExpression;
 import com.sun.tools.javac.tree.JCTree.JCImport;
 import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
 import com.sun.tools.javac.tree.JCTree.JCModifiers;
-import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.ListBuffer;
 
@@ -58,7 +58,7 @@ public final class Javac {
 	}
 
 	public static void addSuppressWarningsAll(final JCModifiers mods, final JavacNode node, final int pos) {
-		TreeMaker maker = node.getTreeMaker();
+		JavacTreeMaker maker = node.getTreeMaker();
 		JCExpression suppressWarningsType = chainDotsString(node, "java.lang.SuppressWarnings").setPos(pos);
 		JCExpression allLiteral = maker.Literal("all").setPos(pos);
 		ListBuffer<JCAnnotation> newAnnotations = ListBuffer.lb();
