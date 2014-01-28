@@ -28,9 +28,9 @@ class EnumIdAccessorsPrefix {
     public @java.lang.SuppressWarnings("all") int getCode() {
       return this._code;
     }
-    private @java.lang.SuppressWarnings("all") Status(final int _code) {
+    private @java.lang.SuppressWarnings("all") Status(final int code) {
       super();
-      this._code = _code;
+      this._code = code;
     }
   }
   EnumIdAccessorsPrefix() {
