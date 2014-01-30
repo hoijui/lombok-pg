@@ -32,8 +32,8 @@ import lombok.Synchronized;
   }
 }
 @Log class InjectField2 {
-  private final java.lang.Object $lock = new java.lang.Object[0];
   private static final java.util.logging.Logger log = java.util.logging.Logger.getLogger(InjectField2.class.getName());
+  private final java.lang.Object $lock = new java.lang.Object[0];
   private static final String LOG_MESSAGE = "static initializer";
   static {
     log.log(Level.FINE, LOG_MESSAGE);
