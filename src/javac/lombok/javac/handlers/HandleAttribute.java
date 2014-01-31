@@ -37,9 +37,6 @@ import org.mangosdk.spi.ProviderFor;
 
 import com.sun.tools.javac.tree.JCTree.JCAnnotation;
 
-/**
- * Handles the {@code lombok.LazyGetter} annotation for javac.
- */
 @ProviderFor(JavacAnnotationHandler.class)
 public class HandleAttribute extends JavacAnnotationHandler<Attribute> {
 
@@ -48,8 +45,9 @@ public class HandleAttribute extends JavacAnnotationHandler<Attribute> {
 		final JavacType type = JavacType.typeOf(annotationNode, ast);
 		final JavacMethod method = JavacMethod.methodOf(annotationNode, ast);
 		final JavacField field = JavacField.fieldOf(annotationNode, ast);
+		final boolean staticField = !"false".equals(annotation.getRawExpression("staticField"));
 		
-		new AttributeHandler<JavacType, JavacMethod, JavacField>(type, method, field, annotationNode).handle();
+		new AttributeHandler<JavacType, JavacMethod, JavacField>(type, method, field, annotationNode, false, staticField).handle();
 		deleteAnnotationIfNeccessary(annotationNode, Attribute.class);
 		deleteImport(annotationNode, AccessLevel.class);
 	}

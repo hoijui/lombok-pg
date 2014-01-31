@@ -4,11 +4,11 @@ import static lombok.ast.AST.Annotation;
 import static lombok.ast.AST.Arg;
 import static lombok.ast.AST.Call;
 import static lombok.ast.AST.ClassDecl;
+import static lombok.ast.AST.Field;
 import static lombok.ast.AST.FieldDecl;
 import static lombok.ast.AST.MethodDecl;
 import static lombok.ast.AST.Name;
 import static lombok.ast.AST.New;
-import static lombok.ast.AST.Null;
 import static lombok.ast.AST.Return;
 import static lombok.ast.AST.String;
 import static lombok.ast.AST.Type;
@@ -18,8 +18,10 @@ import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import lombok.ast.AST;
-import lombok.ast.ClassLiteral;
+import lombok.ast.Block;
+import lombok.ast.ClassDecl;
 import lombok.ast.Expression;
+import lombok.ast.FieldDecl;
 import lombok.ast.IField;
 import lombok.ast.IMethod;
 import lombok.ast.IType;
@@ -35,6 +37,8 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 	private final METHOD_TYPE method;
 	private final FIELD_TYPE field;
 	private final DiagnosticsReceiver diagnosticsReceiver;
+	private final boolean observed;
+	private final boolean staticField;
 	
 	private static final Map<String,String> primitives;
 	
@@ -132,7 +136,8 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 			qualifiedHostTypeName = qualifiedHostTypeName.substring(qualifiedHostTypeName.lastIndexOf('$') + 1);
 		}
 		TypeRef hostTypeRef = Type(qualifiedHostTypeName);
-		final TypeRef attributeTypeRef = Type("com.doctusoft.common.core.bean.Attribute")
+		String attrFieldClassName = observed?"com.doctusoft.common.core.bean.ObservedAttribute":"com.doctusoft.common.core.bean.Attribute";
+		final TypeRef attributeTypeRef = Type(attrFieldClassName)
 				.withTypeArgument(hostTypeRef)
 				.withTypeArgument(mappedValueTypeRef);
 		
@@ -141,39 +146,105 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 		// adding typearguments to the class, eclipse indigo throws InvalidArgumentExceptions in dom.ASTNode.setSourceRange()
 		// TODO: leave setValue empty if there's no setter for that attribute
 		String valueTypeString = mappedValueTypeRef.toString().replaceAll("<.*>", "");
-		Expression<?> initialization = New(attributeTypeRef).withTypeDeclaration(
-				ClassDecl("").makeAnonymous().makeLocal()
-					.withMethod(MethodDecl(mappedValueTypeRef, "getValue").makePublic().withAnnotation(Annotation(Type(Override.class)))
-							.withArgument(Arg(hostTypeRef, "instance"))
-							.withStatement(Return(Call(Name("instance"), getterName)))
-							)
-					.withMethod(MethodDecl(Type("void"), "setValue").makePublic().withAnnotation(Annotation(Type(Override.class)))
-							.withArgument(Arg(hostTypeRef, "instance"))
-							.withArgument(Arg(mappedValueTypeRef, "value"))
-							.withStatement(Call(Name("instance"), setterName).withArgument(Name("value")))
-							)
-// the version without typearguments							
-//					.withMethod(MethodDecl(Type("Class"), "getParent").makePublic().withAnnotation(Annotation(Type(Override.class)))
-//							.withStatement(Return(Null()))
-//							)
-//					.withMethod(MethodDecl(Type("Class"), "getType").makePublic().withAnnotation(Annotation(Type(Override.class)))
-//							.withStatement(Return(Null()))
-//							)
-					.withMethod(MethodDecl(Type("Class").withTypeArgument(hostTypeRef), "getParent").makePublic().withAnnotation(Annotation(Type(Override.class)))
-							.withStatement(Return(AST.ClassLiteral(hostTypeRef.toString(), type.get())))
-							)
-					.withMethod(MethodDecl(Type("Class").withTypeArgument(mappedValueTypeRef), "getType").makePublic()
-							.withAnnotation(Annotation(Type(Override.class)))
-							.withAnnotation(Annotation(Type(SuppressWarnings.class)).withValue(AST.String("unchecked")))
-							.withStatement(Return(AST.Cast(Type(Class.class), AST.ClassLiteral(valueTypeString, wrappedJavacAttrType))))
-							)
-					.withMethod(MethodDecl(Type("String"), "getName").makePublic().withAnnotation(Annotation(Type(Override.class)))
-							.withStatement(Return(String(attributeName)))
-							)
-				);
-		type.editor().injectField( FieldDecl(attributeTypeRef, "_" + attributeName)
-				.makeFinal().makeStatic().makePublic()
-				.withInitialization(initialization)
+		ClassDecl classDecl = ClassDecl("").makeAnonymous().makeLocal()
+				.withMethod(MethodDecl(mappedValueTypeRef, "getValue").makePublic().withAnnotation(Annotation(Type(Override.class)))
+						.withArgument(Arg(hostTypeRef, "instance"))
+						.withStatement(Return(AST.Cast(valueTypeRef, Call(Name("instance"), getterName))))
+						)
+				.withMethod(MethodDecl(Type("void"), "setValue").makePublic().withAnnotation(Annotation(Type(Override.class)))
+						.withArgument(Arg(hostTypeRef, "instance"))
+						.withArgument(Arg(mappedValueTypeRef, "value"))
+						.withStatement(Call(Name("instance"), setterName).withArgument(Name("value")))
+						)
+//the version without typearguments							
+//				.withMethod(MethodDecl(Type("Class"), "getParent").makePublic().withAnnotation(Annotation(Type(Override.class)))
+//						.withStatement(Return(AST.Null()))
+//						)
+//				.withMethod(MethodDecl(Type("Class"), "getType").makePublic().withAnnotation(Annotation(Type(Override.class)))
+//						.withStatement(Return(AST.Null()))
+//						)
+				.withMethod(MethodDecl(Type("Class").withTypeArgument(hostTypeRef), "getParent").makePublic().withAnnotation(Annotation(Type(Override.class)))
+						.withStatement(Return(AST.ClassLiteral(hostTypeRef.toString(), type.get())))
+						)
+				.withMethod(MethodDecl(Type("String"), "getName").makePublic().withAnnotation(Annotation(Type(Override.class)))
+						.withStatement(Return(String(attributeName)))
+						);
+		if (staticField) {
+			classDecl.withMethod(MethodDecl(Type("Class").withTypeArgument(mappedValueTypeRef), "getType").makePublic()
+					.withAnnotation(Annotation(Type(Override.class)))
+					.withAnnotation(Annotation(Type(SuppressWarnings.class)).withValue(AST.String("unchecked")))
+					.withStatement(Return(AST.Cast(Type(Class.class), AST.ClassLiteral(valueTypeString, wrappedJavacAttrType))))
+					);
+		} else {
+			// when not a static field, we probably have type parameters, so we skip returning a class literal
+			// TODO this is not too nice this way
+			classDecl.withMethod(MethodDecl(Type("Class").withTypeArgument(mappedValueTypeRef), "getType").makePublic()
+					.withAnnotation(Annotation(Type(Override.class)))
+					.withAnnotation(Annotation(Type(SuppressWarnings.class)).withValue(AST.String("unchecked")))
+					.withStatement(Return(AST.Null()))
+					);
+		}
+		// replace or insert the setter method
+		Block setterBody = AST.Block()
+				.withStatement(AST.Assign(Field(AST.This(), attributeName), Name(attributeName)));
+
+		if (observed) {
+			// TODO check if the container type is an interface - we cannot implement this stuff on interfaces
+			TypeRef attributeListenerTypeRef = Type("com.doctusoft.common.core.bean.internal.AttributeListeners").withTypeArgument(mappedValueTypeRef);
+			String listenerFieldName = "$" + attributeName + "$listeners";
+			type.editor().injectField(FieldDecl(attributeListenerTypeRef, listenerFieldName)
+						.makePrivate()
+						.withInitialization(New(attributeListenerTypeRef)));
+			classDecl.withMethod(MethodDecl(Type("com.doctusoft.common.core.bean.ListenerRegistration"), "addChangeListener")
+						.makePublic().withAnnotation(Annotation(Type(Override.class)))
+						.withArgument(Arg(hostTypeRef, "object"))
+						.withArgument(Arg(Type("com.doctusoft.common.core.bean.ValueChangeListener").withTypeArgument(mappedValueTypeRef), "valueChangeListener"))
+						.withStatement(Return(
+									Call(Field(Name("object"), listenerFieldName), "addListener")
+										.withArgument(Name("valueChangeListener"))
+								)));
+			setterBody.withStatement(Call(Name(listenerFieldName), "fireListeners").withArgument(Name(attributeName)));
+		}
+		// replace or insert the setter
+		boolean setterFound = false;
+		for (METHOD_TYPE method : type.methods()) {
+			if (setterName.equals(method.name())) {
+				if (observed) {
+					method.editor().replaceBody(setterBody);	// replace the setter to an observing setter
+				}
+				setterFound = true;
+				break;
+			}
+		}
+		if (!setterFound) {
+			type.editor().injectMethod(MethodDecl(Type("void"), setterName).makePublic()
+					.withArgument(Arg(valueTypeRef, attributeName))
+					.withStatements(setterBody.getStatements()));
+		}
+		// insert the getter if not found
+		boolean getterFound = false;
+		for (METHOD_TYPE method : type.methods()) {
+			if (getterName.equals(method.name())) {
+				getterFound = true;
+				break;
+			}
+		}
+		if (!getterFound) {
+			type.editor().injectMethod(MethodDecl(valueTypeRef, getterName).makePublic()
+						.withStatement(Return(Name(attributeName))));
+		}
+		
+		
+		Expression<?> initialization = New(attributeTypeRef).withTypeDeclaration(classDecl);
+		FieldDecl attributeFieldDecl = FieldDecl(attributeTypeRef, "_" + attributeName)
+				.makeFinal().makePublic()
+				.withInitialization(initialization);
+		
+		if (staticField) {
+			attributeFieldDecl.makeStatic();
+		}
+		
+		type.editor().injectField( attributeFieldDecl
 				);
 	}
 	
