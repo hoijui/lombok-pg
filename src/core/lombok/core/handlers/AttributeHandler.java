@@ -37,7 +37,7 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 	private final METHOD_TYPE method;
 	private final FIELD_TYPE field;
 	private final DiagnosticsReceiver diagnosticsReceiver;
-	private final boolean observed;
+	private final boolean observable;
 	private final boolean staticField;
 	
 	private static final Map<String,String> primitives;
@@ -136,7 +136,7 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 			qualifiedHostTypeName = qualifiedHostTypeName.substring(qualifiedHostTypeName.lastIndexOf('$') + 1);
 		}
 		TypeRef hostTypeRef = Type(qualifiedHostTypeName);
-		String attrFieldClassName = observed?"com.doctusoft.common.core.bean.ObservedAttribute":"com.doctusoft.common.core.bean.Attribute";
+		String attrFieldClassName = observable?"com.doctusoft.common.core.bean.ObservableAttribute":"com.doctusoft.common.core.bean.Attribute";
 		final TypeRef attributeTypeRef = Type(attrFieldClassName)
 				.withTypeArgument(hostTypeRef)
 				.withTypeArgument(mappedValueTypeRef);
@@ -188,7 +188,7 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 		Block setterBody = AST.Block()
 				.withStatement(AST.Assign(Field(AST.This(), attributeName), Name(attributeName)));
 
-		if (observed) {
+		if (observable) {
 			// TODO check if the container type is an interface - we cannot implement this stuff on interfaces
 			TypeRef attributeListenerTypeRef = Type("com.doctusoft.common.core.bean.internal.AttributeListeners").withTypeArgument(mappedValueTypeRef);
 			String listenerFieldName = "$" + attributeName + "$listeners";
@@ -209,7 +209,7 @@ public final class AttributeHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?
 		boolean setterFound = false;
 		for (METHOD_TYPE method : type.methods()) {
 			if (setterName.equals(method.name())) {
-				if (observed) {
+				if (observable) {
 					method.editor().replaceBody(setterBody);	// replace the setter to an observing setter
 				}
 				setterFound = true;

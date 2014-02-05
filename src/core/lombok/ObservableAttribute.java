@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.SOURCE)
-public @interface ObservedAttribute {
+public @interface ObservableAttribute {
 	public boolean staticField() default true;
 }
