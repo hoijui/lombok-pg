@@ -15,9 +15,9 @@ To compile the jar files:
 	ant dist
 
 
-## Extensions to lombok found in this version:
+## Extensions to lombok found in this version
 
-#### Annotations:
+#### Annotations
 
 - `@Action` [info](https://github.com/peichhorn/lombok-pg/wiki/%40Action)
 - `@AutoGenMethodStub` [info](https://github.com/peichhorn/lombok-pg/wiki/%40AutoGenMethodStub)
@@ -44,17 +44,17 @@ To compile the jar files:
 - `@Warning` [info](https://github.com/peichhorn/lombok-pg/wiki/%40Warning)
 - `@XmlSerializable` [info](https://github.com/redundent/lombok-pg/wiki/%40XmlSerializable)
 
-#### Interfaces:
+#### Interfaces
 
 - `Application` and `JVMAgent` [info](https://github.com/peichhorn/lombok-pg/wiki/Application-JVMAgent)
 
-#### Methods:
+#### Methods
 
 - `tuple(expr1, expr2, ...)` [info](https://github.com/peichhorn/lombok-pg/wiki/Tupel)
 - `yield(object)` [info](https://github.com/peichhorn/lombok-pg/wiki/Yield)
 
 
-#### Base annotations from lombok:
+#### Base annotations from lombok
 
 - `@AllArgsConstructor, @RequiredArgsConstructor and @NoArgsConstructor` [info](http://projectlombok.org/features/Constructor.html)
 - `@Cleanup` [info](http://projectlombok.org/features/Cleanup.html)
@@ -68,14 +68,15 @@ To compile the jar files:
 - `@ToString` [info](http://projectlombok.org/features/ToString.html)
 
 
-#### Base methods from lombok:
+#### Base methods from lombok
 
 - `val` [info](http://projectlombok.org/features/val.html)
 
-## Grab the latest version:
+## Grab the latest version
 
 [Download page](https://github.com/peichhorn/lombok-pg/wiki/Grab-the-latest-version)
 
-## Documentation:
+## Documentation
+
 - [Check out lombok features](http://projectlombok.org/features/)
 - [Check out original lombok-pg features](https://github.com/peichhorn/lombok-pg)
