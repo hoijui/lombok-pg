@@ -99,8 +99,8 @@ import com.sun.tools.javac.util.ListBuffer;
 import com.sun.tools.javac.util.Name;
 
 import lombok.RequiredArgsConstructor;
-import lombok.ast.ClassLiteral;
-import lombok.ast.TypeRef;
+import lombok.ast.pg.ClassLiteral;
+import lombok.ast.pg.TypeRef;
 import lombok.core.util.As;
 import lombok.core.util.Cast;
 import lombok.javac.Javac;

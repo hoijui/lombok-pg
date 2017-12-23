@@ -1,19 +1,19 @@
 package lombok.core.handlers;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
-import lombok.ast.AST;
-import lombok.ast.Call;
-import lombok.ast.Expression;
-import lombok.ast.IField;
-import lombok.ast.IMethod;
-import lombok.ast.IType;
-import lombok.ast.StringLiteral;
-import lombok.ast.TypeRef;
+import lombok.ast.pg.AST;
+import lombok.ast.pg.Call;
+import lombok.ast.pg.Expression;
+import lombok.ast.pg.IField;
+import lombok.ast.pg.IMethod;
+import lombok.ast.pg.IType;
+import lombok.ast.pg.StringLiteral;
+import lombok.ast.pg.TypeRef;
 import lombok.core.DiagnosticsReceiver;
 
 import com.sun.tools.javac.tree.JCTree.JCMethodDecl;

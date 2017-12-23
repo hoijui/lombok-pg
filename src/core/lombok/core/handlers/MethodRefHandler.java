@@ -1,20 +1,20 @@
 package lombok.core.handlers;
 
-import static lombok.ast.AST.Annotation;
-import static lombok.ast.AST.Arg;
-import static lombok.ast.AST.ArrayRef;
-import static lombok.ast.AST.Block;
-import static lombok.ast.AST.Call;
-import static lombok.ast.AST.Cast;
-import static lombok.ast.AST.ClassDecl;
-import static lombok.ast.AST.MethodDecl;
-import static lombok.ast.AST.Name;
-import static lombok.ast.AST.New;
-import static lombok.ast.AST.Null;
-import static lombok.ast.AST.Number;
-import static lombok.ast.AST.Return;
-import static lombok.ast.AST.This;
-import static lombok.ast.AST.Type;
+import static lombok.ast.pg.AST.Annotation;
+import static lombok.ast.pg.AST.Arg;
+import static lombok.ast.pg.AST.ArrayRef;
+import static lombok.ast.pg.AST.Block;
+import static lombok.ast.pg.AST.Call;
+import static lombok.ast.pg.AST.Cast;
+import static lombok.ast.pg.AST.ClassDecl;
+import static lombok.ast.pg.AST.MethodDecl;
+import static lombok.ast.pg.AST.Name;
+import static lombok.ast.pg.AST.New;
+import static lombok.ast.pg.AST.Null;
+import static lombok.ast.pg.AST.Number;
+import static lombok.ast.pg.AST.Return;
+import static lombok.ast.pg.AST.This;
+import static lombok.ast.pg.AST.Type;
 
 import java.util.List;
 
@@ -22,16 +22,16 @@ import org.eclipse.jdt.internal.ui.search.MethodExitsFinder;
 
 import lombok.MethodRef;
 import lombok.RequiredArgsConstructor;
-import lombok.ast.AST;
-import lombok.ast.Argument;
-import lombok.ast.Call;
-import lombok.ast.Expression;
-import lombok.ast.FieldDecl;
-import lombok.ast.IField;
-import lombok.ast.IMethod;
-import lombok.ast.IType;
-import lombok.ast.Statement;
-import lombok.ast.TypeRef;
+import lombok.ast.pg.AST;
+import lombok.ast.pg.Argument;
+import lombok.ast.pg.Call;
+import lombok.ast.pg.Expression;
+import lombok.ast.pg.FieldDecl;
+import lombok.ast.pg.IField;
+import lombok.ast.pg.IMethod;
+import lombok.ast.pg.IType;
+import lombok.ast.pg.Statement;
+import lombok.ast.pg.TypeRef;
 import lombok.core.AnnotationValues;
 import lombok.core.DiagnosticsReceiver;
 

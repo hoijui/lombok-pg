@@ -1,31 +1,31 @@
 package lombok.core.handlers;
 
-import static lombok.ast.AST.Annotation;
-import static lombok.ast.AST.Arg;
-import static lombok.ast.AST.Call;
-import static lombok.ast.AST.ClassDecl;
-import static lombok.ast.AST.Field;
-import static lombok.ast.AST.FieldDecl;
-import static lombok.ast.AST.MethodDecl;
-import static lombok.ast.AST.Name;
-import static lombok.ast.AST.New;
-import static lombok.ast.AST.Return;
-import static lombok.ast.AST.String;
-import static lombok.ast.AST.Type;
+import static lombok.ast.pg.AST.Annotation;
+import static lombok.ast.pg.AST.Arg;
+import static lombok.ast.pg.AST.Call;
+import static lombok.ast.pg.AST.ClassDecl;
+import static lombok.ast.pg.AST.Field;
+import static lombok.ast.pg.AST.FieldDecl;
+import static lombok.ast.pg.AST.MethodDecl;
+import static lombok.ast.pg.AST.Name;
+import static lombok.ast.pg.AST.New;
+import static lombok.ast.pg.AST.Return;
+import static lombok.ast.pg.AST.String;
+import static lombok.ast.pg.AST.Type;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
-import lombok.ast.AST;
-import lombok.ast.Block;
-import lombok.ast.ClassDecl;
-import lombok.ast.Expression;
-import lombok.ast.FieldDecl;
-import lombok.ast.IField;
-import lombok.ast.IMethod;
-import lombok.ast.IType;
-import lombok.ast.TypeRef;
+import lombok.ast.pg.AST;
+import lombok.ast.pg.Block;
+import lombok.ast.pg.ClassDecl;
+import lombok.ast.pg.Expression;
+import lombok.ast.pg.FieldDecl;
+import lombok.ast.pg.IField;
+import lombok.ast.pg.IMethod;
+import lombok.ast.pg.IType;
+import lombok.ast.pg.TypeRef;
 import lombok.core.DiagnosticsReceiver;
 
 import com.sun.tools.javac.tree.JCTree.JCMethodDecl;

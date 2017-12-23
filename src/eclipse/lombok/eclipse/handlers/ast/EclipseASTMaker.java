@@ -133,7 +133,7 @@ import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;
 
 import lombok.*;
-import lombok.ast.ClassLiteral;
+import lombok.ast.pg.ClassLiteral;
 import lombok.core.util.As;
 import lombok.core.util.Cast;
 import lombok.core.util.Each;

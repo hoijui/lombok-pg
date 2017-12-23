@@ -1,4 +1,4 @@
-package lombok.ast;
+package lombok.ast.pg;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
