@@ -1,6 +1,6 @@
-# lombok-ds
+# lombok-pg
 
-lombok-ds is a collection of extensions to [lombok-pg](https://github.com/peichhorn/lombok-pg) 
+This version of _lombok-pg_ is a collection of extensions to the original [lombok-pg](https://github.com/peichhorn/lombok-pg).
 
 For further information about the extensions and how to use them, please visit the [ds-bean](https://github.com/Doctusoft/ds-bean) home page.
 
@@ -68,4 +68,4 @@ For further information about the extensions and how to use them, please visit t
 
 ## Documentation:
 - [Check out lombok features](http://projectlombok.org/features/)
-- [Check out lombok-pg features](https://github.com/peichhorn/lombok-pg)
+- [Check out original lombok-pg features](https://github.com/peichhorn/lombok-pg)

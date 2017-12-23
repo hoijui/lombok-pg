@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <project name="lombok-pg" default="dist" xmlns:ivy="antlib:com.zwitserloot.ivyplusplus" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 	<description>
-This buildfile is part of lombok-ds. It is the main entry point that contains
+This buildfile is part of lombok-pg. It is the main entry point that contains
 the common tasks and can be called on to run the main aspects of all the sub-scripts.
 	</description>
 
 	<property name="build.compiler" value="javac1.7" />
-	<property name="project.name" value="lombok-ds" />
+	<property name="project.name" value="lombok-pg" />
 
 	<!-- resolve -->
 	<property name="ivy.retrieve.pattern" value="${basedir}/lib/[conf]/[artifact].[ext]" />
