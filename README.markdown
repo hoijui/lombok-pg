@@ -5,6 +5,16 @@ This version of _lombok-pg_ is a collection of extensions to the original [lombo
 For further information about the extensions and how to use them, please visit the [ds-bean](https://github.com/Doctusoft/ds-bean) home page.
 
 
+## Building
+
+You need Oracle JDK 7!  
+JDK 6 and older, or JDK 8 and later will not work!
+
+To compile the jar files:
+
+	ant dist
+
+
 ## Extensions to lombok found in this version:
 
 #### Annotations:
