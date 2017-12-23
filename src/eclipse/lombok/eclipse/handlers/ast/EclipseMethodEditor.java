@@ -23,7 +23,7 @@ package lombok.eclipse.handlers.ast;
 
 import static org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants.*;
 import static lombok.eclipse.Eclipse.ECLIPSE_DO_NOT_TOUCH_FLAG;
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +40,7 @@ import lombok.eclipse.handlers.replace.ReturnStatementReplaceVisitor;
 import lombok.eclipse.handlers.replace.ThisReferenceReplaceVisitor;
 import lombok.eclipse.handlers.replace.VariableNameReplaceVisitor;
 
-public final class EclipseMethodEditor implements lombok.ast.IMethodEditor<ASTNode> {
+public final class EclipseMethodEditor implements lombok.ast.pg.IMethodEditor<ASTNode> {
 	private final EclipseMethod method;
 	private final EclipseASTMaker builder;
 
@@ -53,29 +53,29 @@ public final class EclipseMethodEditor implements lombok.ast.IMethodEditor<ASTNo
 		return method.get();
 	}
 
-	public <T extends ASTNode> T build(final lombok.ast.Node<?> node) {
+	public <T extends ASTNode> T build(final lombok.ast.pg.Node<?> node) {
 		return builder.<T> build(node);
 	}
 
-	public <T extends ASTNode> T build(final lombok.ast.Node<?> node, final Class<T> extectedType) {
+	public <T extends ASTNode> T build(final lombok.ast.pg.Node<?> node, final Class<T> extectedType) {
 		return builder.build(node, extectedType);
 	}
 
-	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.Node<?>> nodes) {
+	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.pg.Node<?>> nodes) {
 		return builder.build(nodes);
 	}
 	
-	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.Node<?>> nodes, final Class<T> extectedType) {
+	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.pg.Node<?>> nodes, final Class<T> extectedType) {
 		return builder.build(nodes, extectedType);
 	}
 
-	public void replaceReturnType(final lombok.ast.TypeRef returnType) {
+	public void replaceReturnType(final lombok.ast.pg.TypeRef returnType) {
 		if (method.isConstructor()) return;
 		MethodDeclaration methodDecl = (MethodDeclaration) get();
 		methodDecl.returnType = build(returnType);
 	}
 
-	public void replaceReturns(final lombok.ast.Statement<?> replacement) {
+	public void replaceReturns(final lombok.ast.pg.Statement<?> replacement) {
 		new ReturnStatementReplaceVisitor(method, replacement).visit(get());
 	}
 
@@ -107,19 +107,19 @@ public final class EclipseMethodEditor implements lombok.ast.IMethodEditor<ASTNo
 		get().modifiers |= AccPublic;
 	}
 
-	public void replaceArguments(final lombok.ast.Argument... arguments) {
+	public void replaceArguments(final lombok.ast.pg.Argument... arguments) {
 		replaceArguments(As.list(arguments));
 	}
 
-	public void replaceArguments(final List<lombok.ast.Argument> arguments) {
+	public void replaceArguments(final List<lombok.ast.pg.Argument> arguments) {
 		get().arguments = build(arguments).toArray(new Argument[0]);
 	}
 
-	public void replaceBody(final lombok.ast.Statement<?>... statements) {
+	public void replaceBody(final lombok.ast.pg.Statement<?>... statements) {
 		replaceBody(As.list(statements));
 	}
 
-	public void replaceBody(final List<lombok.ast.Statement<?>> statements) {
+	public void replaceBody(final List<lombok.ast.pg.Statement<?>> statements) {
 		get().bits |= ECLIPSE_DO_NOT_TOUCH_FLAG;
 		get().statements = build(statements).toArray(new Statement[0]);
 		final List<Annotation> annotations = new ArrayList<Annotation>();
@@ -133,7 +133,7 @@ public final class EclipseMethodEditor implements lombok.ast.IMethodEditor<ASTNo
 		get().annotations = annotations.toArray(new Annotation[0]);
 	}
 
-	public void replaceBody(final lombok.ast.Block body) {
+	public void replaceBody(final lombok.ast.pg.Block body) {
 		replaceBody(body.getStatements());
 	}
 

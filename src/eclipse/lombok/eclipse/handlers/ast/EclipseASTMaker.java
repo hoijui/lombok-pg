@@ -25,8 +25,7 @@ import static org.eclipse.jdt.internal.compiler.ast.ASTNode.IsSuperType;
 import static org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants.*;
 import static org.eclipse.jdt.internal.compiler.lookup.ExtraCompilerModifiers.AccSemicolonBody;
 import static org.eclipse.jdt.internal.compiler.lookup.ExtraCompilerModifiers.AccImplementing;
-
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.eclipse.Eclipse.ECLIPSE_DO_NOT_TOUCH_FLAG;
 import static lombok.eclipse.Eclipse.fromQualifiedName;
 import static lombok.eclipse.Eclipse.poss;
@@ -65,6 +64,7 @@ import org.eclipse.jdt.internal.compiler.ast.CastExpression;
 import org.eclipse.jdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.jdt.internal.compiler.ast.ClassLiteralAccess;
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.ConditionalExpression;
 import org.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.ContinueStatement;
 import org.eclipse.jdt.internal.compiler.ast.DoStatement;
@@ -105,6 +105,7 @@ import org.eclipse.jdt.internal.compiler.ast.PostfixExpression;
 import org.eclipse.jdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.jdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.jdt.internal.compiler.ast.QualifiedNameReference;
+import org.eclipse.jdt.internal.compiler.ast.QualifiedSuperReference;
 import org.eclipse.jdt.internal.compiler.ast.QualifiedThisReference;
 import org.eclipse.jdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.jdt.internal.compiler.ast.ReturnStatement;
@@ -113,6 +114,7 @@ import org.eclipse.jdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.jdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.jdt.internal.compiler.ast.Statement;
 import org.eclipse.jdt.internal.compiler.ast.StringLiteral;
+import org.eclipse.jdt.internal.compiler.ast.SuperReference;
 import org.eclipse.jdt.internal.compiler.ast.SwitchStatement;
 import org.eclipse.jdt.internal.compiler.ast.SynchronizedStatement;
 import org.eclipse.jdt.internal.compiler.ast.ThisReference;
@@ -140,7 +142,7 @@ import lombok.eclipse.Eclipse;
 import lombok.eclipse.EclipseNode;
 
 @RequiredArgsConstructor
-public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Void> {
+public final class EclipseASTMaker implements lombok.ast.pg.ASTVisitor<ASTNode, Void> {
 	private static final Map<String, Integer> UNARY_OPERATORS = new HashMap<String, Integer>();
 	static {
 		UNARY_OPERATORS.put("+", OperatorIds.PLUS);
@@ -178,46 +180,46 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	private final EclipseNode sourceNode;
 	private final ASTNode source;
 
-	public <T extends ASTNode> T build(final lombok.ast.Node<?> node) {
+	public <T extends ASTNode> T build(final lombok.ast.pg.Node<?> node) {
 		return this.<T> build(node, null);
 	}
 
-	public <T extends ASTNode> T build(final lombok.ast.Node<?> node, final Class<T> extectedType) {
+	public <T extends ASTNode> T build(final lombok.ast.pg.Node<?> node, final Class<T> extectedType) {
 		if (node == null) return null;
 		return Cast.<T> uncheckedCast(node.accept(this, null));
 	}
 
-	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.Node<?>> nodes) {
+	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.pg.Node<?>> nodes) {
 		return this.<T> build(nodes, null);
 	}
 
-	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.Node<?>> nodes, final Class<T> extectedType) {
+	public <T extends ASTNode> List<T> build(final List<? extends lombok.ast.pg.Node<?>> nodes, final Class<T> extectedType) {
 		if (nodes == null) return null;
 		final List<T> list = new ArrayList<T>();
-		for (lombok.ast.Node<?> node : nodes) {
+		for (lombok.ast.pg.Node<?> node : nodes) {
 			list.add(build(node, extectedType));
 		}
 		return list;
 	}
 
-	private ASTNode posHintOf(final lombok.ast.Node<?> node) {
+	private ASTNode posHintOf(final lombok.ast.pg.Node<?> node) {
 		ASTNode posHint = node.posHint();
 		return posHint == null ? source : posHint;
 	}
 
-	private int modifiersFor(final Set<lombok.ast.Modifier> modifiers) {
+	private int modifiersFor(final Set<lombok.ast.pg.Modifier> modifiers) {
 		int mods = 0;
-		mods |= modifiers.contains(lombok.ast.Modifier.FINAL) ? AccFinal : 0;
-		mods |= modifiers.contains(lombok.ast.Modifier.PRIVATE) ? AccPrivate : 0;
-		mods |= modifiers.contains(lombok.ast.Modifier.PROTECTED) ? AccProtected : 0;
-		mods |= modifiers.contains(lombok.ast.Modifier.PUBLIC) ? AccPublic : 0;
-		mods |= modifiers.contains(lombok.ast.Modifier.STATIC) ? AccStatic : 0;
-		mods |= modifiers.contains(lombok.ast.Modifier.TRANSIENT) ? AccTransient : 0;
-		mods |= modifiers.contains(lombok.ast.Modifier.VOLATILE) ? AccVolatile : 0;
+		mods |= modifiers.contains(lombok.ast.pg.Modifier.FINAL) ? AccFinal : 0;
+		mods |= modifiers.contains(lombok.ast.pg.Modifier.PRIVATE) ? AccPrivate : 0;
+		mods |= modifiers.contains(lombok.ast.pg.Modifier.PROTECTED) ? AccProtected : 0;
+		mods |= modifiers.contains(lombok.ast.pg.Modifier.PUBLIC) ? AccPublic : 0;
+		mods |= modifiers.contains(lombok.ast.pg.Modifier.STATIC) ? AccStatic : 0;
+		mods |= modifiers.contains(lombok.ast.pg.Modifier.TRANSIENT) ? AccTransient : 0;
+		mods |= modifiers.contains(lombok.ast.pg.Modifier.VOLATILE) ? AccVolatile : 0;
 		return mods;
 	}
 
-	private Statement getEmptyStatement(final lombok.ast.Node<?> node) {
+	private Statement getEmptyStatement(final lombok.ast.pg.Node<?> node) {
 		final EmptyStatement emptyStatement = new EmptyStatement(0, 0);
 		setGeneratedByAndCopyPos(emptyStatement, source, posHintOf(node));
 		return emptyStatement;
@@ -231,7 +233,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitAnnotation(final lombok.ast.Annotation node, final Void p) {
+	public ASTNode visitAnnotation(final lombok.ast.pg.Annotation node, final Void p) {
 		final Annotation ann;
 		if (node.getValues().isEmpty()) {
 			ann = new MarkerAnnotation(build(node.getType(), TypeReference.class), 0);
@@ -241,7 +243,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 		} else {
 			ann = new NormalAnnotation(build(node.getType(), TypeReference.class), 0);
 			List<MemberValuePair> valuePairs = new ArrayList<MemberValuePair>();
-			for (Entry<String, lombok.ast.Expression<?>> entry : node.getValues().entrySet()) {
+			for (Entry<String, lombok.ast.pg.Expression<?>> entry : node.getValues().entrySet()) {
 				MemberValuePair valuePair = new MemberValuePair(entry.getKey().toCharArray(), 0, 0, build(entry.getValue(), Expression.class));
 				setGeneratedByAndCopyPos(valuePair, source, posHintOf(node));
 				valuePairs.add(valuePair);
@@ -253,7 +255,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitArgument(final lombok.ast.Argument node, final Void p) {
+	public ASTNode visitArgument(final lombok.ast.pg.Argument node, final Void p) {
 		final Argument argument = new Argument(node.getName().toCharArray(), 0, null, 0);
 		setGeneratedByAndCopyPos(argument, source, posHintOf(node));
 		argument.modifiers = modifiersFor(node.getModifiers());
@@ -264,21 +266,21 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitArrayRef(final lombok.ast.ArrayRef node, final Void p) {
+	public ASTNode visitArrayRef(final lombok.ast.pg.ArrayRef node, final Void p) {
 		final ArrayReference arrayReference = new ArrayReference(build(node.getIndexed(), Expression.class), build(node.getIndex(), Expression.class));
 		setGeneratedByAndCopyPos(arrayReference, source, posHintOf(node));
 		return arrayReference;
 	}
 
 	@Override
-	public ASTNode visitAssignment(final lombok.ast.Assignment node, final Void p) {
+	public ASTNode visitAssignment(final lombok.ast.pg.Assignment node, final Void p) {
 		final Assignment assignment = new Assignment(build(node.getLeft(), Expression.class), build(node.getRight(), Expression.class), 0);
 		setGeneratedByAndCopyPos(assignment, source, posHintOf(node));
 		return assignment;
 	}
 
 	@Override
-	public ASTNode visitBinary(final lombok.ast.Binary node, final Void p) {
+	public ASTNode visitBinary(final lombok.ast.pg.Binary node, final Void p) {
 		final String operator = node.getOperator();
 		final int opCode;
 		if (BINARY_OPERATORS.containsKey(operator)) {
@@ -301,7 +303,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitBlock(final lombok.ast.Block node, final Void p) {
+	public ASTNode visitBlock(final lombok.ast.pg.Block node, final Void p) {
 		final Block block = new Block(0);
 		setGeneratedByAndCopyPos(block, source, posHintOf(node));
 		block.statements = toArray(build(node.getStatements()), new Statement[0]);
@@ -309,7 +311,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitBooleanLiteral(final lombok.ast.BooleanLiteral node, final Void p) {
+	public ASTNode visitBooleanLiteral(final lombok.ast.pg.BooleanLiteral node, final Void p) {
 		final MagicLiteral literal;
 		if (node.isTrue()) {
 			literal = new TrueLiteral(0, 0);
@@ -321,14 +323,14 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitBreak(final lombok.ast.Break node, final Void p) {
+	public ASTNode visitBreak(final lombok.ast.pg.Break node, final Void p) {
 		final BreakStatement breakStatement = new BreakStatement(node.getLabel() == null ? null : node.getLabel().toCharArray(), 0, 0);
 		setGeneratedByAndCopyPos(breakStatement, source, posHintOf(node));
 		return breakStatement;
 	}
 
 	@Override
-	public ASTNode visitCall(final lombok.ast.Call node, final Void p) {
+	public ASTNode visitCall(final lombok.ast.pg.Call node, final Void p) {
 		final MessageSend messageSend = new MessageSend();
 		setGeneratedByAndCopyPos(messageSend, source, posHintOf(node));
 		if (node.getReceiver() == null) {
@@ -343,7 +345,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitCast(final lombok.ast.Cast node, final Void p) {
+	public ASTNode visitCast(final lombok.ast.pg.Cast node, final Void p) {
 		final CastExpression castExpression = createCastExpression(build(node.getExpression(), Expression.class), build(node.getType(), TypeReference.class));
 		setGeneratedByAndCopyPos(castExpression, source, posHintOf(node));
 		return castExpression;
@@ -358,19 +360,19 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitCase(final lombok.ast.Case node, final Void p) {
+	public ASTNode visitCase(final lombok.ast.pg.Case node, final Void p) {
 		throw new IllegalStateException("");
 	}
 
 	@Override
-	public ASTNode visitCharLiteral(final lombok.ast.CharLiteral node, final Void p) {
+	public ASTNode visitCharLiteral(final lombok.ast.pg.CharLiteral node, final Void p) {
 		final CharLiteral literal = new CharLiteral(node.getCharacter().toCharArray(), 0, 0);
 		setGeneratedByAndCopyPos(literal, source, posHintOf(node));
 		return literal;
 	}
 
 	@Override
-	public ASTNode visitClassDecl(final lombok.ast.ClassDecl node, final Void p) {
+	public ASTNode visitClassDecl(final lombok.ast.pg.ClassDecl node, final Void p) {
 		final TypeDeclaration typeDeclaration = new TypeDeclaration(((CompilationUnitDeclaration) sourceNode.top().get()).compilationResult);
 		setGeneratedByAndCopyPos(typeDeclaration, source, posHintOf(node));
 		typeDeclaration.modifiers = modifiersFor(node.getModifiers());
@@ -406,7 +408,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitConstructorDecl(final lombok.ast.ConstructorDecl node, final Void p) {
+	public ASTNode visitConstructorDecl(final lombok.ast.pg.ConstructorDecl node, final Void p) {
 		final ConstructorDeclaration constructorDeclaration = new ConstructorDeclaration(((CompilationUnitDeclaration) sourceNode.top().get()).compilationResult);
 		setGeneratedByAndCopyPos(constructorDeclaration, source, posHintOf(node));
 		constructorDeclaration.modifiers = modifiersFor(node.getModifiers());
@@ -427,22 +429,22 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitContinue(final lombok.ast.Continue node, final Void p) {
+	public ASTNode visitContinue(final lombok.ast.pg.Continue node, final Void p) {
 		final ContinueStatement continueStatement = new ContinueStatement(node.getLabel() == null ? null : node.getLabel().toCharArray(), 0, 0);
 		setGeneratedByAndCopyPos(continueStatement, source, posHintOf(node));
 		return continueStatement;
 	}
 
 	@Override
-	public ASTNode visitDoWhile(final lombok.ast.DoWhile node, final Void p) {
+	public ASTNode visitDoWhile(final lombok.ast.pg.DoWhile node, final Void p) {
 		final DoStatement doStatement = new DoStatement(build(node.getCondition(), Expression.class), build(node.getAction(), Statement.class), 0, 0);
 		setGeneratedByAndCopyPos(doStatement, source, posHintOf(node));
 		return doStatement;
 	}
 
 	@Override
-	public ASTNode visitDefaultValue(lombok.ast.DefaultValue node, Void p) {
-		lombok.ast.Expression<?> returnValue = Null();
+	public ASTNode visitDefaultValue(lombok.ast.pg.DefaultValue node, Void p) {
+		lombok.ast.pg.Expression<?> returnValue = Null();
 		final TypeReference type = build(node.getType());
 		if (type instanceof SingleTypeReference) {
 			final String name = As.string(type.getLastToken());
@@ -470,7 +472,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitEnumConstant(final lombok.ast.EnumConstant node, final Void p) {
+	public ASTNode visitEnumConstant(final lombok.ast.pg.EnumConstant node, final Void p) {
 		final AllocationExpression allocationExpression = new AllocationExpression();
 		setGeneratedByAndCopyPos(allocationExpression, source, posHintOf(node));
 		allocationExpression.arguments = toArray(build(node.getArgs()), new Expression[0]);
@@ -482,7 +484,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitFieldDecl(final lombok.ast.FieldDecl node, final Void p) {
+	public ASTNode visitFieldDecl(final lombok.ast.pg.FieldDecl node, final Void p) {
 		final FieldDeclaration fieldDeclaration = new FieldDeclaration(node.getName().toCharArray(), 0, 0);
 		setGeneratedBy(fieldDeclaration, source);
 		fieldDeclaration.modifiers = modifiersFor(node.getModifiers());
@@ -497,7 +499,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitFieldRef(final lombok.ast.FieldRef node, final Void p) {
+	public ASTNode visitFieldRef(final lombok.ast.pg.FieldRef node, final Void p) {
 		FieldReference fieldRef = new FieldReference(node.getName().toCharArray(), 0);
 		fieldRef.receiver = build(node.getReceiver());
 		setGeneratedByAndCopyPos(fieldRef, source, posHintOf(node));
@@ -505,7 +507,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitForeach(final lombok.ast.Foreach node, final Void p) {
+	public ASTNode visitForeach(final lombok.ast.pg.Foreach node, final Void p) {
 		final ForeachStatement forEach = new ForeachStatement(build(node.getElementVariable(), LocalDeclaration.class), 0);
 		setGeneratedByAndCopyPos(forEach, source, posHintOf(node));
 		forEach.collection = build(node.getCollection());
@@ -514,7 +516,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitIf(final lombok.ast.If node, final Void p) {
+	public ASTNode visitIf(final lombok.ast.pg.If node, final Void p) {
 		final Statement thenStatement = node.getThenStatement() == null ? getEmptyStatement(node) : build(node.getThenStatement(), Statement.class);
 		final IfStatement ifStatement = new IfStatement(build(node.getCondition(), Expression.class), thenStatement, 0, 0);
 		if (node.getElseStatement() != null) {
@@ -525,7 +527,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitInitializer(lombok.ast.Initializer node, Void p) {
+	public ASTNode visitInitializer(lombok.ast.pg.Initializer node, Void p) {
 		final Block block = new Block(0);
 		setGeneratedByAndCopyPos(block, source, posHintOf(node));
 		block.statements = toArray(build(node.getStatements()), new Statement[0]);
@@ -536,14 +538,14 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitInstanceOf(final lombok.ast.InstanceOf node, final Void p) {
+	public ASTNode visitInstanceOf(final lombok.ast.pg.InstanceOf node, final Void p) {
 		final InstanceOfExpression instanceOfExpression = new InstanceOfExpression(build(node.getExpression(), Expression.class), build(node.getType(), TypeReference.class));
 		setGeneratedByAndCopyPos(instanceOfExpression, source, posHintOf(node));
 		return instanceOfExpression;
 	}
 
 	@Override
-	public ASTNode visitJavaDoc(final lombok.ast.JavaDoc node, final Void p) {
+	public ASTNode visitJavaDoc(final lombok.ast.pg.JavaDoc node, final Void p) {
 		final Javadoc javadoc = new Javadoc(0, 0);
 		setGeneratedByAndCopyPos(javadoc, source, posHintOf(node));
 		// TODO node.getMessage()
@@ -562,7 +564,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 		}
 		javadoc.paramTypeParameters = toArray(paramTypeReferences, new JavadocSingleTypeReference[0]);
 		final List<TypeReference> exceptionReferences = new ArrayList<TypeReference>();
-		for (Map.Entry<lombok.ast.TypeRef, String> exceptionReference : node.getExceptionReferences().entrySet()) {
+		for (Map.Entry<lombok.ast.pg.TypeRef, String> exceptionReference : node.getExceptionReferences().entrySet()) {
 			final TypeReference ref = build(exceptionReference.getKey()); // TODO exceptionReference.getValue()
 			setGeneratedByAndCopyPos(ref, source, posHintOf(node));
 			exceptionReferences.add(ref);
@@ -573,7 +575,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitLocalDecl(final lombok.ast.LocalDecl node, final Void p) {
+	public ASTNode visitLocalDecl(final lombok.ast.pg.LocalDecl node, final Void p) {
 		final LocalDeclaration localDeclaration = new LocalDeclaration(node.getName().toCharArray(), 0, 0);
 		setGeneratedByAndCopyPos(localDeclaration, source, posHintOf(node));
 		localDeclaration.modifiers = modifiersFor(node.getModifiers());
@@ -587,7 +589,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitMethodDecl(final lombok.ast.MethodDecl node, final Void p) {
+	public ASTNode visitMethodDecl(final lombok.ast.pg.MethodDecl node, final Void p) {
 		MethodDeclaration methodDeclaration = new MethodDeclaration(((CompilationUnitDeclaration) sourceNode.top().get()).compilationResult);
 		setGeneratedByAndCopyPos(methodDeclaration, source, posHintOf(node));
 		methodDeclaration.modifiers = modifiersFor(node.getModifiers());
@@ -609,7 +611,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitNameRef(final lombok.ast.NameRef node, final Void p) {
+	public ASTNode visitNameRef(final lombok.ast.pg.NameRef node, final Void p) {
 		final NameReference nameReference;
 		if (node.getName().contains(".")) {
 			char[][] nameTokens = fromQualifiedName(node.getName());
@@ -622,7 +624,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitNew(final lombok.ast.New node, final Void p) {
+	public ASTNode visitNew(final lombok.ast.pg.New node, final Void p) {
 		final AllocationExpression allocationExpression;
 		if (node.getAnonymousType() != null) {
 			allocationExpression = new QualifiedAllocationExpression(build(node.getAnonymousType(), TypeDeclaration.class));
@@ -638,7 +640,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitNewArray(final lombok.ast.NewArray node, final Void p) {
+	public ASTNode visitNewArray(final lombok.ast.pg.NewArray node, final Void p) {
 		ArrayAllocationExpression allocationExpression = new ArrayAllocationExpression();
 		setGeneratedByAndCopyPos(allocationExpression, source, posHintOf(node));
 		allocationExpression.bits |= ECLIPSE_DO_NOT_TOUCH_FLAG;
@@ -658,14 +660,14 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitNullLiteral(final lombok.ast.NullLiteral node, final Void p) {
+	public ASTNode visitNullLiteral(final lombok.ast.pg.NullLiteral node, final Void p) {
 		final MagicLiteral literal = new NullLiteral(0, 0);
 		setGeneratedByAndCopyPos(literal, source, posHintOf(node));
 		return literal;
 	}
 
 	@Override
-	public ASTNode visitNumberLiteral(final lombok.ast.NumberLiteral node, final Void p) {
+	public ASTNode visitNumberLiteral(final lombok.ast.pg.NumberLiteral node, final Void p) {
 		final NumberLiteral literal;
 		final Number number = node.getNumber();
 		if (number instanceof Integer) {
@@ -710,15 +712,15 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitReturn(final lombok.ast.Return node, final Void p) {
+	public ASTNode visitReturn(final lombok.ast.pg.Return node, final Void p) {
 		final ReturnStatement returnStatement = new ReturnStatement(node.getExpression() == null ? null : build(node.getExpression(), Expression.class), 0, 0);
 		setGeneratedByAndCopyPos(returnStatement, source, posHintOf(node));
 		return returnStatement;
 	}
 
 	@Override
-	public ASTNode visitReturnDefault(final lombok.ast.ReturnDefault node, final Void p) {
-		lombok.ast.TypeRef returnType = node.upTo(lombok.ast.MethodDecl.class).getReturnType();
+	public ASTNode visitReturnDefault(final lombok.ast.pg.ReturnDefault node, final Void p) {
+		lombok.ast.pg.TypeRef returnType = node.upTo(lombok.ast.pg.MethodDecl.class).getReturnType();
 		if (returnType == null) {
 			returnType = Type(methodNodeOf(sourceNode).getName());
 		}
@@ -739,18 +741,33 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitStringLiteral(final lombok.ast.StringLiteral node, final Void p) {
+	public ASTNode visitStringLiteral(final lombok.ast.pg.StringLiteral node, final Void p) {
 		final StringLiteral stringLiteral = new StringLiteral(node.getString().toCharArray(), 0, 0, 1);
 		setGeneratedByAndCopyPos(stringLiteral, source, posHintOf(node));
 		return stringLiteral;
 	}
+	
+	@Override
+	public ASTNode visitSuper(final lombok.ast.pg.Super node, final Void p) {
+		final ThisReference superReference;
+		if (node.getType() != null) {
+			superReference = new QualifiedSuperReference(build(node.getType(), TypeReference.class), 0, 0);
+		} else {
+			superReference = new SuperReference(0, 0);
+			if (node.isImplicit()) {
+				superReference.bits |= ASTNode.IsImplicitThis;
+			}
+		}
+		setGeneratedByAndCopyPos(superReference, source, posHintOf(node));
+		return superReference;
+	}
 
 	@Override
-	public ASTNode visitSwitch(final lombok.ast.Switch node, final Void p) {
+	public ASTNode visitSwitch(final lombok.ast.pg.Switch node, final Void p) {
 		final SwitchStatement switchStatement = new SwitchStatement();
 		switchStatement.expression = build(node.getExpression());
 		List<Statement> caseStatements = new ArrayList<Statement>();
-		for (lombok.ast.Case caze : node.getCases()) {
+		for (lombok.ast.pg.Case caze : node.getCases()) {
 			final CaseStatement caseStatement = new CaseStatement(caze.getPattern() == null ? null : build(caze.getPattern(), Expression.class), 0, 0);
 			setGeneratedByAndCopyPos(caseStatement, source, posHintOf(node));
 			caseStatements.add(caseStatement);
@@ -761,7 +778,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitSynchronized(final lombok.ast.Synchronized node, final Void p) {
+	public ASTNode visitSynchronized(final lombok.ast.pg.Synchronized node, final Void p) {
 		final Block block = new Block(0);
 		setGeneratedByAndCopyPos(block, source, posHintOf(node));
 		block.statements = toArray(build(node.getStatements()), new Statement[0]);
@@ -769,9 +786,20 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 		setGeneratedByAndCopyPos(synchronizedStatemenet, source, posHintOf(node));
 		return synchronizedStatemenet;
 	}
+	
+	@Override
+	public ASTNode visitTernary(final lombok.ast.pg.Ternary node, final Void p) {
+		ConditionalExpression expression = new ConditionalExpression(
+				build(node.getTest(), Expression.class),
+				build(node.getIfTrue(), Expression.class),
+				build(node.getIfFalse(), Expression.class));
+		
+		setGeneratedByAndCopyPos(expression, source, posHintOf(node));
+		return expression;
+	}
 
 	@Override
-	public ASTNode visitThis(final lombok.ast.This node, final Void p) {
+	public ASTNode visitThis(final lombok.ast.pg.This node, final Void p) {
 		final ThisReference thisReference;
 		if (node.getType() != null) {
 			thisReference = new QualifiedThisReference(build(node.getType(), TypeReference.class), 0, 0);
@@ -786,14 +814,14 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitThrow(final lombok.ast.Throw node, final Void p) {
+	public ASTNode visitThrow(final lombok.ast.pg.Throw node, final Void p) {
 		final ThrowStatement throwStatement = new ThrowStatement(build(node.getExpression(), Expression.class), 0, 0);
 		setGeneratedByAndCopyPos(throwStatement, source, posHintOf(node));
 		return throwStatement;
 	}
 
 	@Override
-	public ASTNode visitTry(final lombok.ast.Try node, final Void p) {
+	public ASTNode visitTry(final lombok.ast.pg.Try node, final Void p) {
 		final TryStatement tryStatement = new TryStatement();
 		setGeneratedByAndCopyPos(tryStatement, source, posHintOf(node));
 		tryStatement.tryBlock = build(node.getTryBlock());
@@ -806,10 +834,10 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitTypeParam(final lombok.ast.TypeParam node, final Void p) {
+	public ASTNode visitTypeParam(final lombok.ast.pg.TypeParam node, final Void p) {
 		final TypeParameter typeParameter = new TypeParameter();
 		typeParameter.name = node.getName().toCharArray();
-		final List<lombok.ast.TypeRef> bounds = new ArrayList<lombok.ast.TypeRef>(node.getBounds());
+		final List<lombok.ast.pg.TypeRef> bounds = new ArrayList<lombok.ast.pg.TypeRef>(node.getBounds());
 		if (!bounds.isEmpty()) {
 			typeParameter.type = build(bounds.get(0));
 			bounds.remove(0);
@@ -820,7 +848,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitTypeRef(final lombok.ast.TypeRef node, final Void p) {
+	public ASTNode visitTypeRef(final lombok.ast.pg.TypeRef node, final Void p) {
 		final TypeReference[] paramTypes = build(node.getTypeArgs()).toArray(new TypeReference[0]);
 		final TypeReference typeReference;
 		if (node.getTypeName().equals("void")) {
@@ -858,7 +886,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitUnary(final lombok.ast.Unary node, final Void p) {
+	public ASTNode visitUnary(final lombok.ast.pg.Unary node, final Void p) {
 		final String operator = node.getOperator();
 		final int opCode;
 		if (UNARY_OPERATORS.containsKey(operator)) {
@@ -879,14 +907,14 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitWhile(final lombok.ast.While node, final Void p) {
+	public ASTNode visitWhile(final lombok.ast.pg.While node, final Void p) {
 		final WhileStatement whileStatement = new WhileStatement(build(node.getCondition(), Expression.class), build(node.getAction(), Statement.class), 0, 0);
 		setGeneratedByAndCopyPos(whileStatement, source, posHintOf(node));
 		return whileStatement;
 	}
 
 	@Override
-	public ASTNode visitWildcard(final lombok.ast.Wildcard node, final Void p) {
+	public ASTNode visitWildcard(final lombok.ast.pg.Wildcard node, final Void p) {
 		int kind = Wildcard.UNBOUND;
 		if (node.getBound() != null) {
 			switch (node.getBound()) {
@@ -905,14 +933,14 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitWrappedExpression(final lombok.ast.WrappedExpression node, final Void p) {
+	public ASTNode visitWrappedExpression(final lombok.ast.pg.WrappedExpression node, final Void p) {
 		Expression expression = (Expression) node.getWrappedObject();
 		setGeneratedBy(expression, source);
 		return expression;
 	}
 
 	@Override
-	public ASTNode visitWrappedMethodDecl(final lombok.ast.WrappedMethodDecl node, final Void p) {
+	public ASTNode visitWrappedMethodDecl(final lombok.ast.pg.WrappedMethodDecl node, final Void p) {
 		MethodDeclaration methodDeclaration = new MethodDeclaration(((CompilationUnitDeclaration) sourceNode.top().get()).compilationResult);
 		setGeneratedByAndCopyPos(methodDeclaration, source, posHintOf(node));
 		MethodBinding abstractMethod = (MethodBinding) node.getWrappedObject();
@@ -929,7 +957,7 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 		if (node.getTypeParameters().isEmpty()) for (TypeVariableBinding binding : Each.elementIn(abstractMethod.typeVariables)) {
 			ReferenceBinding super1 = binding.superclass;
 			ReferenceBinding[] super2 = binding.superInterfaces;
-			lombok.ast.TypeParam typeParameter = TypeParam(As.string(binding.sourceName));
+			lombok.ast.pg.TypeParam typeParameter = TypeParam(As.string(binding.sourceName));
 			if (super2 == null) super2 = new ReferenceBinding[0];
 			if (super1 != null || super2.length > 0) {
 				if (super1 != null) typeParameter.withBound(Type(super1));
@@ -958,14 +986,14 @@ public final class EclipseASTMaker implements lombok.ast.ASTVisitor<ASTNode, Voi
 	}
 
 	@Override
-	public ASTNode visitWrappedStatement(final lombok.ast.WrappedStatement node, final Void p) {
+	public ASTNode visitWrappedStatement(final lombok.ast.pg.WrappedStatement node, final Void p) {
 		Statement statement = (Statement) node.getWrappedObject();
 		setGeneratedByAndCopyPos(statement, source, posHintOf(node));
 		return statement;
 	}
 
 	@Override
-	public ASTNode visitWrappedTypeRef(final lombok.ast.WrappedTypeRef node, final Void p) {
+	public ASTNode visitWrappedTypeRef(final lombok.ast.pg.WrappedTypeRef node, final Void p) {
 		TypeReference typeReference = null;
 		if (node.getWrappedObject() instanceof TypeBinding) {
 			typeReference = makeType((TypeBinding) node.getWrappedObject(), source, false);

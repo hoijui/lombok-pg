@@ -21,11 +21,16 @@
  */
 package lombok.javac.handlers;
 
-import static lombok.core.util.ErrorMessages.*;
-import static lombok.core.util.Names.*;
-import static lombok.javac.handlers.JavacHandlerUtil.*;
-
-import lombok.*;
+import static lombok.core.util.ErrorMessages.canBeUsedOnClassOnly;
+import static lombok.core.util.ErrorMessages.canBeUsedOnConcreteMethodOnly;
+import static lombok.core.util.ErrorMessages.canBeUsedOnMethodOnly;
+import static lombok.core.util.Names.decapitalize;
+import static lombok.javac.handlers.JavacHandlerUtil.createAnnotation;
+import static lombok.javac.handlers.JavacHandlerUtil.deleteAnnotationIfNeccessary;
+import static lombok.javac.handlers.JavacHandlerUtil.inNetbeansEditor;
+import static lombok.javac.handlers.JavacHandlerUtil.methodExists;
+import lombok.Builder;
+import lombok.BuilderExtension;
 import lombok.core.AnnotationValues;
 import lombok.core.handlers.BuilderAndExtensionHandler;
 import lombok.javac.JavacAnnotationHandler;
@@ -34,8 +39,10 @@ import lombok.javac.handlers.ast.JavacField;
 import lombok.javac.handlers.ast.JavacMethod;
 import lombok.javac.handlers.ast.JavacType;
 
-import com.sun.tools.javac.tree.JCTree.JCAnnotation;
 import org.mangosdk.spi.ProviderFor;
+
+import com.sun.tools.javac.code.Type.ArrayType;
+import com.sun.tools.javac.tree.JCTree.JCAnnotation;
 
 public class HandleBuilderAndExtension {
 
@@ -67,7 +74,12 @@ public class HandleBuilderAndExtension {
 				// continue with creating the builder
 			}
 
-			new BuilderAndExtensionHandler<JavacType, JavacMethod, JavacField>().handleBuilder(type, annotation.getInstance());
+			new BuilderAndExtensionHandler<JavacType, JavacMethod, JavacField>() {
+				@Override
+				protected boolean isArray(JavacField field) {
+					return (field.get().vartype.type instanceof ArrayType);
+				}
+			}.handleBuilder(type, annotation.getInstance());
 		}
 	}
 
@@ -75,21 +87,21 @@ public class HandleBuilderAndExtension {
 	 * Handles the {@code lombok.Builder.Extension} annotation for javac.
 	 */
 	@ProviderFor(JavacAnnotationHandler.class)
-	public static class HandleBuilderExtension extends JavacAnnotationHandler<Builder.Extension> {
+	public static class HandleBuilderExtension extends JavacAnnotationHandler<BuilderExtension> {
 
 		@Override
-		public void handle(final AnnotationValues<Builder.Extension> annotation, final JCAnnotation source, final JavacNode annotationNode) {
+		public void handle(final AnnotationValues<BuilderExtension> annotation, final JCAnnotation source, final JavacNode annotationNode) {
 			if (inNetbeansEditor(annotationNode)) return;
-			deleteAnnotationIfNeccessary(annotationNode, Builder.Extension.class);
+			deleteAnnotationIfNeccessary(annotationNode, BuilderExtension.class);
 
 			final JavacMethod method = JavacMethod.methodOf(annotationNode, source);
 
 			if (method == null) {
-				annotationNode.addError(canBeUsedOnMethodOnly(Builder.Extension.class));
+				annotationNode.addError(canBeUsedOnMethodOnly(BuilderExtension.class));
 				return;
 			}
 			if (method.isAbstract() || method.isEmpty()) {
-				annotationNode.addError(canBeUsedOnConcreteMethodOnly(Builder.Extension.class));
+				annotationNode.addError(canBeUsedOnConcreteMethodOnly(BuilderExtension.class));
 				return;
 			}
 
@@ -106,7 +118,12 @@ public class HandleBuilderAndExtension {
 				new HandleBuilder().handle(builderAnnotation, (JCAnnotation) builderNode.get(), builderNode);
 			}
 
-			new BuilderAndExtensionHandler<JavacType, JavacMethod, JavacField>().handleExtension(type, method, new JavacParameterValidator(), new JavacParameterSanitizer(), builderAnnotation.getInstance(), annotation.getInstance());
+			new BuilderAndExtensionHandler<JavacType, JavacMethod, JavacField>() {
+				@Override
+				protected boolean isArray(JavacField field) {
+					return (field.get().vartype.type instanceof ArrayType);
+				}				
+			}.handleExtension(type, method, new JavacParameterValidator(), new JavacParameterSanitizer(), builderAnnotation.getInstance(), annotation.getInstance());
 		}
 	}
 }

@@ -2,17 +2,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Builder;
+import lombok.BuilderExtension;
 @Builder class BuilderGeneric<K extends Comparable<K>, V extends List<K>> {
-  public static @java.lang.SuppressWarnings("all") interface FooDef<K extends Comparable<K>, V extends List<K>> {
+  public @java.lang.SuppressWarnings("all") interface FooDef<K extends Comparable<K>, V extends List<K>> {
     public OptionalDef<K, V> foo(final String foo);
     public @java.lang.SuppressWarnings("all") OptionalDef<K, V> foo(final Class<?> clazz);
   }
-  public static @java.lang.SuppressWarnings("all") interface OptionalDef<K extends Comparable<K>, V extends List<K>> {
+  public @java.lang.SuppressWarnings("all") interface OptionalDef<K extends Comparable<K>, V extends List<K>> {
     public OptionalDef<K, V> bar(final K arg0, final V arg1);
     public OptionalDef<K, V> bar(final java.util.Map<? extends K, ? extends V> arg0);
     public BuilderGeneric<K, V> build();
   }
-  private static @java.lang.SuppressWarnings("all") class $Builder<K extends Comparable<K>, V extends List<K>> implements FooDef<K, V>, OptionalDef<K, V> {
+  private static final @java.lang.SuppressWarnings("all") class $Builder<K extends Comparable<K>, V extends List<K>> implements FooDef<K, V>, OptionalDef<K, V> {
     private String foo;
     private Map<K, V> bar = $barDefault();
     static <K extends Comparable<K>, V extends List<K>>Map<K, V> $barDefault() {
@@ -53,16 +54,16 @@ import lombok.Builder;
   }
 }
 @Builder class DomainContainer<D> {
-  public static @java.lang.SuppressWarnings("all") interface ADef<D> {
+  public @java.lang.SuppressWarnings("all") interface ADef<D> {
     public DomainDef<D> a(final int a);
   }
-  public static @java.lang.SuppressWarnings("all") interface DomainDef<D> {
+  public @java.lang.SuppressWarnings("all") interface DomainDef<D> {
     public OptionalDef<D> domain(final D domain);
   }
-  public static @java.lang.SuppressWarnings("all") interface OptionalDef<D> {
+  public @java.lang.SuppressWarnings("all") interface OptionalDef<D> {
     public DomainContainer<D> build();
   }
-  private static @java.lang.SuppressWarnings("all") class $Builder<D> implements ADef<D>, DomainDef<D>, OptionalDef<D> {
+  private static final @java.lang.SuppressWarnings("all") class $Builder<D> implements ADef<D>, DomainDef<D>, OptionalDef<D> {
     private int a;
     private D domain;
     public DomainDef<D> a(final int a) {

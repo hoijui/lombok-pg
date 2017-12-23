@@ -23,22 +23,21 @@ package lombok.javac.handlers;
 
 import static lombok.javac.handlers.JavacHandlerUtil.chainDotsString;
 import static lombok.javac.handlers.JavacHandlerUtil.inNetbeansEditor;
-
-import java.util.*;
-
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.core.AST.Kind;
+import lombok.core.ImportList;
 import lombok.javac.JavacNode;
+import lombok.javac.JavacTreeMaker;
 
 import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.tree.JCTree.JCBlock;
-import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
-import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.tree.JCTree.JCAnnotation;
+import com.sun.tools.javac.tree.JCTree.JCBlock;
 import com.sun.tools.javac.tree.JCTree.JCClassDecl;
 import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
 import com.sun.tools.javac.tree.JCTree.JCExpression;
 import com.sun.tools.javac.tree.JCTree.JCImport;
+import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
 import com.sun.tools.javac.tree.JCTree.JCModifiers;
 import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.ListBuffer;
@@ -59,7 +58,7 @@ public final class Javac {
 	}
 
 	public static void addSuppressWarningsAll(final JCModifiers mods, final JavacNode node, final int pos) {
-		TreeMaker maker = node.getTreeMaker();
+		JavacTreeMaker maker = node.getTreeMaker();
 		JCExpression suppressWarningsType = chainDotsString(node, "java.lang.SuppressWarnings").setPos(pos);
 		JCExpression allLiteral = maker.Literal("all").setPos(pos);
 		ListBuffer<JCAnnotation> newAnnotations = ListBuffer.lb();
@@ -73,7 +72,7 @@ public final class Javac {
 	}
 
 	public static boolean isMethodCallValid(final JavacNode node, final String methodName, final Class<?> clazz, final String method) {
-		Collection<String> importedStatements = node.getImportStatements();
+		ImportList importedStatements = node.getImportList();
 		boolean wasImported = methodName.equals(clazz.getName() + "." + method);
 		wasImported |= methodName.equals(clazz.getSimpleName() + "." + method) && importedStatements.contains(clazz.getName());
 		wasImported |= methodName.equals(method) && importedStatements.contains(clazz.getName() + "." + method);

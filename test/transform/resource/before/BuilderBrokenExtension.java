@@ -3,7 +3,7 @@ class BuilderBrokenExtension {
 	private final String text;
 	private final int id;
 	
-	@lombok.Builder.Extension
+	@lombok.BuilderExtension
 	private void brokenExtension() {
 		this.id = 42;
 	}

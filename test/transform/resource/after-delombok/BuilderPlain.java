@@ -7,12 +7,14 @@ class BuilderPlain {
 	private String optionalVal1 = $Builder.$optionalVal1Default();
 	private java.util.List<java.lang.Long> optionalVal2 = $Builder.$optionalVal2Default();
 	private Map<java.lang.String, java.lang.Long> optionalVal3 = $Builder.$optionalVal3Default();
+	private byte[] data;
 	
 	@java.lang.SuppressWarnings("all")
 	private BuilderPlain(final $Builder builder) {
 		this.optionalVal1 = builder.optionalVal1;
 		this.optionalVal2 = builder.optionalVal2;
 		this.optionalVal3 = builder.optionalVal3;
+		this.data = builder.data;
 	}
 	
 	@java.lang.SuppressWarnings("all")
@@ -21,7 +23,7 @@ class BuilderPlain {
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface OptionalDef {
+	public interface OptionalDef {
 		OptionalDef withOptionalVal1(final String optionalVal1);
 		
 		OptionalDef withOptionalVal2(final java.lang.Long arg0);
@@ -32,14 +34,17 @@ class BuilderPlain {
 		
 		OptionalDef withOptionalVal3(final java.util.Map<? extends java.lang.String, ? extends java.lang.Long> arg0);
 		
+		OptionalDef withData(final byte[] data);
+		
 		BuilderPlain build();
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	private static class $Builder implements OptionalDef {
+	private static final class $Builder implements OptionalDef {
 		private String optionalVal1 = $optionalVal1Default();
 		private java.util.List<java.lang.Long> optionalVal2 = $optionalVal2Default();
 		private Map<java.lang.String, java.lang.Long> optionalVal3 = $optionalVal3Default();
+		private byte[] data;
 		
 		static String $optionalVal1Default() {
 			return DEFAULT;
@@ -75,6 +80,11 @@ class BuilderPlain {
 		
 		public OptionalDef withOptionalVal3(final java.util.Map<? extends java.lang.String, ? extends java.lang.Long> arg0) {
 			this.optionalVal3.putAll(arg0);
+			return this;
+		}
+		
+		public OptionalDef withData(final byte[] data) {
+			this.data = data != null ? data.clone() : data;
 			return this;
 		}
 		

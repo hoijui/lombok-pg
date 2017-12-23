@@ -74,7 +74,7 @@ public class HandleEntrypoint {
 		@Override
 		public void visitType(final EclipseNode typeNode, final TypeDeclaration type) {
 			boolean implementsInterface = false;
-			boolean isAnImport = typeNode.getImportStatements().contains(interfaze.getName());
+			boolean isAnImport = typeNode.getImportList().contains(interfaze.getName());
 			for (TypeReference ref : Each.elementIn(type.superInterfaces)) {
 				if (ref.toString().equals(interfaze.getName()) || (isAnImport && ref.toString().equals(interfaze.getSimpleName()))) {
 					implementsInterface = true;

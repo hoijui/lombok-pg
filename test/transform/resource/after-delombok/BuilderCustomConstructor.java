@@ -13,25 +13,25 @@ class BuilderCustomConstructor {
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface NameDef {
+	public interface NameDef {
 		
 		SurnameDef name(final String name);
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface SurnameDef {
+	public interface SurnameDef {
 		
 		OptionalDef surname(final String surname);
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface OptionalDef {
+	public interface OptionalDef {
 		
 		BuilderCustomConstructor build();
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	private static class $Builder implements NameDef, SurnameDef, OptionalDef {
+	private static final class $Builder implements NameDef, SurnameDef, OptionalDef {
 		private String name;
 		private String surname;
 		

@@ -2,15 +2,6 @@
   private int x;
   private int y;
   private final String z;
-  public @java.lang.SuppressWarnings("all") int getX() {
-    return this.x;
-  }
-  public @java.lang.SuppressWarnings("all") int getY() {
-    return this.y;
-  }
-  public @java.lang.SuppressWarnings("all") String getZ() {
-    return this.z;
-  }
   public @java.lang.SuppressWarnings("all") void setX(final int x) {
     this.x = x;
   }
@@ -39,7 +30,7 @@
     return (other instanceof DataWithGetter);
   }
   public @java.lang.Override @java.lang.SuppressWarnings("all") int hashCode() {
-    final int PRIME = 31;
+    final int PRIME = 59;
     int result = 1;
     result = ((result * PRIME) + this.getX());
     result = ((result * PRIME) + this.getY());
@@ -53,5 +44,14 @@
   public @java.beans.ConstructorProperties({"z"}) @java.lang.SuppressWarnings("all") DataWithGetter(final String z) {
     super();
     this.z = z;
+  }
+  public @java.lang.SuppressWarnings("all") int getX() {
+    return this.x;
+  }
+  public @java.lang.SuppressWarnings("all") int getY() {
+    return this.y;
+  }
+  public @java.lang.SuppressWarnings("all") String getZ() {
+    return this.z;
   }
 }

@@ -73,7 +73,7 @@ public class HandleBoundSetter extends JavacAnnotationHandler<BoundSetter> {
 			}
 
 			@Override
-			protected boolean hasMethodIncludingSupertypes(final JavacType type, final String methodName, final lombok.ast.TypeRef... argumentTypes) {
+			protected boolean hasMethodIncludingSupertypes(final JavacType type, final String methodName, final lombok.ast.pg.TypeRef... argumentTypes) {
 				return hasMethod(type.get().sym, methodName, type.editor().build(As.list(argumentTypes)));
 			}
 

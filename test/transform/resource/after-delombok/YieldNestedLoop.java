@@ -8,7 +8,7 @@ class YieldNestedLoop<T, K, V> {
 	@java.lang.SuppressWarnings("all")
 	public Iterable<V> values() {
 		
-		class $YielderValues implements java.util.Iterator<V>, java.lang.Iterable<V>, java.io.Closeable {
+		final class $YielderValues implements java.util.Iterator<V>, java.lang.Iterable<V>, java.io.Closeable {
 			private Map.Entry<T, Map<K, V>> entry;
 			private Map.Entry<K, V> subEntry;
 			@java.lang.SuppressWarnings("all")
@@ -22,14 +22,17 @@ class YieldNestedLoop<T, K, V> {
 			
 			private $YielderValues() {
 			}
-			
+
+			@java.lang.Override
 			public java.util.Iterator<V> iterator() {
 				if ($state == 0) {
 					$state = 1;
 					return this;
-				} else return new $YielderValues();
+				}
+				return new $YielderValues();
 			}
-			
+
+			@java.lang.Override
 			public boolean hasNext() {
 				if (!$nextDefined) {
 					$hasNext = getNext();
@@ -37,7 +40,8 @@ class YieldNestedLoop<T, K, V> {
 				}
 				return $hasNext;
 			}
-			
+
+			@java.lang.Override
 			public V next() {
 				if (!hasNext()) {
 					throw new java.util.NoSuchElementException();
@@ -45,15 +49,18 @@ class YieldNestedLoop<T, K, V> {
 				$nextDefined = false;
 				return $next;
 			}
-			
+
+			@java.lang.Override
 			public void remove() {
 				throw new java.lang.UnsupportedOperationException();
 			}
-			
+
+			@java.lang.Override
 			public void close() {
 				$state = 4;
 			}
-			
+
+			@java.lang.SuppressWarnings("all")
 			private boolean getNext() {
 				while (true) switch ($state) {
 				case 0: 

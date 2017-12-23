@@ -22,7 +22,7 @@
 package lombok.javac.handlers.ast;
 
 import static com.sun.tools.javac.code.Flags.*;
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.javac.handlers.Javac.matchesType;
 import static lombok.javac.handlers.JavacHandlerUtil.createAnnotation;
 
@@ -46,7 +46,7 @@ import com.sun.tools.javac.tree.JCTree.JCExpression;
 import com.sun.tools.javac.tree.JCTree.JCTypeApply;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 
-public final class JavacField implements lombok.ast.IField<JavacType, JavacNode, JCTree, JCVariableDecl> {
+public final class JavacField implements lombok.ast.pg.IField<JavacType, JavacNode, JCTree, JCVariableDecl> {
 	private final JavacNode fieldNode;
 	private final JCTree source;
 	private final JavacFieldEditor editor;
@@ -130,11 +130,11 @@ public final class JavacField implements lombok.ast.IField<JavacType, JavacNode,
 		return annotationNode;
 	}
 
-	public lombok.ast.TypeRef type() {
+	public lombok.ast.pg.TypeRef type() {
 		return Type(get().vartype);
 	}
 
-	public lombok.ast.TypeRef boxedType() {
+	public lombok.ast.pg.TypeRef boxedType() {
 		return JavacASTUtil.boxedType(get().vartype);
 	}
 
@@ -162,12 +162,12 @@ public final class JavacField implements lombok.ast.IField<JavacType, JavacNode,
 		return JavacType.typeOf(node(), source);
 	}
 
-	public lombok.ast.Expression<?> initialization() {
+	public lombok.ast.pg.Expression<?> initialization() {
 		return get().init == null ? null : Expr(get().init);
 	}
 
-	public List<lombok.ast.TypeRef> typeArguments() {
-		final List<lombok.ast.TypeRef> typeArguments = new ArrayList<lombok.ast.TypeRef>();
+	public List<lombok.ast.pg.TypeRef> typeArguments() {
+		final List<lombok.ast.pg.TypeRef> typeArguments = new ArrayList<lombok.ast.pg.TypeRef>();
 		final JCExpression type = get().vartype;
 		if (type instanceof JCTypeApply) {
 			JCTypeApply typeRef = (JCTypeApply) type;
@@ -178,18 +178,18 @@ public final class JavacField implements lombok.ast.IField<JavacType, JavacNode,
 		return typeArguments;
 	}
 
-	public List<lombok.ast.Annotation> annotations() {
+	public List<lombok.ast.pg.Annotation> annotations() {
 		return annotations(null);
 	}
 
-	public List<lombok.ast.Annotation> annotations(final Pattern namePattern) {
-		List<lombok.ast.Annotation> result = new ArrayList<lombok.ast.Annotation>();
+	public List<lombok.ast.pg.Annotation> annotations(final Pattern namePattern) {
+		List<lombok.ast.pg.Annotation> result = new ArrayList<lombok.ast.pg.Annotation>();
 		for (JCAnnotation annotation : get().mods.annotations) {
 			String name = annotation.annotationType.toString();
 			int idx = name.lastIndexOf(".");
 			String suspect = idx == -1 ? name : name.substring(idx + 1);
 			if ((namePattern == null) || namePattern.matcher(suspect).matches()) {
-				lombok.ast.Annotation ann = Annotation(Type(annotation.annotationType));
+				lombok.ast.pg.Annotation ann = Annotation(Type(annotation.annotationType));
 				for (JCExpression arg : annotation.args) {
 					if (arg instanceof JCAssign) {
 						JCAssign assign = (JCAssign) arg;

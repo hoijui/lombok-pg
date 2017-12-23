@@ -29,7 +29,7 @@
 package lombok.eclipse.handlers;
 
 import static lombok.eclipse.handlers.Eclipse.*;
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.core.util.ErrorMessages.*;
 
 import java.util.*;
@@ -68,7 +68,7 @@ import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
 
 import lombok.*;
-import lombok.ast.Case;
+import lombok.ast.pg.Case;
 import lombok.core.handlers.YieldHandler;
 import lombok.core.handlers.YieldHandler.AbstractYieldDataCollector;
 import lombok.core.handlers.YieldHandler.ErrorHandler;
@@ -293,8 +293,8 @@ public class HandleYield extends EclipseASTAdapter {
 						for (Statement statement : Each.elementIn(tree.initializations)) {
 							refactorStatement(statement);
 						}
-						lombok.ast.Case label = Case();
-						lombok.ast.Case breakLabel = getBreakLabel(this);
+						lombok.ast.pg.Case label = Case();
+						lombok.ast.pg.Case breakLabel = getBreakLabel(this);
 						addLabel(label);
 						if ((tree.condition != null) && !isTrueLiteral(tree.condition)) {
 							addStatement(If(Not(Expr(tree.condition))).Then(Block().withStatement(setState(literal(breakLabel))).withStatement(Continue())));
@@ -396,7 +396,7 @@ public class HandleYield extends EclipseASTAdapter {
 				current = new Scope<ASTNode>(current, tree) {
 					@Override
 					public void refactor() {
-						lombok.ast.Case label = tree.elseStatement == null ? getBreakLabel(this) : Case();
+						lombok.ast.pg.Case label = tree.elseStatement == null ? getBreakLabel(this) : Case();
 						addStatement(If(Not(Expr(tree.condition))).Then(Block().withStatement(setState(literal(label))).withStatement(Continue())));
 						if (tree.elseStatement != null) {
 							refactorStatement(tree.thenStatement);
@@ -425,8 +425,8 @@ public class HandleYield extends EclipseASTAdapter {
 				current = new Scope<ASTNode>(current, tree) {
 					@Override
 					public void refactor() {
-						lombok.ast.Case breakLabel = getBreakLabel(this);
-						lombok.ast.Switch switchStatement = Switch(Expr(tree.expression));
+						lombok.ast.pg.Case breakLabel = getBreakLabel(this);
+						lombok.ast.pg.Switch switchStatement = Switch(Expr(tree.expression));
 						addStatement(switchStatement);
 						if (Is.notEmpty(tree.statements)) {
 							boolean hasDefault = false;
@@ -436,7 +436,7 @@ public class HandleYield extends EclipseASTAdapter {
 									if (caseStatement.constantExpression == null) {
 										hasDefault = true;
 									}
-									lombok.ast.Case label = Case();
+									lombok.ast.pg.Case label = Case();
 									switchStatement.withCase(Case(Expr(caseStatement.constantExpression)).withStatement(setState(literal(label))).withStatement(Continue()));
 									addLabel(label);
 								} else {
@@ -468,9 +468,9 @@ public class HandleYield extends EclipseASTAdapter {
 						boolean hasCatch = Is.notEmpty(tree.catchArguments);
 						ErrorHandler catchHandler = null;
 						ErrorHandler finallyHandler = null;
-						lombok.ast.Case tryLabel = Case();
-						lombok.ast.Case finallyLabel;
-						lombok.ast.Case breakLabel = getBreakLabel(this);
+						lombok.ast.pg.Case tryLabel = Case();
+						lombok.ast.pg.Case finallyLabel;
+						lombok.ast.pg.Case breakLabel = getBreakLabel(this);
 						String finallyErrorName = null;
 
 						if (hasFinally) {
@@ -510,7 +510,7 @@ public class HandleYield extends EclipseASTAdapter {
 								Argument argument = tree.catchArguments[i];
 								Block block = tree.catchBlocks[i];
 
-								lombok.ast.Case label = Case();
+								lombok.ast.pg.Case label = Case();
 								usedLabels.add(label);
 								addLabel(label);
 								refactorStatement(block);
@@ -539,7 +539,7 @@ public class HandleYield extends EclipseASTAdapter {
 
 							Scope<ASTNode> next = getFinallyScope(parent, null);
 							if (next != null) {
-								lombok.ast.Case label = getFinallyLabel(next);
+								lombok.ast.pg.Case label = getFinallyLabel(next);
 								addStatement(If(Binary(Name(labelName), ">", literal(label))).Then(Block() //
 										.withStatement(Assign(Name(next.labelName), Name(labelName))) //
 										.withStatement(setState(literal(label))).withStatement(setState(Name(labelName)))));
@@ -652,7 +652,7 @@ public class HandleYield extends EclipseASTAdapter {
 					@Override
 					public void refactor() {
 						Scope<ASTNode> next = getFinallyScope(parent, target);
-						lombok.ast.Case label = getBreakLabel(target);
+						lombok.ast.pg.Case label = getBreakLabel(target);
 
 						if (next == null) {
 							addStatement(setState(literal(label)));
@@ -712,7 +712,7 @@ public class HandleYield extends EclipseASTAdapter {
 					@Override
 					public void refactor() {
 						Scope<ASTNode> next = getFinallyScope(parent, target);
-						lombok.ast.Case label = getIterationLabel(target);
+						lombok.ast.pg.Case label = getIterationLabel(target);
 
 						if (next == null) {
 							addStatement(setState(literal(label)));
@@ -762,7 +762,7 @@ public class HandleYield extends EclipseASTAdapter {
 					yields.add(new Scope<ASTNode>(current, tree) {
 						@Override
 						public void refactor() {
-							lombok.ast.Case label = getBreakLabel(this);
+							lombok.ast.pg.Case label = getBreakLabel(this);
 							addStatement(Assign(Name(nextName), Expr(expression)));
 							addStatement(setState(literal(label)));
 							addStatement(Return(True()));

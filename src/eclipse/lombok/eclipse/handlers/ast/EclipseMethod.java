@@ -24,9 +24,9 @@ package lombok.eclipse.handlers.ast;
 import static org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants.*;
 import static lombok.eclipse.handlers.EclipseHandlerUtil.createAnnotation;
 import static lombok.eclipse.handlers.ast.EclipseASTUtil.boxedType;
-import static lombok.ast.AST.*;
-import static lombok.ast.IMethod.ArgumentStyle.BOXED_TYPES;
-import static lombok.ast.IMethod.ArgumentStyle.INCLUDE_ANNOTATIONS;
+import static lombok.ast.pg.AST.*;
+import static lombok.ast.pg.IMethod.ArgumentStyle.BOXED_TYPES;
+import static lombok.ast.pg.IMethod.ArgumentStyle.INCLUDE_ANNOTATIONS;
 
 import java.lang.StringBuilder;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ import lombok.core.util.Is;
 import lombok.eclipse.EclipseNode;
 import lombok.eclipse.handlers.Eclipse;
 
-public final class EclipseMethod implements lombok.ast.IMethod<EclipseType, EclipseNode, ASTNode, AbstractMethodDeclaration> {
+public final class EclipseMethod implements lombok.ast.pg.IMethod<EclipseType, EclipseNode, ASTNode, AbstractMethodDeclaration> {
 	private final EclipseNode methodNode;
 	private final ASTNode source;
 	private final EclipseMethodEditor editor;
@@ -71,12 +71,12 @@ public final class EclipseMethod implements lombok.ast.IMethod<EclipseType, Ecli
 		return editor;
 	}
 
-	public lombok.ast.TypeRef returns() {
+	public lombok.ast.pg.TypeRef returns() {
 		TypeReference returnType = returnType();
 		return isConstructor() ? null : Type(returnType, lombok.eclipse.Eclipse.toQualifiedName(returnType.getTypeName()));
 	}
 
-	public lombok.ast.TypeRef boxedReturns() {
+	public lombok.ast.pg.TypeRef boxedReturns() {
 		return boxedType(returnType());
 	}
 
@@ -181,22 +181,22 @@ public final class EclipseMethod implements lombok.ast.IMethod<EclipseType, Ecli
 		return EclipseType.typeOf(node(), source);
 	}
 
-	public List<lombok.ast.Statement<?>> statements() {
-		final List<lombok.ast.Statement<?>> methodStatements = new ArrayList<lombok.ast.Statement<?>>();
+	public List<lombok.ast.pg.Statement<?>> statements() {
+		final List<lombok.ast.pg.Statement<?>> methodStatements = new ArrayList<lombok.ast.pg.Statement<?>>();
 		for (Object statement : Each.elementIn(get().statements)) {
 			methodStatements.add(Stat(statement));
 		}
 		return methodStatements;
 	}
 
-	public List<lombok.ast.Annotation> annotations() {
+	public List<lombok.ast.pg.Annotation> annotations() {
 		return annotations(get().annotations);
 	}
 
-	private List<lombok.ast.Annotation> annotations(final Annotation[] anns) {
-		final List<lombok.ast.Annotation> annotations = new ArrayList<lombok.ast.Annotation>();
+	private List<lombok.ast.pg.Annotation> annotations(final Annotation[] anns) {
+		final List<lombok.ast.pg.Annotation> annotations = new ArrayList<lombok.ast.pg.Annotation>();
 		for (Annotation annotation : Each.elementIn(anns)) {
-			lombok.ast.Annotation ann = Annotation(Type(annotation.type)).posHint(annotation);
+			lombok.ast.pg.Annotation ann = Annotation(Type(annotation.type)).posHint(annotation);
 			if (annotation instanceof SingleMemberAnnotation) {
 				ann.withValue(Expr(((SingleMemberAnnotation) annotation).memberValue));
 			} else if (annotation instanceof NormalAnnotation) {
@@ -209,24 +209,24 @@ public final class EclipseMethod implements lombok.ast.IMethod<EclipseType, Ecli
 		return annotations;
 	}
 
-	public java.util.List<lombok.ast.Argument> arguments(final ArgumentStyle... style) {
+	public java.util.List<lombok.ast.pg.Argument> arguments(final ArgumentStyle... style) {
 		final List<ArgumentStyle> styles = As.list(style);
-		final List<lombok.ast.Argument> methodArguments = new ArrayList<lombok.ast.Argument>();
+		final List<lombok.ast.pg.Argument> methodArguments = new ArrayList<lombok.ast.pg.Argument>();
 		for (Argument argument : Each.elementIn(get().arguments)) {
-			lombok.ast.TypeRef argType = styles.contains(BOXED_TYPES) ? boxedType(argument.type).posHint(argument.type) : Type(argument.type);
-			lombok.ast.Argument arg = Arg(argType, As.string(argument.name)).posHint(argument);
+			lombok.ast.pg.TypeRef argType = styles.contains(BOXED_TYPES) ? boxedType(argument.type).posHint(argument.type) : Type(argument.type);
+			lombok.ast.pg.Argument arg = Arg(argType, As.string(argument.name)).posHint(argument);
 			if (styles.contains(INCLUDE_ANNOTATIONS)) arg.withAnnotations(annotations(argument.annotations));
 			methodArguments.add(arg);
 		}
 		return methodArguments;
 	}
 
-	public List<lombok.ast.TypeParam> typeParameters() {
-		final List<lombok.ast.TypeParam> typeParameters = new ArrayList<lombok.ast.TypeParam>();
+	public List<lombok.ast.pg.TypeParam> typeParameters() {
+		final List<lombok.ast.pg.TypeParam> typeParameters = new ArrayList<lombok.ast.pg.TypeParam>();
 		if (isConstructor()) return typeParameters;
 		MethodDeclaration methodDecl = (MethodDeclaration) get();
 		for (TypeParameter typaram : Each.elementIn(methodDecl.typeParameters)) {
-			lombok.ast.TypeParam typeParameter = TypeParam(As.string(typaram.name)).posHint(typaram);
+			lombok.ast.pg.TypeParam typeParameter = TypeParam(As.string(typaram.name)).posHint(typaram);
 			if (typaram.type != null) typeParameter.withBound(Type(typaram.type));
 			for (TypeReference bound : Each.elementIn(typaram.bounds)) {
 				typeParameter.withBound(Type(bound));
@@ -236,8 +236,8 @@ public final class EclipseMethod implements lombok.ast.IMethod<EclipseType, Ecli
 		return typeParameters;
 	}
 
-	public List<lombok.ast.TypeRef> thrownExceptions() {
-		final List<lombok.ast.TypeRef> thrownExceptions = new ArrayList<lombok.ast.TypeRef>();
+	public List<lombok.ast.pg.TypeRef> thrownExceptions() {
+		final List<lombok.ast.pg.TypeRef> thrownExceptions = new ArrayList<lombok.ast.pg.TypeRef>();
 		for (Object thrownException : Each.elementIn(get().thrownExceptions)) {
 			thrownExceptions.add(Type(thrownException));
 		}

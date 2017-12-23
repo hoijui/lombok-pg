@@ -29,12 +29,12 @@ import static com.sun.tools.javac.code.TypeTags.CLASS;
 import static lombok.core.util.ErrorMessages.canBeUsedOnClassAndEnumOnly;
 import static lombok.javac.handlers.Javac.typeNodeOf;
 import static lombok.javac.handlers.JavacHandlerUtil.*;
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 
 import java.util.*;
 
 import lombok.*;
-import lombok.ast.*;
+import lombok.ast.pg.*;
 import lombok.core.AnnotationValues;
 import lombok.javac.JavacAnnotationHandler;
 import lombok.javac.JavacNode;

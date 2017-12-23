@@ -21,22 +21,64 @@
  */
 package lombok.core.handlers;
 
-import static lombok.ast.AST.*;
-import static lombok.ast.IMethod.ArgumentStyle.INCLUDE_ANNOTATIONS;
-import static lombok.ast.Wildcard.Bound.EXTENDS;
+import static lombok.ast.pg.AST.Arg;
+import static lombok.ast.pg.AST.Assign;
+import static lombok.ast.pg.AST.Binary;
+import static lombok.ast.pg.AST.Call;
+import static lombok.ast.pg.AST.ClassDecl;
+import static lombok.ast.pg.AST.ConstructorDecl;
+import static lombok.ast.pg.AST.DefaultValue;
+import static lombok.ast.pg.AST.Field;
+import static lombok.ast.pg.AST.FieldDecl;
+import static lombok.ast.pg.AST.InterfaceDecl;
+import static lombok.ast.pg.AST.MethodDecl;
+import static lombok.ast.pg.AST.Name;
+import static lombok.ast.pg.AST.New;
+import static lombok.ast.pg.AST.Null;
+import static lombok.ast.pg.AST.Return;
+import static lombok.ast.pg.AST.Ternary;
+import static lombok.ast.pg.AST.This;
+import static lombok.ast.pg.AST.Type;
+import static lombok.ast.pg.AST.Wildcard;
+import static lombok.ast.pg.IMethod.ArgumentStyle.INCLUDE_ANNOTATIONS;
+import static lombok.ast.pg.Wildcard.Bound.EXTENDS;
 import static lombok.core.TransformationsUtil.NON_NULL_PATTERN;
-import static lombok.core.util.Names.*;
+import static lombok.core.util.Names.camelCase;
+import static lombok.core.util.Names.capitalize;
+import static lombok.core.util.Names.decapitalize;
+import static lombok.core.util.Names.singular;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import lombok.*;
-import lombok.ast.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.BuilderExtension;
+import lombok.Getter;
+import lombok.ast.pg.AbstractMethodDecl;
+import lombok.ast.pg.Argument;
+import lombok.ast.pg.Call;
+import lombok.ast.pg.ConstructorDecl;
+import lombok.ast.pg.Expression;
+import lombok.ast.pg.FieldDecl;
+import lombok.ast.pg.IField;
+import lombok.ast.pg.IMethod;
+import lombok.ast.pg.IType;
+import lombok.ast.pg.MethodDecl;
+import lombok.ast.pg.TypeRef;
 import lombok.core.util.Is;
 import lombok.core.util.Names;
 
-public class BuilderAndExtensionHandler<TYPE_TYPE extends IType<METHOD_TYPE, FIELD_TYPE, ?, ?, ?, ?>, METHOD_TYPE extends IMethod<TYPE_TYPE, ?, ?, ?>, FIELD_TYPE extends IField<?, ?, ?, ?>> {
+public abstract class BuilderAndExtensionHandler<TYPE_TYPE extends IType<METHOD_TYPE, FIELD_TYPE, ?, ?, ?, ?>, METHOD_TYPE extends IMethod<TYPE_TYPE, ?, ?, ?>, FIELD_TYPE extends IField<?, ?, ?, ?>> {
 	public static final String OPTIONAL_DEF = "OptionalDef";
 	public static final String BUILDER = "$Builder";
+	
+	protected abstract boolean isArray(FIELD_TYPE field);
 
 	public void handleBuilder(final TYPE_TYPE type, final Builder builder) {
 		final BuilderData<TYPE_TYPE, METHOD_TYPE, FIELD_TYPE> builderData = new BuilderData<TYPE_TYPE, METHOD_TYPE, FIELD_TYPE>(type, builder).collect();
@@ -53,7 +95,7 @@ public class BuilderAndExtensionHandler<TYPE_TYPE extends IType<METHOD_TYPE, FIE
 	}
 
 	public void handleExtension(final TYPE_TYPE type, final METHOD_TYPE method, final IParameterValidator<METHOD_TYPE> validation,
-			final IParameterSanitizer<METHOD_TYPE> sanitizer, final Builder builder, final Builder.Extension extension) {
+			final IParameterSanitizer<METHOD_TYPE> sanitizer, final Builder builder, final BuilderExtension extension) {
 		TYPE_TYPE builderType = type.<TYPE_TYPE> memberType(BUILDER);
 		final BuilderData<TYPE_TYPE, METHOD_TYPE, FIELD_TYPE> builderData = new BuilderData<TYPE_TYPE, METHOD_TYPE, FIELD_TYPE>(type, builder).collect();
 
@@ -106,10 +148,10 @@ public class BuilderAndExtensionHandler<TYPE_TYPE extends IType<METHOD_TYPE, FIE
 		if (containsRequiredFields) {
 			if (uninitializedRequiredFieldNames.isEmpty()) {
 				return ExtensionType.REQUIRED;
-			} else {
-				method.node().addWarning("@Builder.Extension: The method '" + method.name() + "' is not a valid extension and was ignored.");
-				return ExtensionType.NONE;
 			}
+			
+			method.node().addWarning("@Builder.Extension: The method '" + method.name() + "' is not a valid extension and was ignored.");
+			return ExtensionType.NONE;
 		}
 		return ExtensionType.OPTIONAL;
 	}
@@ -180,7 +222,7 @@ public class BuilderAndExtensionHandler<TYPE_TYPE extends IType<METHOD_TYPE, FIE
 					createResetMethod(builderData, interfaceMethods, new ArrayList<AbstractMethodDecl<?>>());
 				}
 
-				type.editor().injectType(InterfaceDecl(name).makePublic().makeStatic().withTypeParameters(type.typeParameters()).withMethods(interfaceMethods));
+				type.editor().injectType(InterfaceDecl(name).makePublic().withTypeParameters(type.typeParameters()).withMethods(interfaceMethods));
 				field = fields.get(i);
 				name = names.get(i);
 			}
@@ -191,7 +233,7 @@ public class BuilderAndExtensionHandler<TYPE_TYPE extends IType<METHOD_TYPE, FIE
 				createResetMethod(builderData, interfaceMethods, new ArrayList<AbstractMethodDecl<?>>());
 			}
 
-			type.editor().injectType(InterfaceDecl(name).makePublic().makeStatic().withTypeParameters(type.typeParameters()).withMethods(interfaceMethods));
+			type.editor().injectType(InterfaceDecl(name).makePublic().withTypeParameters(type.typeParameters()).withMethods(interfaceMethods));
 		}
 	}
 
@@ -222,7 +264,7 @@ public class BuilderAndExtensionHandler<TYPE_TYPE extends IType<METHOD_TYPE, FIE
 			createMethodCall(builderData, callMethod, interfaceMethods, builderMethods);
 		}
 
-		type.editor().injectType(InterfaceDecl(OPTIONAL_DEF).makePublic().makeStatic().withTypeParameters(type.typeParameters()).withMethods(interfaceMethods));
+		type.editor().injectType(InterfaceDecl(OPTIONAL_DEF).makePublic().withTypeParameters(type.typeParameters()).withMethods(interfaceMethods));
 	}
 
 	private void createFluentSetter(final BuilderData<TYPE_TYPE, METHOD_TYPE, FIELD_TYPE> builderData, final String typeName, final FIELD_TYPE field,
@@ -231,9 +273,19 @@ public class BuilderAndExtensionHandler<TYPE_TYPE extends IType<METHOD_TYPE, FIE
 		String methodName = camelCase(builderData.getMethodPrefix(), field.filteredName());
 		final Argument arg0 = Arg(field.type(), field.filteredName()).makeFinal();
 		builderMethods.add(MethodDecl(Type(typeName).withTypeArguments(type.typeArguments()), methodName).makePublic().implementing().withArgument(arg0) //
-				.withStatement(Assign(Field(field.filteredName()), Name(field.filteredName()))) //
+				.withStatement(Assign(Field(field.filteredName()), cloneIfArray(field))) //
 				.withStatement(Return(This())));
 		interfaceMethods.add(MethodDecl(Type(typeName).withTypeArguments(type.typeArguments()), methodName).makePublic().withNoBody().withArgument(arg0));
+	}
+
+	private Expression<?> cloneIfArray(FIELD_TYPE field) {
+		Expression<?> name = Name(field.filteredName());
+		
+		if (isArray(field)) {
+			return Ternary(Binary(name, "!=", Null()), Call(name, "clone"), name);
+		}
+		
+		return name;
 	}
 
 	private void createCollectionMethods(final BuilderData<TYPE_TYPE, METHOD_TYPE, FIELD_TYPE> builderData, final FIELD_TYPE field,
@@ -370,7 +422,7 @@ public class BuilderAndExtensionHandler<TYPE_TYPE extends IType<METHOD_TYPE, FIE
 			}
 			builderFields.add(builderField);
 		}
-		type.editor().injectType(ClassDecl(BUILDER).withTypeParameters(type.typeParameters()).makePrivate().makeStatic().implementing(interfaceTypes) //
+		type.editor().injectType(ClassDecl(BUILDER).withTypeParameters(type.typeParameters()).makePrivate().makeStatic().makeFinal().implementing(interfaceTypes) //
 				.withFields(builderFields) //
 				.withMethods(builderFieldDefaultMethods) //
 				.withMethods(builderMethods) //

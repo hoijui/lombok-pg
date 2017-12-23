@@ -21,7 +21,7 @@
  */
 package lombok.javac.handlers;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.core.util.ErrorMessages.*;
 import static lombok.javac.handlers.JavacHandlerUtil.*;
 import static lombok.javac.handlers.ast.JavacResolver.CLASS;
@@ -30,8 +30,8 @@ import java.util.*;
 
 import javax.lang.model.element.ElementKind;
 import lombok.*;
-import lombok.ast.Argument;
-import lombok.ast.Expression;
+import lombok.ast.pg.Argument;
+import lombok.ast.pg.Expression;
 import lombok.core.AnnotationValues;
 import lombok.core.handlers.ListenerSupportHandler;
 import lombok.core.util.As;

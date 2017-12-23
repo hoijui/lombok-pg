@@ -5,7 +5,7 @@ class YieldTryBlock {
 	@java.lang.SuppressWarnings("all")
 	public Iterable<String> test() {
 		
-		class $YielderTest implements java.util.Iterator<java.lang.String>, java.lang.Iterable<java.lang.String>, java.io.Closeable {
+		final class $YielderTest implements java.util.Iterator<java.lang.String>, java.lang.Iterable<java.lang.String>, java.io.Closeable {
 			private boolean b;
 			private RuntimeException e;
 			private java.lang.Throwable $yieldException1;
@@ -17,14 +17,17 @@ class YieldTryBlock {
 			
 			private $YielderTest() {
 			}
-			
+
+			@java.lang.Override
 			public java.util.Iterator<java.lang.String> iterator() {
 				if ($state == 0) {
 					$state = 1;
 					return this;
-				} else return new $YielderTest();
+				}
+				return new $YielderTest();
 			}
-			
+
+			@java.lang.Override
 			public boolean hasNext() {
 				if (!$nextDefined) {
 					$hasNext = getNext();
@@ -32,7 +35,8 @@ class YieldTryBlock {
 				}
 				return $hasNext;
 			}
-			
+
+			@java.lang.Override
 			public java.lang.String next() {
 				if (!hasNext()) {
 					throw new java.util.NoSuchElementException();
@@ -40,11 +44,13 @@ class YieldTryBlock {
 				$nextDefined = false;
 				return $next;
 			}
-			
+
+			@java.lang.Override
 			public void remove() {
 				throw new java.lang.UnsupportedOperationException();
 			}
-			
+
+			@java.lang.Override
 			public void close() {
 				do switch ($state) {
 				case 5: 
@@ -57,7 +63,8 @@ class YieldTryBlock {
 				
 				}				 while (getNext());
 			}
-			
+
+			@java.lang.SuppressWarnings("all")
 			private boolean getNext() {
 				java.lang.Throwable $yieldException;
 				while (true) {

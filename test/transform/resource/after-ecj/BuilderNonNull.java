@@ -1,14 +1,14 @@
 import lombok.Builder;
 import lombok.NonNull;
 @Builder class BuilderNonNull {
-  public static @java.lang.SuppressWarnings("all") interface NonNullValueDef {
+  public @java.lang.SuppressWarnings("all") interface NonNullValueDef {
     public OptionalDef nonNullValue(final String nonNullValue);
   }
-  public static @java.lang.SuppressWarnings("all") interface OptionalDef {
+  public @java.lang.SuppressWarnings("all") interface OptionalDef {
     public OptionalDef anotherValue(final String anotherValue);
     public BuilderNonNull build();
   }
-  private static @java.lang.SuppressWarnings("all") class $Builder implements NonNullValueDef, OptionalDef {
+  private static final @java.lang.SuppressWarnings("all") class $Builder implements NonNullValueDef, OptionalDef {
     private String nonNullValue;
     private String anotherValue;
     public OptionalDef nonNullValue(final String nonNullValue) {

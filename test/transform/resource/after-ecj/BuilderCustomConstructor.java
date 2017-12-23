@@ -1,15 +1,15 @@
 import lombok.Builder;
 @Builder class BuilderCustomConstructor {
-  public static @java.lang.SuppressWarnings("all") interface NameDef {
+  public @java.lang.SuppressWarnings("all") interface NameDef {
     public SurnameDef name(final String name);
   }
-  public static @java.lang.SuppressWarnings("all") interface SurnameDef {
+  public @java.lang.SuppressWarnings("all") interface SurnameDef {
     public OptionalDef surname(final String surname);
   }
-  public static @java.lang.SuppressWarnings("all") interface OptionalDef {
+  public @java.lang.SuppressWarnings("all") interface OptionalDef {
     public BuilderCustomConstructor build();
   }
-  private static @java.lang.SuppressWarnings("all") class $Builder implements NameDef, SurnameDef, OptionalDef {
+  private static final @java.lang.SuppressWarnings("all") class $Builder implements NameDef, SurnameDef, OptionalDef {
     private String name;
     private String surname;
     public SurnameDef name(final String name) {

@@ -6,19 +6,19 @@ class BuilderExtensions {
 	private java.util.List<java.lang.Long> optionalVal2;
 	private long optionalVal3;
 	
-	@lombok.Builder.Extension
+	@lombok.BuilderExtension
 	private void idAndText(int id, String text) {
 		this.id = id;
 		this.text = text;
 	}	
 
-	@lombok.Builder.Extension(fields={"id", "text"})
+	@lombok.BuilderExtension(fields={"id", "text"})
 	private void idAsStringAndText(String id, String text) {
 		this.id = java.lang.Integer.valueOf(id);
 		this.text = text;
 	}
 	
-	@lombok.Builder.Extension
+	@lombok.BuilderExtension
 	private void optionalVal1(final Class<?> clazz) {
 		this.optionalVal1 = clazz.getSimpleName();
 	}

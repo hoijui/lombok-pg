@@ -21,13 +21,13 @@
  */
 package lombok.core.handlers;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 
 import java.text.Normalizer;
 import java.util.List;
 
 import lombok.*;
-import lombok.ast.*;
+import lombok.ast.pg.*;
 import lombok.core.util.As;
 
 public interface IParameterSanitizer<METHOD_TYPE extends IMethod<?, ?, ?, ?>> {

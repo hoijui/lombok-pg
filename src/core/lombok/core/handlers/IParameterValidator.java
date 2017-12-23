@@ -22,12 +22,12 @@
 package lombok.core.handlers;
 
 import static java.util.Collections.singletonList;
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 
 import java.util.*;
 
 import lombok.*;
-import lombok.ast.*;
+import lombok.ast.pg.*;
 import lombok.core.util.As;
 
 public interface IParameterValidator<METHOD_TYPE extends IMethod<?, ?, ?, ?>> {

@@ -1,4 +1,5 @@
 import java.io.*;
+
 class CleanupPlain {
 	void test() throws Exception {
 		InputStream in = new FileInputStream("in");
@@ -9,8 +10,8 @@ class CleanupPlain {
 					out.flush();
 				}
 			} finally {
-				if (out instanceof java.io.Closeable) {
-					((java.io.Closeable)out).close();
+				if (java.util.Collections.singletonList(out).get(0) != null) {
+					out.close();
 				}
 			}
 		} finally {

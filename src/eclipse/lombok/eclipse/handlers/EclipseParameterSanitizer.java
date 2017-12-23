@@ -40,8 +40,8 @@ import lombok.eclipse.handlers.ast.EclipseMethod;
 
 public class EclipseParameterSanitizer implements IParameterSanitizer<EclipseMethod> {
 	@Override
-	public List<lombok.ast.Statement<?>> sanitizeParameterOf(final EclipseMethod method) {
-		final List<lombok.ast.Statement<?>> sanitizeStatements = new ArrayList<lombok.ast.Statement<?>>();
+	public List<lombok.ast.pg.Statement<?>> sanitizeParameterOf(final EclipseMethod method) {
+		final List<lombok.ast.pg.Statement<?>> sanitizeStatements = new ArrayList<lombok.ast.pg.Statement<?>>();
 		for (Argument argument : Each.elementIn(method.get().arguments)) {
 			final String argumentName = new String(argument.name);
 			final String newArgumentName = camelCase("sanitized", argumentName);
@@ -58,7 +58,7 @@ public class EclipseParameterSanitizer implements IParameterSanitizer<EclipseMet
 				break;
 			}
 		}
-		for (lombok.ast.Statement<?> sanitizeStatement : sanitizeStatements) {
+		for (lombok.ast.pg.Statement<?> sanitizeStatement : sanitizeStatements) {
 			sanitizeStatement.posHint(method.get());
 		}
 		return sanitizeStatements;

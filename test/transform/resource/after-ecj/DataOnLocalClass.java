@@ -36,7 +36,7 @@ class DataOnLocalClass1 {
         return (other instanceof Local);
       }
       public @java.lang.Override @java.lang.SuppressWarnings("all") int hashCode() {
-        final int PRIME = 31;
+        final int PRIME = 59;
         int result = 1;
         result = ((result * PRIME) + this.getX());
         final java.lang.Object $name = this.getName();
@@ -63,7 +63,9 @@ class DataOnLocalClass2 {
         }
         public @java.lang.SuppressWarnings("all") void setName(final @lombok.NonNull String name) {
           if ((name == null))
-              throw new java.lang.NullPointerException("name");
+              {
+                throw new java.lang.NullPointerException("name");
+              }
           this.name = name;
         }
         public @java.lang.Override @java.lang.SuppressWarnings("all") boolean equals(final java.lang.Object o) {
@@ -84,7 +86,7 @@ class DataOnLocalClass2 {
           return (other instanceof Local.InnerLocal);
         }
         public @java.lang.Override @java.lang.SuppressWarnings("all") int hashCode() {
-          final int PRIME = 31;
+          final int PRIME = 59;
           int result = 1;
           final java.lang.Object $name = this.getName();
           result = ((result * PRIME) + (($name == null) ? 0 : $name.hashCode()));
@@ -96,7 +98,9 @@ class DataOnLocalClass2 {
         public @java.lang.SuppressWarnings("all") InnerLocal(final @lombok.NonNull String name) {
           super();
           if ((name == null))
-              throw new java.lang.NullPointerException("name");
+              {
+                throw new java.lang.NullPointerException("name");
+              }
           this.name = name;
         }
       }
@@ -120,7 +124,7 @@ class DataOnLocalClass2 {
         return (other instanceof Local);
       }
       public @java.lang.Override @java.lang.SuppressWarnings("all") int hashCode() {
-        final int PRIME = 31;
+        final int PRIME = 59;
         int result = 1;
         result = ((result * PRIME) + this.getX());
         return result;

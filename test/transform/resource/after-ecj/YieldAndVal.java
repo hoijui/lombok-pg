@@ -8,7 +8,7 @@ class YieldAndVal {
     super();
   }
   public static @java.lang.SuppressWarnings("all") <S, T>Iterable<T> needsMoreVal(final Iterable<S> values, final Function1<S, List<T>> selector) {
-    class $YielderNeedsMoreVal implements java.util.Iterator<T>, java.lang.Iterable<T>, java.io.Closeable {
+    final class $YielderNeedsMoreVal implements java.util.Iterator<T>, java.lang.Iterable<T>, java.io.Closeable {
       private S item;
       private java.util.List<T> subItems;
       private T subItem;
@@ -21,16 +21,15 @@ class YieldAndVal {
       private $YielderNeedsMoreVal() {
         super();
       }
-      public java.util.Iterator<T> iterator() {
+      public @java.lang.Override java.util.Iterator<T> iterator() {
         if (($state == 0))
             {
               $state = 1;
               return this;
             }
-        else
-            return new $YielderNeedsMoreVal();
+        return new $YielderNeedsMoreVal();
       }
-      public boolean hasNext() {
+      public @java.lang.Override boolean hasNext() {
         if ((! $nextDefined))
             {
               $hasNext = getNext();
@@ -38,7 +37,7 @@ class YieldAndVal {
             }
         return $hasNext;
       }
-      public T next() {
+      public @java.lang.Override T next() {
         if ((! hasNext()))
             {
               throw new java.util.NoSuchElementException();
@@ -46,13 +45,13 @@ class YieldAndVal {
         $nextDefined = false;
         return $next;
       }
-      public void remove() {
+      public @java.lang.Override void remove() {
         throw new java.lang.UnsupportedOperationException();
       }
-      public void close() {
+      public @java.lang.Override void close() {
         $state = 4;
       }
-      private boolean getNext() {
+      private @java.lang.SuppressWarnings("all") boolean getNext() {
         while (true)          switch ($state) {
           case 0 : ;
               $state = 1;

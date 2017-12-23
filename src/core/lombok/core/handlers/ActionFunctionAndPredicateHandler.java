@@ -21,13 +21,13 @@
  */
 package lombok.core.handlers;
 
-import static lombok.ast.AST.*;
-import static lombok.ast.IMethod.ArgumentStyle.*;
+import static lombok.ast.pg.AST.*;
+import static lombok.ast.pg.IMethod.ArgumentStyle.*;
 
 import java.util.*;
 
 import lombok.*;
-import lombok.ast.*;
+import lombok.ast.pg.*;
 
 public final class ActionFunctionAndPredicateHandler<TYPE_TYPE extends IType<METHOD_TYPE, ?, ?, ?, ?, ?>, METHOD_TYPE extends IMethod<TYPE_TYPE, ?, ?, ?>> {
 

@@ -21,7 +21,7 @@
  */
 package lombok.eclipse.handlers.ast;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.eclipse.Eclipse.toQualifiedName;
 import static lombok.eclipse.handlers.EclipseHandlerUtil.*;
 import static org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants.*;
@@ -41,7 +41,7 @@ import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.jdt.internal.compiler.ast.TypeReference;
 
-import lombok.ast.IType;
+import lombok.ast.pg.IType;
 import lombok.core.AST.Kind;
 import lombok.core.AnnotationValues;
 import lombok.core.util.As;
@@ -52,7 +52,7 @@ import lombok.eclipse.EclipseNode;
 import lombok.eclipse.handlers.Eclipse;
 import lombok.eclipse.handlers.EclipseHandlerUtil.MemberExistsResult;
 
-public final class EclipseType implements lombok.ast.IType<EclipseMethod, EclipseField, EclipseNode, ASTNode, TypeDeclaration, AbstractMethodDeclaration> {
+public final class EclipseType implements lombok.ast.pg.IType<EclipseMethod, EclipseField, EclipseNode, ASTNode, TypeDeclaration, AbstractMethodDeclaration> {
 	private final EclipseNode typeNode;
 	private final ASTNode source;
 	private final EclipseTypeEditor editor;
@@ -90,7 +90,7 @@ public final class EclipseType implements lombok.ast.IType<EclipseMethod, Eclips
 		return get().superclass != null;
 	}
 
-	public <T extends lombok.ast.IType<?, ?, ?, ?, ?, ?>> T memberType(final String typeName) {
+	public <T extends lombok.ast.pg.IType<?, ?, ?, ?, ?, ?>> T memberType(final String typeName) {
 		for (EclipseNode child : node().down()) {
 			if (child.getKind() != Kind.TYPE) continue;
 			if (child.getName().equals(typeName)) {
@@ -175,18 +175,18 @@ public final class EclipseType implements lombok.ast.IType<EclipseMethod, Eclips
 		return qualifiedName.toString();
 	}
 
-	public List<lombok.ast.TypeRef> typeArguments() {
-		final List<lombok.ast.TypeRef> typeArguments = new ArrayList<lombok.ast.TypeRef>();
+	public List<lombok.ast.pg.TypeRef> typeArguments() {
+		final List<lombok.ast.pg.TypeRef> typeArguments = new ArrayList<lombok.ast.pg.TypeRef>();
 		for (TypeParameter typaram : Each.elementIn(get().typeParameters)) {
 			typeArguments.add(Type(As.string(typaram.name)));
 		}
 		return typeArguments;
 	}
 
-	public List<lombok.ast.TypeParam> typeParameters() {
-		final List<lombok.ast.TypeParam> typeParameters = new ArrayList<lombok.ast.TypeParam>();
+	public List<lombok.ast.pg.TypeParam> typeParameters() {
+		final List<lombok.ast.pg.TypeParam> typeParameters = new ArrayList<lombok.ast.pg.TypeParam>();
 		for (TypeParameter typaram : Each.elementIn(get().typeParameters)) {
-			lombok.ast.TypeParam typeParameter = TypeParam(As.string(typaram.name)).posHint(typaram);
+			lombok.ast.pg.TypeParam typeParameter = TypeParam(As.string(typaram.name)).posHint(typaram);
 			if (typaram.type != null) typeParameter.withBound(Type(typaram.type));
 			for (TypeReference bound : Each.elementIn(typaram.bounds)) {
 				typeParameter.withBound(Type(bound));
@@ -196,14 +196,14 @@ public final class EclipseType implements lombok.ast.IType<EclipseMethod, Eclips
 		return typeParameters;
 	}
 
-	public List<lombok.ast.Annotation> annotations() {
+	public List<lombok.ast.pg.Annotation> annotations() {
 		return annotations(get().annotations);
 	}
 
-	private List<lombok.ast.Annotation> annotations(final Annotation[] anns) {
-		final List<lombok.ast.Annotation> annotations = new ArrayList<lombok.ast.Annotation>();
+	private List<lombok.ast.pg.Annotation> annotations(final Annotation[] anns) {
+		final List<lombok.ast.pg.Annotation> annotations = new ArrayList<lombok.ast.pg.Annotation>();
 		for (Annotation annotation : Each.elementIn(anns)) {
-			lombok.ast.Annotation ann = Annotation(Type(annotation.type)).posHint(annotation);
+			lombok.ast.pg.Annotation ann = Annotation(Type(annotation.type)).posHint(annotation);
 			if (annotation instanceof SingleMemberAnnotation) {
 				ann.withValue(Expr(((SingleMemberAnnotation) annotation).memberValue));
 			} else if (annotation instanceof NormalAnnotation) {
@@ -220,7 +220,7 @@ public final class EclipseType implements lombok.ast.IType<EclipseMethod, Eclips
 		return (fieldExists(fieldName, typeNode) != MemberExistsResult.NOT_EXISTS);
 	}
 
-	public boolean hasMethod(final String methodName, final lombok.ast.TypeRef... argumentTypes) {
+	public boolean hasMethod(final String methodName, final lombok.ast.pg.TypeRef... argumentTypes) {
 		// TODO check actual types..
 		return (methodExists(methodName, typeNode, false, argumentTypes == null ? 0 : argumentTypes.length) != MemberExistsResult.NOT_EXISTS);
 	}

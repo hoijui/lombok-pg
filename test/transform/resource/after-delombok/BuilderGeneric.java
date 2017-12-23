@@ -18,7 +18,7 @@ class BuilderGeneric<K extends Comparable<K>, V extends List<K>> {
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface FooDef<K extends Comparable<K>, V extends List<K>> {
+	public interface FooDef<K extends Comparable<K>, V extends List<K>> {
 		
 		OptionalDef<K, V> foo(final String foo);
 		
@@ -27,7 +27,7 @@ class BuilderGeneric<K extends Comparable<K>, V extends List<K>> {
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface OptionalDef<K extends Comparable<K>, V extends List<K>> {
+	public interface OptionalDef<K extends Comparable<K>, V extends List<K>> {
 		
 		OptionalDef<K, V> bar(final K arg0, final V arg1);
 		
@@ -37,7 +37,7 @@ class BuilderGeneric<K extends Comparable<K>, V extends List<K>> {
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	private static class $Builder<K extends Comparable<K>, V extends List<K>> implements FooDef<K, V>, OptionalDef<K, V> {
+	private static final class $Builder<K extends Comparable<K>, V extends List<K>> implements FooDef<K, V>, OptionalDef<K, V> {
 		private String foo;
 		private Map<K, V> bar = $barDefault();
 
@@ -90,25 +90,25 @@ class DomainContainer<D> {
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface ADef<D> {
+	public interface ADef<D> {
 		
 		DomainDef<D> a(final int a);
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface DomainDef<D> {
+	public interface DomainDef<D> {
 		
 		OptionalDef<D> domain(final D domain);
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface OptionalDef<D> {
+	public interface OptionalDef<D> {
 		
 		DomainContainer<D> build();
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	private static class $Builder<D> implements ADef<D>, DomainDef<D>, OptionalDef<D> {
+	private static final class $Builder<D> implements ADef<D>, DomainDef<D>, OptionalDef<D> {
 		private int a;
 		private D domain;
 		

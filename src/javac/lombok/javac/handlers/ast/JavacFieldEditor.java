@@ -30,7 +30,7 @@ import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCExpression;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 
-public final class JavacFieldEditor implements lombok.ast.IFieldEditor<JCTree> {
+public final class JavacFieldEditor implements lombok.ast.pg.IFieldEditor<JCTree> {
 	private final JavacField field;
 	private final JavacASTMaker builder;
 
@@ -43,23 +43,23 @@ public final class JavacFieldEditor implements lombok.ast.IFieldEditor<JCTree> {
 		return field.get();
 	}
 
-	public <T extends JCTree> T build(final lombok.ast.Node<?> node) {
+	public <T extends JCTree> T build(final lombok.ast.pg.Node<?> node) {
 		return builder.<T> build(node);
 	}
 
-	public <T extends JCTree> T build(final lombok.ast.Node<?> node, final Class<T> extectedType) {
+	public <T extends JCTree> T build(final lombok.ast.pg.Node<?> node, final Class<T> extectedType) {
 		return builder.build(node, extectedType);
 	}
 
-	public <T extends JCTree> List<T> build(final List<? extends lombok.ast.Node<?>> nodes) {
+	public <T extends JCTree> List<T> build(final List<? extends lombok.ast.pg.Node<?>> nodes) {
 		return builder.build(nodes);
 	}
 
-	public <T extends JCTree> List<T> build(final List<? extends lombok.ast.Node<?>> nodes, final Class<T> extectedType) {
+	public <T extends JCTree> List<T> build(final List<? extends lombok.ast.pg.Node<?>> nodes, final Class<T> extectedType) {
 		return builder.build(nodes, extectedType);
 	}
 
-	public void replaceInitialization(lombok.ast.Expression<?> initialization) {
+	public void replaceInitialization(lombok.ast.pg.Expression<?> initialization) {
 		get().init = (initialization == null) ? null : build(initialization, JCExpression.class);
 	}
 

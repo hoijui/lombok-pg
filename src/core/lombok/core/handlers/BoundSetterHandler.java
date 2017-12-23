@@ -21,7 +21,7 @@
  */
 package lombok.core.handlers;
 
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.core.TransformationsUtil.toSetterName;
 import static lombok.core.util.ErrorMessages.*;
 import static lombok.core.util.Names.camelCaseToConstant;
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import lombok.*;
-import lombok.ast.*;
+import lombok.ast.pg.*;
 import lombok.core.LombokNode;
 import lombok.core.AST.Kind;
 import lombok.core.util.As;
@@ -149,7 +149,7 @@ public abstract class BoundSetterHandler<TYPE_TYPE extends IType<?, FIELD_TYPE, 
 		String setterName = toSetterName(field.getAnnotationValue(Accessors.class), field.name(), isBoolean);
 		if (type.hasMethod(setterName, field.type())) return;
 		String oldValueName = OLD_VALUE_VARIABLE_NAME;
-		List<lombok.ast.Annotation> nonNulls = field.annotations(TransformationsUtil.NON_NULL_PATTERN);
+		List<lombok.ast.pg.Annotation> nonNulls = field.annotations(TransformationsUtil.NON_NULL_PATTERN);
 		MethodDecl methodDecl = MethodDecl(Type("void"), setterName).withAccessLevel(level).withArgument(Arg(field.type(), fieldName).withAnnotations(nonNulls));
 		if (!nonNulls.isEmpty() && !field.isPrimitive()) {
 			methodDecl.withStatement(If(Equal(Name(fieldName), Null())).Then(Throw(New(Type(NullPointerException.class)).withArgument(String(fieldName)))));

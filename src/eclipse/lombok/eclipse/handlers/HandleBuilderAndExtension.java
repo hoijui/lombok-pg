@@ -67,27 +67,32 @@ public class HandleBuilderAndExtension {
 				// continue with creating the builder
 			}
 
-			new BuilderAndExtensionHandler<EclipseType, EclipseMethod, EclipseField>().handleBuilder(type, annotation.getInstance());
+			new BuilderAndExtensionHandler<EclipseType, EclipseMethod, EclipseField>() {
+				@Override
+				protected boolean isArray(EclipseField field) {
+					return field.type().toString().endsWith("[]");
+				}
+			}.handleBuilder(type, annotation.getInstance());
 		}
 	}
 
 	/**
-	 * Handles the {@code lombok.Builder.Extension} annotation for eclipse.
+	 * Handles the {@code lombok.BuilderExtension} annotation for eclipse.
 	 */
 	@ProviderFor(EclipseAnnotationHandler.class)
 	@DeferUntilBuildFieldsAndMethods
-	public static class HandleBuilderExtension extends EclipseAnnotationHandler<Builder.Extension> {
+	public static class HandleBuilderExtension extends EclipseAnnotationHandler<BuilderExtension> {
 
 		@Override
-		public void handle(final AnnotationValues<Builder.Extension> annotation, final Annotation source, final EclipseNode annotationNode) {
+		public void handle(final AnnotationValues<BuilderExtension> annotation, final Annotation source, final EclipseNode annotationNode) {
 			final EclipseMethod method = EclipseMethod.methodOf(annotationNode, source);
 
 			if (method == null) {
-				annotationNode.addError(canBeUsedOnMethodOnly(Builder.Extension.class));
+				annotationNode.addError(canBeUsedOnMethodOnly(BuilderExtension.class));
 				return;
 			}
 			if (method.isAbstract()) {
-				annotationNode.addError(canBeUsedOnConcreteMethodOnly(Builder.Extension.class));
+				annotationNode.addError(canBeUsedOnConcreteMethodOnly(BuilderExtension.class));
 				return;
 			}
 
@@ -95,7 +100,7 @@ public class HandleBuilderAndExtension {
 			EclipseNode builderNode = type.getAnnotation(Builder.class);
 
 			if (builderNode == null) {
-				annotationNode.addError("@Builder.Extension is only allowed in types annotated with @Builder");
+				annotationNode.addError("@BuilderExtension is only allowed in types annotated with @Builder");
 				return;
 			}
 			AnnotationValues<Builder> builderAnnotation = createAnnotation(Builder.class, builderNode);
@@ -104,7 +109,12 @@ public class HandleBuilderAndExtension {
 				new HandleBuilder().handle(builderAnnotation, (Annotation) builderNode.get(), builderNode);
 			}
 
-			new BuilderAndExtensionHandler<EclipseType, EclipseMethod, EclipseField>().handleExtension(type, method, new EclipseParameterValidator(), new EclipseParameterSanitizer(), builderAnnotation.getInstance(), annotation.getInstance());
+			new BuilderAndExtensionHandler<EclipseType, EclipseMethod, EclipseField>() {
+				@Override
+				protected boolean isArray(EclipseField field) {
+					return field.type().toString().endsWith("[]");
+				}
+			}.handleExtension(type, method, new EclipseParameterValidator(), new EclipseParameterSanitizer(), builderAnnotation.getInstance(), annotation.getInstance());
 		}
 	}
 }

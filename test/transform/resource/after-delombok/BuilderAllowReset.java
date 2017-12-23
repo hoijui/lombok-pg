@@ -23,7 +23,7 @@ class BuilderAllowRest {
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface FinalFieldDef {
+	public interface FinalFieldDef {
 		
 		AnotherFinalFieldDef finalField(final String finalField);
 		
@@ -31,7 +31,7 @@ class BuilderAllowRest {
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface AnotherFinalFieldDef {
+	public interface AnotherFinalFieldDef {
 		
 		OptionalDef anotherFinalField(final String anotherFinalField);
 		
@@ -39,7 +39,7 @@ class BuilderAllowRest {
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	public static interface OptionalDef {
+	public interface OptionalDef {
 		
 		OptionalDef initializedPrimitiveField(final int initializedPrimitiveField);
 		
@@ -55,7 +55,7 @@ class BuilderAllowRest {
 	}
 	
 	@java.lang.SuppressWarnings("all")
-	private static class $Builder implements FinalFieldDef, AnotherFinalFieldDef, OptionalDef {
+	private static final class $Builder implements FinalFieldDef, AnotherFinalFieldDef, OptionalDef {
 		private String finalField;
 		private String anotherFinalField;
 		private int initializedPrimitiveField = $initializedPrimitiveFieldDefault();

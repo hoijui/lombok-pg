@@ -22,7 +22,7 @@
 package lombok.javac.handlers.ast;
 
 import static com.sun.tools.javac.code.Flags.*;
-import static lombok.ast.AST.*;
+import static lombok.ast.pg.AST.*;
 import static lombok.javac.handlers.Javac.*;
 
 import java.util.List;
@@ -40,7 +40,7 @@ import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
 import com.sun.tools.javac.tree.JCTree.JCStatement;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 
-public final class JavacMethodEditor implements lombok.ast.IMethodEditor<JCTree> {
+public final class JavacMethodEditor implements lombok.ast.pg.IMethodEditor<JCTree> {
 	private final JavacMethod method;
 	private final JavacASTMaker builder;
 
@@ -57,28 +57,28 @@ public final class JavacMethodEditor implements lombok.ast.IMethodEditor<JCTree>
 		return method.node();
 	}
 
-	public <T extends JCTree> T build(final lombok.ast.Node<?> node) {
+	public <T extends JCTree> T build(final lombok.ast.pg.Node<?> node) {
 		return builder.<T> build(node);
 	}
 
-	public <T extends JCTree> T build(final lombok.ast.Node<?> node, final Class<T> extectedType) {
+	public <T extends JCTree> T build(final lombok.ast.pg.Node<?> node, final Class<T> extectedType) {
 		return builder.build(node, extectedType);
 	}
 
-	public <T extends JCTree> List<T> build(final List<? extends lombok.ast.Node<?>> nodes) {
+	public <T extends JCTree> List<T> build(final List<? extends lombok.ast.pg.Node<?>> nodes) {
 		return builder.build(nodes);
 	}
 
-	public <T extends JCTree> List<T> build(final List<? extends lombok.ast.Node<?>> nodes, final Class<T> extectedType) {
+	public <T extends JCTree> List<T> build(final List<? extends lombok.ast.pg.Node<?>> nodes, final Class<T> extectedType) {
 		return builder.build(nodes, extectedType);
 	}
 
-	public void replaceReturnType(final lombok.ast.TypeRef returnType) {
+	public void replaceReturnType(final lombok.ast.pg.TypeRef returnType) {
 		if (method.isConstructor()) return;
 		get().restype = build(returnType);
 	}
 
-	public void replaceReturns(final lombok.ast.Statement<?> replacement) {
+	public void replaceReturns(final lombok.ast.pg.Statement<?> replacement) {
 		new ReturnStatementReplaceVisitor(method, replacement).visit(get());
 	}
 
@@ -110,24 +110,24 @@ public final class JavacMethodEditor implements lombok.ast.IMethodEditor<JCTree>
 	}
 
 
-	public void replaceArguments(final lombok.ast.Argument... arguments) {
+	public void replaceArguments(final lombok.ast.pg.Argument... arguments) {
 		replaceArguments(As.list(arguments));
 	}
 
-	public void replaceArguments(final List<lombok.ast.Argument> arguments) {
+	public void replaceArguments(final List<lombok.ast.pg.Argument> arguments) {
 		get().params = (com.sun.tools.javac.util.List<JCVariableDecl>) build(arguments, JCVariableDecl.class);
 	}
 
-	public void replaceBody(final lombok.ast.Statement<?>... statements) {
+	public void replaceBody(final lombok.ast.pg.Statement<?>... statements) {
 		replaceBody(As.list(statements));
 	}
 
-	public void replaceBody(final List<lombok.ast.Statement<?>> statements) {
+	public void replaceBody(final List<lombok.ast.pg.Statement<?>> statements) {
 		replaceBody(Block().withStatements(statements));
 	}
 
-	public void replaceBody(final lombok.ast.Block body) {
-		final lombok.ast.Block bodyWithConstructorCall = new lombok.ast.Block();
+	public void replaceBody(final lombok.ast.pg.Block body) {
+		final lombok.ast.pg.Block bodyWithConstructorCall = new lombok.ast.pg.Block();
 		if (!method.isEmpty()) {
 			final JCStatement suspect = get().body.stats.get(0);
 			if (isConstructorCall(suspect)) bodyWithConstructorCall.withStatement(Stat(suspect));

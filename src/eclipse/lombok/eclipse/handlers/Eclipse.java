@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 import lombok.*;
+import lombok.core.ImportList;
 import lombok.core.AST.*;
 import lombok.core.util.Each;
 import lombok.core.util.Is;
@@ -147,7 +148,7 @@ public final class Eclipse {
 	}
 
 	public static boolean isMethodCallValid(final EclipseNode node, final String methodName, final Class<?> clazz, final String method) {
-		Collection<String> importedStatements = node.getImportStatements();
+		ImportList importedStatements = node.getImportList();
 		boolean wasImported = methodName.equals(clazz.getName() + "." + method);
 		wasImported |= methodName.equals(clazz.getSimpleName() + "." + method) && importedStatements.contains(clazz.getName());
 		wasImported |= methodName.equals(method) && importedStatements.contains(clazz.getName() + "." + method);
