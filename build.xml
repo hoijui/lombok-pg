@@ -6,6 +6,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 	</description>
 
 	<property name="build.compiler" value="javac1.7" />
+	<property name="project.name" value="lombok-ds" />
 
 	<!-- resolve -->
 	<property name="ivy.retrieve.pattern" value="${basedir}/lib/[conf]/[artifact].[ext]" />
@@ -67,7 +68,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 			<conf name="build" sources="contrib" />
 			<conf name="test" sources="contrib" />
 			<settings>
-				<url url="http://cloud.github.com/downloads/peichhorn/lombok-ds/lombok.eclipse.settings" />
+				<url url="http://cloud.github.com/downloads/peichhorn/${project.name}/lombok.eclipse.settings" />
 			</settings>
 			<apt location="${basedir}/lib/build/spi.jar" />
 		</ivy:eclipsegen>
@@ -76,12 +77,12 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 			<os family="mac" />
 		</condition>
 
-		<copy file="${basedir}/buildScripts/eclipse-debug-target.template" tofile="eclipse lombok-ds (JavaSE-1.6).launch" preservelastmodified="true" overwrite="true">
+		<copy file="${basedir}/buildScripts/eclipse-debug-target.template" tofile="eclipse ${project.name} (JavaSE-1.6).launch" preservelastmodified="true" overwrite="true">
 			<filterset>
 				<filter token="START_ON_FIRST_THREAD" value="${startOnFirstThread}" />
 			</filterset>
 		</copy>
-		<copy file="${basedir}/buildScripts/java6-test-target.template" tofile="${basedir}/test lombok-ds (JavaSE-1.6).launch" preservelastmodified="true" overwrite="true" />
+		<copy file="${basedir}/buildScripts/java6-test-target.template" tofile="${basedir}/test ${project.name} (JavaSE-1.6).launch" preservelastmodified="true" overwrite="true" />
 	</target>
 
 	<!-- clean -->
@@ -106,33 +107,33 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 	</path>
 
 	<target name="unpackLibs" depends="ensureBuildDeps">
-		<ivy:cachedunjar dest="${basedir}/build/lombok-ds" marker="${basedir}/build/unpackDeps.marker">
+		<ivy:cachedunjar dest="${basedir}/build/${project.name}" marker="${basedir}/build/unpackDeps.marker">
 			<fileset file="${basedir}/external/lombok.jar" />
 		</ivy:cachedunjar>
 	</target>
 
 	<target name="compile" depends="ensureBuildDeps, unpackLibs" description="Compiles the code.">
 		<echo message="${toString:build.path}" />
-		<delete file="${basedir}/build/lombok-ds/META-INF/services/javax.annotation.processing.Processor" quiet="true" />
-		<ivy:compile destdir="${basedir}/build/lombok-ds" source="1.6" target="1.6" includeantruntime="false">
+		<delete file="${basedir}/build/${project.name}/META-INF/services/javax.annotation.processing.Processor" quiet="true" />
+		<ivy:compile destdir="${basedir}/build/${project.name}" source="1.6" target="1.6" includeantruntime="false">
 			<src path="${basedir}/src/core" />
 			<src path="${basedir}/src/eclipse" />
 			<src path="${basedir}/src/javac" />
-			<classpath location="${basedir}/build/lombok-ds" />
+			<classpath location="${basedir}/build/${project.name}" />
 			<classpath refid="build.path" />
 		</ivy:compile>
-		<mkdir dir="${basedir}/build/lombok-ds/META-INF" />
-		<mkdir dir="${basedir}/build/lombok-ds/META-INF/services" />
-		<echo file="${basedir}/build/lombok-ds/META-INF/services/javax.annotation.processing.Processor">lombok.core.AnnotationProcessor</echo>
+		<mkdir dir="${basedir}/build/${project.name}/META-INF" />
+		<mkdir dir="${basedir}/build/${project.name}/META-INF/services" />
+		<echo file="${basedir}/build/${project.name}/META-INF/services/javax.annotation.processing.Processor">lombok.core.AnnotationProcessor</echo>
 	</target>
 
 	<!-- version -->
 	<target name="version" depends="ensure-ipp" description="Shows the version number." unless="lombok.version">
-		<mkdir dir="${basedir}/build/lombok-ds" />
-		<javac includeDestClasses="false" srcdir="${basedir}/src/core" debug="on" destdir="${basedir}/build/lombok-ds" source="1.5" target="1.5" includes="${basedir}/lombok/core/Version.java" includeantruntime="false" />
-		<java classname="lombok.core.Version" classpath="${basedir}/build/lombok-ds" failonerror="true" output="${basedir}/build/version.txt" />
+		<mkdir dir="${basedir}/build/${project.name}" />
+		<javac includeDestClasses="false" srcdir="${basedir}/src/core" debug="on" destdir="${basedir}/build/${project.name}" source="1.5" target="1.5" includes="${basedir}/lombok/core/Version.java" includeantruntime="false" />
+		<java classname="lombok.core.Version" classpath="${basedir}/build/${project.name}" failonerror="true" output="${basedir}/build/version.txt" />
 		<ivy:loadversion property="lombok.version" file="${basedir}/build/version.txt" />
-		<echo level="info">lombok-ds is based on lombok-${lombok.version}</echo>
+		<echo level="info">${project.name} is based on lombok-${lombok.version}</echo>
 		<condition property="lombok.version.is.snapshot">
 			<matches pattern=".*-SNAPSHOT" string="${lombok.version}" />
 		</condition>
@@ -164,7 +165,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 		<ivy:compile destdir="${basedir}/build/tests" source="1.6" target="1.6" includeantruntime="false">
 			<classpath refid="test.path" />
 			<classpath refid="build.path" />
-			<classpath path="${basedir}/build/lombok-ds" />
+			<classpath path="${basedir}/build/${project.name}" />
 			<src path="${basedir}/test/eclipse" />
 			<src path="${basedir}/test/javac" />
 		</ivy:compile>
@@ -194,10 +195,10 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 	</target>
 
 	<!-- dist -->
-	<target name="dist" description="Builds the lombok-ds artifacts" depends="compile, version">
+	<target name="dist" description="Builds the ${project.name} artifacts" depends="compile, version">
 		<mkdir dir="${basedir}/dist" />
-		<jar destfile="${basedir}/dist/lombok-ds-${lombok.version}.jar">
-			<fileset dir="${basedir}/build/lombok-ds" />
+		<jar destfile="${basedir}/dist/${project.name}-${lombok.version}.jar">
+			<fileset dir="${basedir}/build/${project.name}" />
 			<fileset dir="${basedir}" includes="LICENSE" />
 			<fileset dir="${basedir}/" includes="AUTHORS" />
 			<manifest>
@@ -209,15 +210,15 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 			</manifest>
 		</jar>
 		<!-- So the ecj-tests can run properly -->
-		<copy file="${basedir}/dist/lombok-ds-${lombok.version}.jar" tofile="${basedir}/dist/lombok.jar" />
+		<copy file="${basedir}/dist/${project.name}-${lombok.version}.jar" tofile="${basedir}/dist/lombok.jar" />
 
 		<property name="lombok.dist.built" value="true" />
 	</target>
 
 	<!-- dist additional files -->
 	<target name="dist-additional" depends="dist">
-		<jar destfile="${basedir}/dist/lombok-ds-${lombok.version}-runtime.jar">
-			<fileset dir="${basedir}/build/lombok-ds">
+		<jar destfile="${basedir}/dist/${project.name}-${lombok.version}-runtime.jar">
+			<fileset dir="${basedir}/build/${project.name}">
 				<include name="*lombok/*.class" />
 				<include name="*lombok/extern/**/*.class" />
 			</fileset>
@@ -228,7 +229,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 			</manifest>
 		</jar>
 
-		<jar destfile="${basedir}/dist/lombok-ds-${lombok.version}-sources.jar">
+		<jar destfile="${basedir}/dist/${project.name}-${lombok.version}-sources.jar">
 			<fileset dir="${basedir}/src/core" />
 			<fileset dir="${basedir}/src/eclipse" />
 			<fileset dir="${basedir}/src/javac" />
@@ -239,7 +240,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 		<ant antfile="${basedir}/buildScripts/javadoc.ant.xml" target="javadoc" inheritAll="false">
 			<property name="lombok.version" value="${lombok.version}" />
 		</ant>
-		<jar destfile="${basedir}/dist/lombok-ds-${lombok.version}-javadoc.jar">
+		<jar destfile="${basedir}/dist/${project.name}-${lombok.version}-javadoc.jar">
 			<fileset dir="${basedir}/build/javadoc" />
 			<fileset dir="${basedir}" includes="LICENSE" />
 			<fileset dir="${basedir}" includes="AUTHORS" />
@@ -262,7 +263,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 			<arg value="-Durl=https://oss.sonatype.org/content/repositories/snapshots/" />
 			<arg value="-DrepositoryId=sonatype-nexus-snapshots" />
 			<arg value="-DpomFile=${basedir}/dist/pom.xml" />
-			<arg value="-Dfile=${basedir}/dist/lombok-ds-${lombok.version}.jar" />
+			<arg value="-Dfile=${basedir}/dist/${project.name}-${lombok.version}.jar" />
 			<arg value="-DuniqueVersion=false" />
 		</artifact:mvn>
 		<!-- runtime artifact -->
@@ -271,7 +272,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 			<arg value="-Durl=https://oss.sonatype.org/content/repositories/snapshots/" />
 			<arg value="-DrepositoryId=sonatype-nexus-snapshots" />
 			<arg value="-DpomFile=${basedir}/dist/pom.xml" />
-			<arg value="-Dfile=${basedir}/dist/lombok-ds-${lombok.version}-runtime.jar" />
+			<arg value="-Dfile=${basedir}/dist/${project.name}-${lombok.version}-runtime.jar" />
 			<arg value="-DuniqueVersion=false" />
 			<arg value="-Dclassifier=runtime" />
 		</artifact:mvn>
@@ -293,7 +294,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 			<arg value="-Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/" />
 			<arg value="-DrepositoryId=sonatype-nexus-staging" />
 			<arg value="-DpomFile=${basedir}/dist/pom.xml" />
-			<arg value="-Dfile=${basedir}/dist/lombok-ds-${lombok.version}.jar" />
+			<arg value="-Dfile=${basedir}/dist/${project.name}-${lombok.version}.jar" />
 			<arg value="-Pgpg" />
 		</artifact:mvn>
 		<!-- runtime artifact -->
@@ -302,7 +303,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 			<arg value="-Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/" />
 			<arg value="-DrepositoryId=sonatype-nexus-staging" />
 			<arg value="-DpomFile=${basedir}/dist/pom.xml" />
-			<arg value="-Dfile=${basedir}/dist/lombok-ds-${lombok.version}-runtime.jar" />
+			<arg value="-Dfile=${basedir}/dist/${project.name}-${lombok.version}-runtime.jar" />
 			<arg value="-Dclassifier=runtime" />
 			<arg value="-Pgpg" />
 		</artifact:mvn>
@@ -312,7 +313,7 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 			<arg value="-Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/" />
 			<arg value="-DrepositoryId=sonatype-nexus-staging" />
 			<arg value="-DpomFile=${basedir}/dist/pom.xml" />
-			<arg value="-Dfile=${basedir}/dist/lombok-ds-${lombok.version}-sources.jar" />
+			<arg value="-Dfile=${basedir}/dist/${project.name}-${lombok.version}-sources.jar" />
 			<arg value="-Dclassifier=sources" />
 			<arg value="-Pgpg" />
 		</artifact:mvn>
