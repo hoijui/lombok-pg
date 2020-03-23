@@ -247,6 +247,14 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 		</jar>
 	</target>
 
+	<!-- Assuming tasks defined, and 'artifact' namespace exists -->
+	<artifact:pom id="_maven_install_artifact_BAD" groupId="lombok" artifactId="lombok-pg" version="${lombok.version}" packaging="jar">
+		<dependency groupId="org.projectlombok" artifactId="lombok" version="1.16.18"/>
+
+		<!--<license name="apache" url="http://www.apache.org"/>--> <!-- can be omitted -->
+	</artifact:pom>
+	<artifact:pom id="_maven_install_artifact" file="${basedir}/dist/pom.xml" />
+
 	<target name="_maven_create_pom" depends="version" description="Creates(/copies) the Maven project file (pom.xml) for this project">
 		<copy tofile="${basedir}/dist/pom.xml" overwrite="true" file="${basedir}/buildScripts/maven-pom.xml">
 			<filterchain>
