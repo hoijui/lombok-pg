@@ -114,8 +114,13 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 
 	<target name="compile" depends="ensureBuildDeps, unpackLibs" description="Compiles the code.">
 		<echo message="${toString:build.path}" />
-		<delete file="${basedir}/build/${project.name}/META-INF/services/javax.annotation.processing.Processor" quiet="true" />
 		<ivy:compile destdir="${basedir}/build/${project.name}" source="1.6" target="1.6" includeantruntime="false">
+			<bootclasspath location="${java.6.home}/jre/lib/rt.jar" />
+			<compilerarg value="-Xbootclasspath/p:${java.6.home}/jre/lib/rt.jar" />
+			<compilerarg value="-verbose" />
+			<compilerarg value="-proc:only" />
+			<compilerarg value="-processor" />
+			<compilerarg value="org.mangosdk.spi.processor.SpiProcessor" />
 			<src path="${basedir}/src/core" />
 			<classpath location="${basedir}/build/${project.name}" />
 			<classpath refid="build.path" />
