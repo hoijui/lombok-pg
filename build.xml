@@ -117,8 +117,6 @@ the common tasks and can be called on to run the main aspects of all the sub-scr
 		<delete file="${basedir}/build/${project.name}/META-INF/services/javax.annotation.processing.Processor" quiet="true" />
 		<ivy:compile destdir="${basedir}/build/${project.name}" source="1.6" target="1.6" includeantruntime="false">
 			<src path="${basedir}/src/core" />
-			<src path="${basedir}/src/eclipse" />
-			<src path="${basedir}/src/javac" />
 			<classpath location="${basedir}/build/${project.name}" />
 			<classpath refid="build.path" />
 		</ivy:compile>
